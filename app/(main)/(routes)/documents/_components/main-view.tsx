@@ -106,7 +106,7 @@ export function MainView({
           defaultSize={defaultLayout[1]}
           minSize={30}
         >
-          <div className="h-full px-4 py-5">
+          <div className="h-full px-4 py-5 overflow-x-auto">
             <DocumentContent />
           </div>
         </ResizablePanel>
