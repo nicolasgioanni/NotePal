@@ -16,6 +16,8 @@ import { NavControl } from "./nav-control";
 import { ChatContent } from "./chat-content";
 import { NavContent } from "./nav-content";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useScrollTop } from "@/hooks/use-scroll-top";
 
 interface MainViewProps {
   defaultLayout: number[] | undefined;
@@ -35,6 +37,8 @@ export function MainView({
 
   const navRef = useRef<ImperativePanelHandle>(null);
   const chatRef = useRef<ImperativePanelHandle>(null);
+
+  const isScrolled = useScrollTop();
 
   function handleToggleNav() {
     if (navRef.current) {
@@ -106,9 +110,7 @@ export function MainView({
           defaultSize={defaultLayout[1]}
           minSize={30}
         >
-          <div className="h-full px-4 py-5 overflow-x-auto">
-            <DocumentContent />
-          </div>
+          <DocumentContent />
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel

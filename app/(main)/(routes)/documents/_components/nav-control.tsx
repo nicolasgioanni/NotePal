@@ -69,8 +69,8 @@ export function NavControl({ isCollapsed, onToggleSidebar }: NavControlProps) {
               className="group/expandButton p-1"
               onClick={onToggleSidebar}
             >
-              <Menu className="text-foreground/70 w-6 h-6 group-hover/expandButton:hidden" />
-              <ChevronsRight className="text-foreground/70 w-6 h-6 hidden group-hover/expandButton:block" />
+              <Menu className="text-muted-foreground w-6 h-6 group-hover/expandButton:hidden" />
+              <ChevronsRight className="text-muted-foreground w-6 h-6 hidden group-hover/expandButton:block" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
@@ -183,7 +183,7 @@ export function NavControl({ isCollapsed, onToggleSidebar }: NavControlProps) {
               className="p-1 opacity-0 group-hover/navbar:opacity-100 transition"
               onClick={onToggleSidebar}
             >
-              <ChevronsLeft className="opacity-50 h-6 w-6 py-0 px-0" />
+              <ChevronsLeft className="opacity-100 text-muted-foreground h-6 w-6 py-0 px-0" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>

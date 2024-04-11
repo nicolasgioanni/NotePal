@@ -23,8 +23,8 @@ export function ChatControl({ isCollapsed, onToggleChat }: ChatControlProps) {
               className="p-1 group/expandButton"
               onClick={onToggleChat}
             >
-              <Menu className="opacity-50 w-6 h-6 group-hover/expandButton:hidden" />
-              <ChevronsLeft className="opacity-50 w-6 h-6 hidden group-hover/expandButton:block" />
+              <Menu className="text-muted-foreground w-6 h-6 group-hover/expandButton:hidden" />
+              <ChevronsLeft className="text-muted-foreground w-6 h-6 hidden group-hover/expandButton:block" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
