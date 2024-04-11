@@ -13,6 +13,7 @@ import {
   Moon,
   User,
   LifeBuoy,
+  Settings,
 } from "lucide-react";
 
 import {
@@ -81,7 +82,7 @@ export function NavControl({ isCollapsed, onToggleSidebar }: NavControlProps) {
     );
   } else {
     return (
-      <div className="flex items-center mb-3 gap-x-1">
+      <div className="flex items-center gap-x-1">
         <div className="flex w-full overflow-hidden items-center justify-start gap-x-2 rounded-md hover:bg-accent hover:cursor-pointer">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -126,6 +127,10 @@ export function NavControl({ isCollapsed, onToggleSidebar }: NavControlProps) {
                 <DropdownMenuItem className="hover:cursor-pointer">
                   <User className="mr-2 h-4 w-4" />
                   <span>Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="hover:cursor-pointer">
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
                 </DropdownMenuItem>
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger className="hover:cursor-pointer">

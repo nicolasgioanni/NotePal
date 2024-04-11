@@ -11,13 +11,16 @@ import { ImperativePanelHandle } from "react-resizable-panels";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { DocumentContent } from "./document-content";
-import { ChatControl } from "./chat-control";
-import { NavControl } from "./nav-control";
-import { ChatContent } from "./chat-content";
-import { NavContent } from "./nav-content";
+import { ChatControl } from "./_chat/chat-control";
+import { NavControl } from "./_nav/nav-control";
+import { ChatContent } from "./_chat/chat-content";
+import { NavContent } from "./_nav/nav-content";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useScrollTop } from "@/hooks/use-scroll-top";
+import { DefaultContent } from "./default-content";
+import { Nav } from "./_nav/nav";
+import { ChatBar } from "./_chat/chatbar";
 
 interface MainViewProps {
   defaultLayout: number[] | undefined;
@@ -97,12 +100,10 @@ export function MainView({
           )}
         >
           <div className="flex flex-col h-full px-4 py-5 justify-center">
-            <NavControl
+            <Nav
               isCollapsed={isNavCollapsed}
               onToggleSidebar={handleToggleNav}
             />
-            <Separator />
-            <NavContent isCollapsed={isNavCollapsed} />
           </div>
         </ResizablePanel>
         <ResizableHandle />
@@ -110,7 +111,7 @@ export function MainView({
           defaultSize={defaultLayout[1]}
           minSize={30}
         >
-          <DocumentContent />
+          <DefaultContent />
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel
@@ -139,12 +140,10 @@ export function MainView({
           )}
         >
           <div className="flex flex-col flex-grow h-full px-4 py-5">
-            <ChatControl
-              isCollapsed={isChatCollapsed}
+            <ChatBar
+              isChatCollapsed={isChatCollapsed}
               onToggleChat={handleToggleChat}
             />
-            <Separator />
-            <ChatContent isCollapsed={isChatCollapsed} />
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>

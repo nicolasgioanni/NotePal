@@ -35,7 +35,7 @@ export function ChatControl({ isCollapsed, onToggleChat }: ChatControlProps) {
     );
   } else {
     return (
-      <div className="flex justify-start items-center pb-3">
+      <div className="flex justify-start items-center">
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
