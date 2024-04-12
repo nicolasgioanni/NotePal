@@ -13,6 +13,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { DefaultContent } from "./default-content";
 import { Nav } from "./_nav/nav";
 import { ChatBar } from "./_chat/chatbar";
+import { EditorContent } from "./editor-content";
 
 interface MainViewProps {
   defaultLayout: number[] | undefined;
@@ -101,7 +102,7 @@ export function MainView({
           defaultSize={defaultLayout[1]}
           minSize={30}
         >
-          <DefaultContent />
+          <EditorContent />
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel

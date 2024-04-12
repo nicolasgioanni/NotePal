@@ -7,5 +7,5 @@ export function ChatContent({ isCollapsed }: ChatContentProps) {
     return <div className="h-full"></div>;
   }
 
-  return <div className="h-full">Chat Content</div>;
+  return <div className="h-full">Chat Content ( TO BE IMPLEMENTED )</div>;
 }

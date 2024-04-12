@@ -9,18 +9,18 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
-export function DocumentContent() {
+export function EditorContent() {
   const [user, loading, error] = useAuthState(auth);
 
   return (
-    <div className="py-5 h-full">
-      <div className="flex flex-row w-full justify-start mb-3 px-4 items-center">
-        <div className="px-2 py-1 hover:bg-accent hover:cursor-pointer rounded-md font-semibold">
+    <div className="h-full">
+      <div className="flex flex-row w-full justify-start px-4 items-center pt-5">
+        <div className="px-2 py-1 hover:bg-accent hover:cursor-pointer rounded-md font-semibold ">
           Header
         </div>
       </div>
       <div className="px-4">
-        <Separator />
+        <Separator className="mt-3" />
       </div>
       <ScrollArea className="h-full">
         <TailwindAdvancedEditor />

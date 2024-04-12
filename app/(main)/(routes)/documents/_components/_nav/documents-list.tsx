@@ -100,16 +100,16 @@ export const DocumentsList = ({
     <div className="flex flex-col gap-y-2">
       <p
         style={{
-          paddingLeft: level ? `${level * 12}px` : undefined,
+          marginLeft: level ? `${level * 12}px` : undefined,
         }}
         className={cn(
-          "hidden text-sm font-medium text-muted-foreground",
+          "hidden text-sm font-medium text-muted-foreground px-4",
           folders.length === 0 &&
             documents.length === 0 &&
-            "block ml-2 text-muted-foreground/75"
+            "block ml-2 text-muted-foreground/65"
         )}
       >
-        Empty
+        Empty folder
       </p>
       {folders.map((folder) => (
         <div

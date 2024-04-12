@@ -139,8 +139,8 @@ export const Item = ({
     >
       {!!id && (
         <div className="h-full rounded-sm flex items-center">
-          {isFolder ? <ChevronIcon className="h-4 shrink-0" /> : null}
-          {isFile ? <File className=" h-4 shrink-0" /> : null}
+          {isFolder ? <ChevronIcon className="h-4 shrink-0 mr-1" /> : null}
+          {isFile ? <File className=" h-4 shrink-0 mr-1" /> : null}
         </div>
       )}
       {documentIcon ? (
