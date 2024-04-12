@@ -9,11 +9,10 @@ import { doc, setDoc, collection } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { Document } from "@/models/document";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function DefaultContent() {
   const [user, loading, error] = useAuthState(auth);
-
-  if (loading) return null;
 
   const handleCreateDocument = () => {
     if (!user) return;
@@ -24,6 +23,7 @@ export function DefaultContent() {
       isArchived: false,
       content: "",
       isPublished: false,
+      parentFolderId: null,
     };
 
     const docRef = doc(collection(db, "documents"));
@@ -53,6 +53,7 @@ export function DefaultContent() {
         className="hidden dark:block"
       />
       <h2 className="text-lg font-medium">
+        {loading ? <Skeleton className="w-72 h-7" /> : null}
         {user ? (
           <>
             Welcome to {user.displayName ? user.displayName : user.email}
@@ -60,7 +61,10 @@ export function DefaultContent() {
           </>
         ) : null}
       </h2>
-      <Button onClick={handleCreateDocument}>
+      <Button
+        variant="secondary"
+        onClick={handleCreateDocument}
+      >
         <PlusCircle className="h-4 w-4 mr-2" />
         Create a note
       </Button>

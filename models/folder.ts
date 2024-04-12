@@ -1,9 +1,7 @@
 export interface Folder {
-  id?: string; // Optional because Firestore generates this
+  id?: string;
   name: string;
   userId: string;
   isArchived: boolean;
-  parentFolder?: string; // Use null for root folders
-  icon: string;
-  isPublished: boolean;
+  parentFolderId?: string | null; // Use null for root folders
 }

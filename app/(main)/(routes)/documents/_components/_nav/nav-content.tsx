@@ -8,14 +8,23 @@ import {
   doc,
   setDoc,
 } from "firebase/firestore";
-import { db } from "@/firebase/config"; // Ensure you've correctly set up and exported your Firestore instance
-import { auth } from "@/firebase/config"; // Ensure you've correctly set up and exported your auth instance
+import { db } from "@/firebase/config";
+import { auth } from "@/firebase/config";
 import { Document } from "@/models/document";
 import { Folder } from "@/models/folder";
 import { Item } from "../item";
-import { PlusCircle, Search } from "lucide-react";
+import { FilePlus, FolderPlus, PlusCircle, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { DocumentsList } from "./documents-list";
+import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface NavContentProps {
   isCollapsed: boolean;
@@ -23,7 +32,6 @@ interface NavContentProps {
 
 export function NavContent({ isCollapsed }: NavContentProps) {
   const [user, loading, error] = useAuthState(auth);
-  const [documents, setDocuments] = useState<Document[]>([]);
 
   const handleCreateDocument = () => {
     if (!user) return;
@@ -34,6 +42,7 @@ export function NavContent({ isCollapsed }: NavContentProps) {
       isArchived: false,
       content: "",
       isPublished: false,
+      parentFolderId: null,
     };
 
     const docRef = doc(collection(db, "documents"));
@@ -46,51 +55,66 @@ export function NavContent({ isCollapsed }: NavContentProps) {
     });
   };
 
-  useEffect(() => {
-    if (loading) return;
+  const handleCreateFolder = () => {
+    if (!user) return;
 
-    if (user) {
-      const q = query(
-        collection(db, "documents"),
-        where("userId", "==", user.uid)
-      );
+    const newFolder: Folder = {
+      name: "Untitled",
+      userId: user.uid,
+      isArchived: false,
+      parentFolderId: null,
+    };
 
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const docs: Document[] = [];
-        querySnapshot.forEach((doc) => {
-          docs.push({ ...doc.data(), id: doc.id } as Document);
-        });
-        setDocuments(docs);
-      });
+    const docRef = doc(collection(db, "folders"));
+    const promise = setDoc(docRef, newFolder);
 
-      return () => unsubscribe();
-    }
-  }, [user, loading]);
-
-  if (isCollapsed) {
-    return <div className="h-full"></div>;
-  }
+    toast.promise(promise, {
+      loading: "Creating a new folder...",
+      success: "Folder created!",
+      error: "Failed to create a new folder.",
+    });
+  };
 
   return (
-    <div className="h-full flex flex-col gap-y-2">
-      <Button
-        size="sm"
-        variant="outline"
-        className="w-full justify-center text-left text-muted-foreground hover:text-muted-foreground gap-x-[6px]"
-        onClick={handleCreateDocument}
+    <>
+      <div className={cn("h-full", !isCollapsed && "hidden")}></div>
+      <div
+        className={cn("h-full flex flex-col gap-y-3", isCollapsed && "hidden")}
       >
-        <span className="truncate">Create Notes</span>
-        <PlusCircle size={16} />
-      </Button>
-      <Item
-        label="Search"
-        icon={Search}
-        isSearch
-        onClick={() => console.log("Search clicked")}
-      />
-      {documents.map((doc) => (
-        <div key={doc.id}>{doc.title}</div>
-      ))}
-    </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className=" flex flex-row items-center w-full justify-center text-muted-foreground border rounded-md text-sm hover:text-muted-foreground gap-x-[6px] h-9 hover:bg-accent cursor-pointer transition">
+              <span className="truncate">Add</span>
+              <PlusCircle size={16} />
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={handleCreateDocument}
+              >
+                <FilePlus className="mr-2 h-4 w-4" />
+                <span>Blank Document</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={handleCreateFolder}
+              >
+                <FolderPlus className="mr-2 h-4 w-4" />
+                <span>New Folder</span>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <Item
+          label="Search"
+          icon={Search}
+          isSearch
+          onClick={() => console.log("Search clicked")}
+        />
+        <DocumentsList />
+      </div>
+    </>
   );
 }

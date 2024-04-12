@@ -9,15 +9,7 @@ import {
 } from "@/components/ui/resizable";
 import { ImperativePanelHandle } from "react-resizable-panels";
 import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
-import { DocumentContent } from "./document-content";
-import { ChatControl } from "./_chat/chat-control";
-import { NavControl } from "./_nav/nav-control";
-import { ChatContent } from "./_chat/chat-content";
-import { NavContent } from "./_nav/nav-content";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useScrollTop } from "@/hooks/use-scroll-top";
 import { DefaultContent } from "./default-content";
 import { Nav } from "./_nav/nav";
 import { ChatBar } from "./_chat/chatbar";
@@ -40,8 +32,6 @@ export function MainView({
 
   const navRef = useRef<ImperativePanelHandle>(null);
   const chatRef = useRef<ImperativePanelHandle>(null);
-
-  const isScrolled = useScrollTop();
 
   function handleToggleNav() {
     if (navRef.current) {

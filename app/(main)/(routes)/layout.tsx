@@ -40,14 +40,6 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     }
   }, [user, loading]);
 
-  if (loading) {
-    return null;
-  }
-
-  if (!loading && !user && !emailLinkCheckDone) {
-    return null;
-  }
-
   if (!loading && !user && emailLinkCheckDone) {
     redirect("/login");
   }
