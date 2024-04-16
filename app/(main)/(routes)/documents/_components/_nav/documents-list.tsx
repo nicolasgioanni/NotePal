@@ -109,7 +109,7 @@ export const DocumentsList = ({
             "block ml-2 text-muted-foreground/65"
         )}
       >
-        Empty folder
+        Empty
       </p>
       {folders.map((folder) => (
         <div
