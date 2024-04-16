@@ -135,7 +135,7 @@ export const Item = ({
   };
 
   const handleArchive = async (id: string, isFolder: boolean | undefined) => {
-    if (!user || !isFolder) return;
+    if (!user || !!isFolder) return;
 
     const archiveAction = isFolder
       ? archiveFolder(id, user.uid)
