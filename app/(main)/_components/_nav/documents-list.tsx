@@ -41,7 +41,7 @@ export const DocumentsList = ({
   const onRedirect = (documentId?: string) => {
     if (!documentId) return;
 
-    // router.push(`/documents/${documentId}`);
+    router.push(`/documents/${documentId}`);
   };
 
   useEffect(() => {
@@ -106,7 +106,7 @@ export const DocumentsList = ({
           "hidden text-sm font-medium text-muted-foreground px-4",
           folders.length === 0 &&
             documents.length === 0 &&
-            "block ml-2 text-muted-foreground/65"
+            "block text-muted-foreground/65"
         )}
       >
         Empty

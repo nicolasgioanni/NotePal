@@ -62,7 +62,7 @@ export function NavControl({ isCollapsed, onToggleSidebar }: NavControlProps) {
 
   if (isCollapsed) {
     return (
-      <div className="flex justify-center pb-4">
+      <div className="flex justify-center">
         <Tooltip>
           <TooltipTrigger asChild>
             <Button

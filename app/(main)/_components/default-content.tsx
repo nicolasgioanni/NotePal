@@ -20,7 +20,6 @@ export function DefaultContent() {
     const newDocument: Document = {
       title: "Untitled",
       userId: user.uid,
-      isArchived: false,
       content: "",
       isPublished: false,
       parentFolderId: null,

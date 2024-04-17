@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import {
   ChevronDown,
   ChevronRight,
@@ -20,6 +21,8 @@ import {
   Plus,
   TextCursorInput,
   Trash,
+  Undo,
+  Undo2,
 } from "lucide-react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "@/firebase/config";
@@ -27,15 +30,17 @@ import { Document } from "@/models/document";
 import { toast } from "sonner";
 import {
   collection,
+  deleteDoc,
   doc,
   getDocs,
   query,
   setDoc,
-  updateDoc,
   where,
 } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { Folder } from "@/models/folder";
+import { useState } from "react";
+import { DeleteAlertDialog } from "./delete-alert-dialog";
 
 interface ItemProps {
   id?: string;
@@ -48,7 +53,7 @@ interface ItemProps {
   level?: number;
   label: string;
   onExpand?: () => void;
-  onClick: () => void;
+  onClick?: () => void;
   icon?: LucideIcon;
 }
 
@@ -68,7 +73,12 @@ export const Item = ({
 }: ItemProps) => {
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
   const [user, loading, error] = useAuthState(auth);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const router = useRouter();
+
+  const handleDeleteDialogClose = () => {
+    setDeleteDialogOpen(false);
+  };
 
   const handleOnExpand = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -86,7 +96,6 @@ export const Item = ({
     const newDocument: Document = {
       title: "Untitled",
       userId: user.uid,
-      isArchived: false,
       content: "",
       isPublished: false,
       parentFolderId: id,
@@ -97,7 +106,7 @@ export const Item = ({
       if (!expanded) {
         onExpand?.();
       }
-      // router.push(`/documents/${docRef.id}`);
+      router.push(`/documents/${docRef.id}`);
     });
 
     toast.promise(promise, {
@@ -116,7 +125,6 @@ export const Item = ({
     const newFolder: Folder = {
       name: "Untitled",
       userId: user.uid,
-      isArchived: false,
       parentFolderId: id,
     };
 
@@ -134,32 +142,32 @@ export const Item = ({
     });
   };
 
-  const handleArchive = async (id: string, isFolder: boolean | undefined) => {
-    if (!user || !!isFolder) return;
+  const handleDelete = async (id: string, isFolder: boolean) => {
+    if (!user || isFolder == undefined) return;
 
-    const archiveAction = isFolder
-      ? archiveFolder(id, user.uid)
-      : archiveDocument(id, user.uid);
+    const deleteAction = isFolder
+      ? deleteFolder(id, user.uid)
+      : deleteDocument(id, user.uid);
 
-    toast.promise(archiveAction, {
-      loading: isFolder ? "Archiving folder..." : "Archiving document...",
-      success: isFolder ? "Folder archived!" : "Document archived!",
+    toast.promise(deleteAction, {
+      loading: isFolder ? "Deleting folder..." : "Deleting document...",
+      success: isFolder ? "Folder deleted!" : "Document deleted!",
       error: isFolder
-        ? "Failed to archive folder."
-        : "Failed to archive document.",
+        ? "Failed to delete folder."
+        : "Failed to delete document.",
     });
   };
 
-  const archiveDocument = async (documentId: string, userId: string) => {
+  const deleteDocument = async (documentId: string, userId: string) => {
     const docRef = doc(db, "documents", documentId);
-    return updateDoc(docRef, { isArchived: true }); // This returns a promise
+    return deleteDoc(docRef); // Use deleteDoc to remove the document
   };
 
-  const archiveFolder = async (folderId: string, userId: string) => {
+  const deleteFolder = async (folderId: string, userId: string) => {
     const folderRef = doc(db, "folders", folderId);
-    await updateDoc(folderRef, { isArchived: true }); // Archive the folder itself
+    await deleteDoc(folderRef); // Delete the folder itself
 
-    // Recursively archive all contents
+    // Recursively delete all contents
     const subFoldersQuery = query(
       collection(db, "folders"),
       where("parentFolderId", "==", folderId),
@@ -168,7 +176,7 @@ export const Item = ({
     const subFoldersSnapshot = await getDocs(subFoldersQuery);
 
     for (const doc of subFoldersSnapshot.docs) {
-      await archiveFolder(doc.id, userId); // Recursive call
+      await deleteFolder(doc.id, userId); // Recursive call
     }
 
     const documentsQuery = query(
@@ -179,7 +187,7 @@ export const Item = ({
     const documentsSnapshot = await getDocs(documentsQuery);
 
     for (const doc of documentsSnapshot.docs) {
-      await archiveDocument(doc.id, userId);
+      await deleteDocument(doc.id, userId);
     }
   };
 
@@ -187,7 +195,7 @@ export const Item = ({
     <div
       onClick={(e) => {
         if (isFolder) handleOnExpand(e);
-        else onClick();
+        else onClick ? onClick() : {};
       }}
       role="button"
       style={{ marginLeft: level ? `${level * 14}px` : "0px" }}
@@ -259,7 +267,10 @@ export const Item = ({
                 <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
               </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent
+              align="end"
+              side="bottom"
+            >
               <DropdownMenuGroup>
                 <DropdownMenuItem className="cursor-pointer">
                   <div className="text-muted-foreground flex items-center">
@@ -268,15 +279,15 @@ export const Item = ({
                   </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="cursor-pointer"
+                  className="cursor-pointer group/delete"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleArchive(id, isFolder);
+                    setDeleteDialogOpen(true);
                   }}
                 >
-                  <div className="text-muted-foreground flex items-center">
+                  <div className="text-muted-foreground flex items-center group-hover/delete:text-red-600 transition">
                     <Trash className="mr-2 h-4 w-4" />
-                    <span>Archive</span>
+                    <span>Delete</span>
                   </div>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
@@ -284,6 +295,13 @@ export const Item = ({
           </DropdownMenu>
         </div>
       )}
+      <DeleteAlertDialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteDialogClose}
+        onConfirm={() => {
+          handleDelete(id!, isFolder ? true : false);
+        }}
+      />
     </div>
   );
 };

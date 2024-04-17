@@ -10,6 +10,8 @@ import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
 
 // next imports
 import { redirect } from "next/navigation";
+import { SearchCommand } from "@/components/search-command";
+import { MainView } from "../_components/main-view";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const [user, loading, error] = useAuthState(auth);
@@ -46,7 +48,10 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="h-full">
-      <main className="h-full">{children}</main>
+      <main className="h-full">
+        <SearchCommand />
+        <MainView navCollapsedSize={4}>{children}</MainView>
+      </main>
     </div>
   );
 };

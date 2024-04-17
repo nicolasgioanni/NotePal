@@ -13,7 +13,7 @@ import { auth } from "@/firebase/config";
 import { Document } from "@/models/document";
 import { Folder } from "@/models/folder";
 import { Item } from "../item";
-import { FilePlus, FolderPlus, PlusCircle, Search } from "lucide-react";
+import { FilePlus, FolderPlus, PlusCircle, Search, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { DocumentsList } from "./documents-list";
@@ -25,6 +25,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
+import { useSearch } from "@/hooks/use-search";
 
 interface NavContentProps {
   isCollapsed: boolean;
@@ -32,6 +39,7 @@ interface NavContentProps {
 
 export function NavContent({ isCollapsed }: NavContentProps) {
   const [user, loading, error] = useAuthState(auth);
+  const search = useSearch();
 
   const handleCreateDocument = () => {
     if (!user) return;
@@ -39,7 +47,6 @@ export function NavContent({ isCollapsed }: NavContentProps) {
     const newDocument: Document = {
       title: "Untitled",
       userId: user.uid,
-      isArchived: false,
       content: "",
       isPublished: false,
       parentFolderId: null,
@@ -61,7 +68,6 @@ export function NavContent({ isCollapsed }: NavContentProps) {
     const newFolder: Folder = {
       name: "Untitled",
       userId: user.uid,
-      isArchived: false,
       parentFolderId: null,
     };
 
@@ -111,7 +117,7 @@ export function NavContent({ isCollapsed }: NavContentProps) {
           label="Search"
           icon={Search}
           isSearch
-          onClick={() => console.log("Search clicked")}
+          onClick={search.onOpen}
         />
         <DocumentsList />
       </div>

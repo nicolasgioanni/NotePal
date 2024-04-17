@@ -16,17 +16,17 @@ import { ChatBar } from "./_chat/chatbar";
 import { EditorContent } from "./editor-content";
 
 interface MainViewProps {
-  defaultLayout: number[] | undefined;
   defaultNavCollapsed?: boolean;
   defaultChatCollapsed?: boolean;
   navCollapsedSize: number;
+  children: React.ReactNode;
 }
 
 export function MainView({
-  defaultLayout = [265, 440, 655],
   defaultNavCollapsed = false,
   defaultChatCollapsed = false,
   navCollapsedSize,
+  children,
 }: MainViewProps) {
   const [isNavCollapsed, setIsNavCollapsed] = useState(defaultNavCollapsed);
   const [isChatCollapsed, setIsChatCollapsed] = useState(defaultChatCollapsed);
@@ -67,22 +67,16 @@ export function MainView({
       >
         <ResizablePanel
           ref={navRef}
-          defaultSize={defaultLayout[0]}
+          defaultSize={20}
           collapsedSize={navCollapsedSize}
           collapsible
           minSize={12}
           maxSize={30}
           onCollapse={() => {
             setIsNavCollapsed(true);
-            document.cookie = `react-resizable-panels:navCollapsed=${JSON.stringify(
-              true
-            )}`;
           }}
           onExpand={() => {
             setIsNavCollapsed(false);
-            document.cookie = `react-resizable-panels:navCollapsed=${JSON.stringify(
-              false
-            )}`;
           }}
           className={cn(
             "group/navbar",
@@ -98,31 +92,20 @@ export function MainView({
           </div>
         </ResizablePanel>
         <ResizableHandle />
-        <ResizablePanel
-          defaultSize={defaultLayout[1]}
-          minSize={30}
-        >
-          <EditorContent />
-        </ResizablePanel>
+        <ResizablePanel defaultSize={60}>{children}</ResizablePanel>
         <ResizableHandle />
         <ResizablePanel
           ref={chatRef}
-          defaultSize={defaultLayout[2]}
+          defaultSize={20}
           collapsedSize={navCollapsedSize}
           collapsible
           minSize={15}
           maxSize={30}
           onCollapse={() => {
             setIsChatCollapsed(true);
-            document.cookie = `react-resizable-panels:chatCollapsed=${JSON.stringify(
-              true
-            )}`;
           }}
           onExpand={() => {
             setIsChatCollapsed(false);
-            document.cookie = `react-resizable-panels:chatCollapsed=${JSON.stringify(
-              false
-            )}`;
           }}
           className={cn(
             "group/chat",

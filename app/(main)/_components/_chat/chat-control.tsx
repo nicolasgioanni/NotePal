@@ -14,7 +14,7 @@ interface ChatControlProps {
 export function ChatControl({ isCollapsed, onToggleChat }: ChatControlProps) {
   if (isCollapsed) {
     return (
-      <div className="flex justify-center pb-4">
+      <div className="flex justify-center">
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
