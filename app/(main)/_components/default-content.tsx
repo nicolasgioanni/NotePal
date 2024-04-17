@@ -10,9 +10,11 @@ import { db } from "@/firebase/config";
 import { Document } from "@/models/document";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useRouter } from "next/navigation";
 
 export function DefaultContent() {
   const [user, loading, error] = useAuthState(auth);
+  const router = useRouter();
 
   const handleCreateDocument = () => {
     if (!user) return;
@@ -26,7 +28,9 @@ export function DefaultContent() {
     };
 
     const docRef = doc(collection(db, "documents"));
-    const promise = setDoc(docRef, newDocument);
+    const promise = setDoc(docRef, newDocument).then(() => {
+      router.push(`/documents/${docRef.id}`);
+    });
 
     toast.promise(promise, {
       loading: "Creating a new note...",

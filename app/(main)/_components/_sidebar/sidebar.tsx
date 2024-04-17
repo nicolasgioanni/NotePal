@@ -1,24 +1,24 @@
 import { cn } from "@/lib/utils";
-import { NavControl } from "./nav-control";
+import { SidebarControl } from "./sidebar-control";
 import { Separator } from "@/components/ui/separator";
-import { NavContent } from "./nav-content";
+import { SidebarContent } from "./sidebar-content";
 import { Item } from "../item";
 import { PlusCircle } from "lucide-react";
 
-interface NavProps {
+interface SidebarProps {
   isCollapsed: boolean;
   onToggleSidebar: () => void;
 }
 
-export function Nav({ isCollapsed, onToggleSidebar }: NavProps) {
+export function Sidebar({ isCollapsed, onToggleSidebar }: SidebarProps) {
   return (
     <>
-      <NavControl
+      <SidebarControl
         isCollapsed={isCollapsed}
         onToggleSidebar={onToggleSidebar}
       />
       <Separator className="my-3" />
-      <NavContent isCollapsed={isCollapsed} />
+      <SidebarContent isCollapsed={isCollapsed} />
     </>
   );
 }

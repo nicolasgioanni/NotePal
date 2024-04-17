@@ -11,9 +11,12 @@ import { ImperativePanelHandle } from "react-resizable-panels";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { DefaultContent } from "./default-content";
-import { Nav } from "./_nav/nav";
+import { Sidebar } from "./_sidebar/sidebar";
 import { ChatBar } from "./_chat/chatbar";
 import { EditorContent } from "./editor-content";
+import { useParams } from "next/navigation";
+import { Navbar } from "./_navbar/navbar";
+import { Separator } from "@/components/ui/separator";
 
 interface MainViewProps {
   defaultNavCollapsed?: boolean;
@@ -33,6 +36,7 @@ export function MainView({
 
   const navRef = useRef<ImperativePanelHandle>(null);
   const chatRef = useRef<ImperativePanelHandle>(null);
+  const params = useParams();
 
   function handleToggleNav() {
     if (navRef.current) {
@@ -85,14 +89,17 @@ export function MainView({
           )}
         >
           <div className="flex flex-col h-full px-4 py-5 justify-center">
-            <Nav
+            <Sidebar
               isCollapsed={isNavCollapsed}
               onToggleSidebar={handleToggleNav}
             />
           </div>
         </ResizablePanel>
         <ResizableHandle />
-        <ResizablePanel defaultSize={60}>{children}</ResizablePanel>
+        <ResizablePanel defaultSize={60}>
+          <Navbar />
+          {children}
+        </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel
           ref={chatRef}

@@ -41,12 +41,15 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-interface NavControlProps {
+interface SidebarControlProps {
   isCollapsed: boolean;
   onToggleSidebar: () => void;
 }
 
-export function NavControl({ isCollapsed, onToggleSidebar }: NavControlProps) {
+export function SidebarControl({
+  isCollapsed,
+  onToggleSidebar,
+}: SidebarControlProps) {
   const { setTheme } = useTheme();
   const [user, loading, error] = useAuthState(auth);
   const router = useRouter();

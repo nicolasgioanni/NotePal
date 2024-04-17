@@ -32,14 +32,16 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { useSearch } from "@/hooks/use-search";
+import { useRouter } from "next/navigation";
 
-interface NavContentProps {
+interface SidebarContentProps {
   isCollapsed: boolean;
 }
 
-export function NavContent({ isCollapsed }: NavContentProps) {
+export function SidebarContent({ isCollapsed }: SidebarContentProps) {
   const [user, loading, error] = useAuthState(auth);
   const search = useSearch();
+  const router = useRouter();
 
   const handleCreateDocument = () => {
     if (!user) return;
@@ -53,7 +55,9 @@ export function NavContent({ isCollapsed }: NavContentProps) {
     };
 
     const docRef = doc(collection(db, "documents"));
-    const promise = setDoc(docRef, newDocument);
+    const promise = setDoc(docRef, newDocument).then(() => {
+      router.push(`/documents/${docRef.id}`);
+    });
 
     toast.promise(promise, {
       loading: "Creating a new note...",
