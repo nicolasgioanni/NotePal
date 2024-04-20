@@ -1,9 +1,11 @@
+import { JSONContent } from "novel";
+
 export interface Document {
   id?: string;
   title: string;
   userId: string;
   parentFolderId?: string | null; // Use null for root documents
-  content: string; // Assuming JSON string for simplicity
+  content: JSONContent | null;
   icon?: string;
   isPublished: boolean;
 }

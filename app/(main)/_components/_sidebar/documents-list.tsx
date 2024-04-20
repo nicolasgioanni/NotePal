@@ -120,7 +120,7 @@ export const DocumentsList = ({
             key={folder.id}
             id={folder.id}
             onClick={() => {}}
-            label={folder.name}
+            label={folder.title}
             level={level}
             onExpand={() => onExpand(folder.id)}
             expanded={expanded[folder.id!]}

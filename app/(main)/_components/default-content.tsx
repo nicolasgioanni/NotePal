@@ -11,6 +11,7 @@ import { Document } from "@/models/document";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
+import { defaultEditorContent } from "@/lib/content";
 
 export function DefaultContent() {
   const [user, loading, error] = useAuthState(auth);
@@ -22,7 +23,7 @@ export function DefaultContent() {
     const newDocument: Document = {
       title: "Untitled",
       userId: user.uid,
-      content: "",
+      content: defaultEditorContent,
       isPublished: false,
       parentFolderId: null,
     };

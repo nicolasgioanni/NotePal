@@ -65,7 +65,8 @@ export const SearchCommand = () => {
     return () => document.removeEventListener("keydown", down);
   }, [toggle]);
 
-  const onSelect = (documentId: string) => {
+  const onSelect = (documentId: string | undefined) => {
+    if (!documentId) return;
     router.push(`/documents/${documentId}`);
     onClose();
   };
@@ -86,7 +87,8 @@ export const SearchCommand = () => {
               key={document.id}
               value={`${document.id}-${document.title}`}
               title={document.title}
-              onSelect={onSelect}
+              onSelect={() => onSelect(document.id)}
+              className="cursor-pointer"
             >
               <File className="mr-2 h-4 w-4" />
               <span>{document.title}</span>

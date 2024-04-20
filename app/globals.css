@@ -83,3 +83,15 @@ body,
     @apply bg-background text-foreground;
   }
 }
+
+.tiptap h1 {
+  @apply text-3xl;
+}
+
+.tiptap h2 {
+  @apply text-2xl;
+}
+
+.tiptap h3 {
+  @apply text-xl;
+}

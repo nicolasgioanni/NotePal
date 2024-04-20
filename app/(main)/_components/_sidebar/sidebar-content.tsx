@@ -33,6 +33,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useSearch } from "@/hooks/use-search";
 import { useRouter } from "next/navigation";
+import { defaultEditorContent } from "@/lib/content";
 
 interface SidebarContentProps {
   isCollapsed: boolean;
@@ -49,7 +50,7 @@ export function SidebarContent({ isCollapsed }: SidebarContentProps) {
     const newDocument: Document = {
       title: "Untitled",
       userId: user.uid,
-      content: "",
+      content: defaultEditorContent,
       isPublished: false,
       parentFolderId: null,
     };
@@ -70,7 +71,7 @@ export function SidebarContent({ isCollapsed }: SidebarContentProps) {
     if (!user) return;
 
     const newFolder: Folder = {
-      name: "Untitled",
+      title: "Untitled",
       userId: user.uid,
       parentFolderId: null,
     };

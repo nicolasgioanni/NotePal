@@ -3,13 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Document } from "@/models/document";
 import { useEffect, useRef, useState } from "react";
-import {
-  doc,
-  DocumentReference,
-  getDoc,
-  onSnapshot,
-  updateDoc,
-} from "firebase/firestore";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
 
 interface TitleProps {
@@ -18,10 +12,9 @@ interface TitleProps {
 
 export const Title = ({ docId }: TitleProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [prevTitle, setPrevTitle] = useState("");
-  const spanRef = useRef<HTMLSpanElement>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [document, setDocument] = useState<Document | null>(null);
+  const [title, setTitle] = useState("");
+  const [document, setDocument] = useState<Document>();
 
   useEffect(() => {
     if (docId) {
@@ -29,9 +22,10 @@ export const Title = ({ docId }: TitleProps) => {
       const unsubscribe = onSnapshot(docRef, (docSnap) => {
         if (docSnap.exists()) {
           setDocument(docSnap.data() as Document);
-          setPrevTitle(docSnap.data().title);
+          setTitle(docSnap.data().title);
         } else {
           console.log("Document does not exist");
+          setTitle("Untitled");
         }
       });
 
@@ -40,15 +34,15 @@ export const Title = ({ docId }: TitleProps) => {
   }, [docId]);
 
   const setDocumentTitle = async (title: string) => {
+    if (title.trim() === "") title = "Untitled";
     updateDoc(doc(db, "documents", docId), { title: title }).catch((error) => {
       console.error("Error updating document title: ", error);
     });
   };
 
   const enableInput = () => {
-    if (!document) return;
-    setPrevTitle(document?.title);
     setIsEditing(true);
+    setTitle(document?.title || "");
     setTimeout(() => {
       inputRef.current?.focus();
       inputRef.current?.setSelectionRange(0, inputRef.current.value.length);
@@ -56,18 +50,12 @@ export const Title = ({ docId }: TitleProps) => {
   };
 
   const disableInput = () => {
-    if (!document?.title.trim()) {
-      updateDoc(doc(db, "documents", docId), { title: "Untitled" }).catch(
-        (error) => {
-          console.error("Error updating document title: ", error);
-        }
-      );
-    }
+    setDocumentTitle(title);
     setIsEditing(false);
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDocumentTitle(e.target.value);
+    setTitle(e.target.value);
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -75,12 +63,7 @@ export const Title = ({ docId }: TitleProps) => {
       disableInput();
     }
     if (e.key === "Escape") {
-      updateDoc(doc(db, "documents", docId), { title: prevTitle }).catch(
-        (error) => {
-          console.error("Error updating document title: ", error);
-        }
-      );
-      disableInput();
+      setIsEditing(false);
     }
   };
 
@@ -93,7 +76,7 @@ export const Title = ({ docId }: TitleProps) => {
           onBlur={disableInput}
           onChange={onChange}
           onKeyDown={onKeyDown}
-          value={document?.title}
+          value={title}
           className="h-8 px-2 focus-visible:ring-transparent"
         />
       ) : (
@@ -101,9 +84,9 @@ export const Title = ({ docId }: TitleProps) => {
           onClick={enableInput}
           variant="ghost"
           size="sm"
-          className="font-semibold h-auto p-1 px-1.5 text-base "
+          className="font-medium h-auto p-1 px-1.5 text-base"
         >
-          <span className="truncate">{document?.title || "Untitled"}</span>
+          <span className="truncate">{title}</span>
         </Button>
       )}
     </>

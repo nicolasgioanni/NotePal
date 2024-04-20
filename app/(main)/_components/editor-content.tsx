@@ -2,29 +2,24 @@
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/config";
-import TailwindAdvancedEditor from "@/components/editor/advanced-editor";
+import Editor from "@/components/editor/advanced-editor";
 
 import { DefaultContent } from "./default-content";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { useParams } from "next/navigation";
+import { Document } from "@/models/document";
+import { useEffect, useState } from "react";
 
 export function EditorContent() {
   const [user, loading, error] = useAuthState(auth);
+  const [document, setDocument] = useState<Document>();
+  const params = useParams();
 
   return (
-    <div className="h-full">
-      <div className="flex flex-row w-full justify-start px-4 items-center pt-5">
-        <div className="px-2 py-1 hover:bg-accent hover:cursor-pointer rounded-md font-semibold ">
-          Header
-        </div>
-      </div>
-      <div className="px-4">
-        <Separator className="mt-3" />
-      </div>
-      <ScrollArea className="h-full">
-        <TailwindAdvancedEditor />
-      </ScrollArea>
-    </div>
+    <ScrollArea className="h-full">
+      <Editor docId={params.documentId as string} />
+    </ScrollArea>
   );
 }

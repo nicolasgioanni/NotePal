@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "NotePal",
   description:
-    " Elevate your study and productivity with AI-driven note-taking. Collaboratively create notes, generate custom quizzes, and get real-time assistance, all in one intuitive platform. Transform your learning experience with NotePal today.",
+    " Elevate your study and productivity with AI-driven note-taking. Create notes, generate custom quizzes, and get real-time assistance, all in one intuitive platform. Transform your learning experience with NotePal today.",
   icons: [
     {
       media: "(prefers-color-scheme: light)",

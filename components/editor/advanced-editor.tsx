@@ -24,13 +24,18 @@ import { slashCommand, suggestionItems } from "./slash-command";
 import GenerativeMenuSwitch from "./generative/generative-menu-switch";
 import { handleImageDrop, handleImagePaste } from "novel/plugins";
 import { uploadFn } from "./image-upload";
+import { updateDoc, doc, onSnapshot } from "firebase/firestore";
+import { db } from "@/firebase/config";
+import { Document } from "@/models/document";
 
 const extensions = [...defaultExtensions, slashCommand];
 
-const TailwindAdvancedEditor = () => {
-  const [initialContent, setInitialContent] = useState<null | JSONContent>(
-    null
-  );
+interface EditorProps {
+  docId: string;
+}
+
+const Editor = ({ docId }: EditorProps) => {
+  const [content, setContent] = useState<JSONContent | null>(null);
   const [saveStatus, setSaveStatus] = useState("Saved");
 
   const [openNode, setOpenNode] = useState(false);
@@ -38,29 +43,52 @@ const TailwindAdvancedEditor = () => {
   const [openLink, setOpenLink] = useState(false);
   const [openAI, setOpenAI] = useState(false);
 
+  useEffect(() => {
+    const docRef = doc(db, "documents", docId);
+    const unsubscribe = onSnapshot(docRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.data() as Document;
+        if (data.content) {
+          setContent(data.content);
+        } else {
+          console.log("Document does not contain valid JSONContent");
+          setContent(defaultEditorContent);
+        }
+      } else {
+        console.log("No such document!");
+        setContent(defaultEditorContent); // Fallback content if document doesn't exist
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup the subscription
+  }, [docId]);
+
   const debouncedUpdates = useDebouncedCallback(
     async (editor: EditorInstance) => {
       const json = editor.getJSON();
+      const docRef = doc(db, "documents", docId);
+      // Save the content to firebase here
+      await updateDoc(docRef, { content: json })
+        .then(() => {
+          setSaveStatus("Saved");
+        })
+        .catch((error) => {
+          console.error("Error updating document content: ", error);
+          setSaveStatus("Error");
+        });
 
-      window.localStorage.setItem("novel-content", JSON.stringify(json));
       setSaveStatus("Saved");
     },
     500
   );
 
-  useEffect(() => {
-    const content = window.localStorage.getItem("novel-content");
-    if (content) setInitialContent(JSON.parse(content));
-    else setInitialContent(defaultEditorContent);
-  }, []);
-
-  if (!initialContent) return null;
+  if (!content) return null;
 
   return (
     <div className="w-full">
       <EditorRoot>
         <EditorContent
-          initialContent={initialContent}
+          initialContent={content}
           extensions={extensions}
           className="relative min-h-[500px] w-full sm:mb-[calc(20vh)]"
           editorProps={{
@@ -136,4 +164,4 @@ const TailwindAdvancedEditor = () => {
   );
 };
 
-export default TailwindAdvancedEditor;
+export default Editor;

@@ -1,6 +1,7 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -36,11 +37,14 @@ import {
   query,
   setDoc,
   where,
+  onSnapshot,
+  updateDoc,
 } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { Folder } from "@/models/folder";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { DeleteAlertDialog } from "./delete-alert-dialog";
+import { defaultEditorContent } from "@/lib/content";
 
 interface ItemProps {
   id?: string;
@@ -63,7 +67,6 @@ export const Item = ({
   onClick,
   icon: Icon,
   active,
-  documentIcon,
   isSearch,
   isFile,
   isFolder,
@@ -75,6 +78,59 @@ export const Item = ({
   const [user, loading, error] = useAuthState(auth);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const router = useRouter();
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [title, setTitle] = useState(label);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!id) return;
+    const docRef = doc(db, isFolder ? "folders" : "documents", id);
+    const unsubscribe = onSnapshot(docRef, (snapshot) => {
+      if (snapshot.exists()) {
+        setTitle(snapshot.data().title);
+      }
+    });
+    return () => unsubscribe();
+  }, [id, isFolder]);
+
+  const setDocumentTitle = async (title: string) => {
+    if (!id) return;
+    if (title.trim() === "") title = "Untitled";
+    updateDoc(doc(db, isFolder ? "folders" : "documents", id), {
+      title: title,
+    }).catch((error) => {
+      console.error("Error updating title: ", error);
+    });
+  };
+
+  const enableInput = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.stopPropagation();
+    setTitle(label);
+    setIsEditing(true);
+    setTimeout(() => {
+      inputRef.current?.focus();
+      inputRef.current?.setSelectionRange(0, inputRef.current.value.length);
+    }, 0);
+  };
+
+  const disableInput = () => {
+    setDocumentTitle(title);
+    setIsEditing(false);
+  };
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      disableInput();
+    }
+    if (e.key === "Escape") {
+      setIsEditing(false);
+    }
+  };
 
   const handleDeleteDialogClose = () => {
     setDeleteDialogOpen(false);
@@ -96,7 +152,7 @@ export const Item = ({
     const newDocument: Document = {
       title: "Untitled",
       userId: user.uid,
-      content: "",
+      content: defaultEditorContent,
       isPublished: false,
       parentFolderId: id,
     };
@@ -123,7 +179,7 @@ export const Item = ({
     if (!id || !user) return;
 
     const newFolder: Folder = {
-      name: "Untitled",
+      title: "Untitled",
       userId: user.uid,
       parentFolderId: id,
     };
@@ -202,22 +258,30 @@ export const Item = ({
       className={cn(
         "group min-h-[27px] py-1.5 pr-2 flex items-center hover:bg-accent font-medium text-muted-foreground rounded-md text-sm transition pl-1",
         active && "bg-accent text-accent-foreground",
-        isSearch && "bg-accent/50 py-2"
+        isSearch && "bg-accent/50 py-2 pl-2"
       )}
     >
+      {Icon && <Icon className="h-4 w-4 mr-2" />}
       {!!id && (
         <div className="h-full rounded-sm flex items-center">
           {isFolder ? <ChevronIcon className="h-4 shrink-0 mr-1" /> : null}
           {isFile ? <File className=" h-4 shrink-0 mr-1" /> : null}
         </div>
       )}
-      {documentIcon ? (
-        <div className="shrink-0 mr-1 text-base">{documentIcon}</div>
+      {isEditing ? (
+        <Input
+          ref={inputRef}
+          onClick={enableInput}
+          onBlur={disableInput}
+          onChange={onChange}
+          onKeyDown={onKeyDown}
+          value={title}
+          className="h-5 px-2 mr-2 focus-visible:ring-transparent"
+        />
       ) : (
-        Icon && <Icon className="shrink-0 h-4 mr-1" />
+        <span className="truncate">{title}</span>
       )}
 
-      <span className="truncate">{label}</span>
       {isSearch && (
         <kbd className="group-hover:opacity-0 transition ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 text-[10px] font-medium text-muted-foreground">
           <span className="text-xs">⌘</span>K
@@ -272,7 +336,12 @@ export const Item = ({
               side="bottom"
             >
               <DropdownMenuGroup>
-                <DropdownMenuItem className="cursor-pointer">
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={(e) => {
+                    enableInput(e);
+                  }}
+                >
                   <div className="text-muted-foreground flex items-center">
                     <TextCursorInput className="mr-2 h-4 w-4" />
                     <span>Rename</span>
