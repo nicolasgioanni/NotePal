@@ -12,7 +12,6 @@ import { db } from "@/firebase/config";
 import { auth } from "@/firebase/config";
 import { Document } from "@/models/document";
 import { Folder } from "@/models/folder";
-import { Item } from "../item";
 import { FilePlus, FolderPlus, PlusCircle, Search, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -34,6 +33,7 @@ import { Separator } from "@/components/ui/separator";
 import { useSearch } from "@/hooks/use-search";
 import { useRouter } from "next/navigation";
 import { defaultEditorContent } from "@/lib/content";
+import { SearchButton } from "./search-button";
 
 interface SidebarContentProps {
   isCollapsed: boolean;
@@ -99,7 +99,7 @@ export function SidebarContent({ isCollapsed }: SidebarContentProps) {
               <PlusCircle size={16} />
             </div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent className="text-muted-foreground">
             <DropdownMenuGroup>
               <DropdownMenuItem
                 className="cursor-pointer"
@@ -118,12 +118,7 @@ export function SidebarContent({ isCollapsed }: SidebarContentProps) {
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Item
-          label="Search"
-          icon={Search}
-          isSearch
-          onClick={search.onOpen}
-        />
+        <SearchButton onClick={search.onOpen} />
         <DocumentsList />
       </div>
     </>

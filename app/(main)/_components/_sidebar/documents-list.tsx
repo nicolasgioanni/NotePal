@@ -6,10 +6,11 @@ import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { auth } from "@/firebase/config";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Item } from "../item";
 import { cn } from "@/lib/utils";
 import { FileIcon } from "lucide-react";
 import { Folder } from "@/models/folder";
+import { DocumentItem } from "./document-item";
+import { FolderItem } from "./folder-item";
 
 interface DocumentsListProps {
   parentFolderId?: string;
@@ -85,11 +86,11 @@ export const DocumentsList = ({
   if (isLoading) {
     return (
       <>
-        <Item.Skeleton level={level} />
+        <DocumentItem.Skeleton level={level} />
         {level === 0 && (
           <>
-            <Item.Skeleton level={level} />
-            <Item.Skeleton level={level} />
+            <DocumentItem.Skeleton level={level} />
+            <DocumentItem.Skeleton level={level} />
           </>
         )}
       </>
@@ -116,15 +117,12 @@ export const DocumentsList = ({
           key={folder.id}
           className="flex flex-col gap-y-2"
         >
-          <Item
-            key={folder.id}
-            id={folder.id}
-            onClick={() => {}}
+          <FolderItem
+            id={folder.id!}
             label={folder.title}
-            level={level}
-            onExpand={() => onExpand(folder.id)}
+            onClick={() => onExpand(folder.id)}
             expanded={expanded[folder.id!]}
-            isFolder
+            level={level}
           />
           <div className={cn("hidden", expanded[folder.id!] && "block")}>
             <DocumentsList
@@ -136,15 +134,12 @@ export const DocumentsList = ({
       ))}
       {documents.map((document) => (
         <div key={document.id}>
-          <Item
-            key={document.id}
-            id={document.id}
-            onClick={() => onRedirect(document.id)}
+          <DocumentItem
+            id={document.id as string}
             label={document.title}
-            documentIcon={document.icon}
+            onClick={() => onRedirect(document.id)}
             active={params.documentId === document.id}
             level={level}
-            isFile
           />
         </div>
       ))}

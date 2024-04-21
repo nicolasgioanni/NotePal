@@ -27,6 +27,7 @@ import { uploadFn } from "./image-upload";
 import { updateDoc, doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { Document } from "@/models/document";
+import { LoadingSkeleton } from "./loading-skeleton";
 
 const extensions = [...defaultExtensions, slashCommand];
 
@@ -82,7 +83,13 @@ const Editor = ({ docId }: EditorProps) => {
     500
   );
 
-  if (!content) return null;
+  if (!content) {
+    return (
+      <div className="px-8 sm:px-12 py-12">
+        <LoadingSkeleton />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">

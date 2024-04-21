@@ -1,9 +1,6 @@
-import { cn } from "@/lib/utils";
 import { SidebarControl } from "./sidebar-control";
 import { Separator } from "@/components/ui/separator";
 import { SidebarContent } from "./sidebar-content";
-import { Item } from "../item";
-import { PlusCircle } from "lucide-react";
 
 interface SidebarProps {
   isCollapsed: boolean;

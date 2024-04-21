@@ -13,7 +13,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { DefaultContent } from "./default-content";
 import { Sidebar } from "./_sidebar/sidebar";
 import { ChatBar } from "./_chat/chatbar";
-import { EditorContent } from "./editor-content";
+import { EditorContent } from "../(routes)/documents/[documentId]/_components/editor-content";
 import { useParams } from "next/navigation";
 import { Navbar } from "./_navbar/navbar";
 import { Separator } from "@/components/ui/separator";
@@ -96,10 +96,7 @@ export function MainView({
           </div>
         </ResizablePanel>
         <ResizableHandle />
-        <ResizablePanel defaultSize={60}>
-          <Navbar />
-          {children}
-        </ResizablePanel>
+        <ResizablePanel defaultSize={60}>{children}</ResizablePanel>
         <ResizableHandle />
         <ResizablePanel
           ref={chatRef}

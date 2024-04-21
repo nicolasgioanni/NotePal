@@ -8,7 +8,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useRouter } from "next/navigation";
 
 interface DeleteAlertDialogProps {
   open: boolean;
@@ -21,11 +20,9 @@ export function DeleteAlertDialog({
   onClose,
   onConfirm,
 }: DeleteAlertDialogProps) {
-  const router = useRouter();
-
   return (
     <AlertDialog open={open}>
-      <AlertDialogContent>
+      <AlertDialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>

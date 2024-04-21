@@ -61,7 +61,7 @@ export const Navbar = () => {
   if (!params.documentId) return null;
 
   return (
-    <div className="px-4 pt-5 pb-3">
+    <div className="px-4 pt-5 pb-3 sticky top-0 min-h-16">
       {document ? (
         <div className="flex justify-between items-center">
           <Title docId={params.documentId as string} />
