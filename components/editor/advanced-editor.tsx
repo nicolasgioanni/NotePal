@@ -57,7 +57,7 @@ const Editor = ({ docId }: EditorProps) => {
         }
       } else {
         console.log("No such document!");
-        setContent(defaultEditorContent); // Fallback content if document doesn't exist
+        setContent(null); // Fallback content if document doesn't exist
       }
     });
 

@@ -63,8 +63,10 @@ export const Navbar = () => {
   return (
     <div className="px-4 pt-5 pb-3 sticky top-0 min-h-16">
       {document ? (
-        <div className="flex justify-between items-center">
-          <Title docId={params.documentId as string} />
+        <div className="flex flex-row justify-between items-center">
+          <div className="truncate flex-1">
+            <Title docId={params.documentId as string} />
+          </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button

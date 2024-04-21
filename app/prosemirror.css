@@ -1,5 +1,5 @@
 .ProseMirror {
-  @apply py-12 px-8 sm:px-12;
+  @apply py-[25px] px-8 sm:px-12;
   overflow-wrap: break-word;
   word-break: break-word;
 }

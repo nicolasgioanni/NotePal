@@ -23,6 +23,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         let email = window.localStorage.getItem("emailForSignIn");
         if (!email) {
           email = window.prompt("Please provide your email for confirmation");
+          if (!email) setEmailLinkCheckDone(true);
         }
         signInWithEmailLink(
           auth,

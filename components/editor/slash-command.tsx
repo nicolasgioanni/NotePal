@@ -30,15 +30,7 @@ export const suggestionItems = createSuggestionItems([
         .run();
     },
   },
-  {
-    title: "To-do List",
-    description: "Track tasks with a to-do list.",
-    searchTerms: ["todo", "task", "list", "check", "checkbox"],
-    icon: <CheckSquare size={18} />,
-    command: ({ editor, range }) => {
-      editor.chain().focus().deleteRange(range).toggleTaskList().run();
-    },
-  },
+
   {
     title: "Heading 1",
     description: "Big section heading.",
@@ -97,6 +89,15 @@ export const suggestionItems = createSuggestionItems([
     icon: <ListOrdered size={18} />,
     command: ({ editor, range }) => {
       editor.chain().focus().deleteRange(range).toggleOrderedList().run();
+    },
+  },
+  {
+    title: "To-do List",
+    description: "Track tasks with a to-do list.",
+    searchTerms: ["todo", "task", "list", "check", "checkbox"],
+    icon: <CheckSquare size={18} />,
+    command: ({ editor, range }) => {
+      editor.chain().focus().deleteRange(range).toggleTaskList().run();
     },
   },
   {
