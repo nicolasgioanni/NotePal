@@ -10,13 +10,9 @@ import {
 import { ImperativePanelHandle } from "react-resizable-panels";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { DefaultContent } from "./default-content";
 import { Sidebar } from "./_sidebar/sidebar";
 import { ChatBar } from "./_chat/chatbar";
-import { EditorContent } from "../(routes)/documents/[documentId]/_components/editor-content";
 import { useParams } from "next/navigation";
-import { Navbar } from "./_navbar/navbar";
-import { Separator } from "@/components/ui/separator";
 
 interface MainViewProps {
   defaultNavCollapsed?: boolean;

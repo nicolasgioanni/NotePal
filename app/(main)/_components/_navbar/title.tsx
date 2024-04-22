@@ -7,18 +7,18 @@ import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
 
 interface TitleProps {
-  docId: string;
+  initialData: Document;
 }
 
-export const Title = ({ docId }: TitleProps) => {
+export const Title = ({ initialData }: TitleProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState("");
   const [document, setDocument] = useState<Document>();
 
   useEffect(() => {
-    if (docId) {
-      const docRef = doc(db, "documents", docId as string);
+    if (initialData.id) {
+      const docRef = doc(db, "documents", initialData.id);
       const unsubscribe = onSnapshot(docRef, (docSnap) => {
         if (docSnap.exists()) {
           setDocument(docSnap.data() as Document);
@@ -31,13 +31,16 @@ export const Title = ({ docId }: TitleProps) => {
 
       return () => unsubscribe(); // Cleanup the listener when the component unmounts or the documentId changes
     }
-  }, [docId]);
+  }, [initialData]);
 
   const setDocumentTitle = async (title: string) => {
+    if (!initialData.id) return;
     if (title.trim() === "") title = "Untitled";
-    updateDoc(doc(db, "documents", docId), { title: title }).catch((error) => {
-      console.error("Error updating document title: ", error);
-    });
+    updateDoc(doc(db, "documents", initialData.id), { title: title }).catch(
+      (error) => {
+        console.error("Error updating document title: ", error);
+      }
+    );
   };
 
   const enableInput = () => {

@@ -27,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Actions } from "./actions";
 
 export const Navbar = () => {
   const params = useParams();
@@ -47,7 +48,10 @@ export const Navbar = () => {
       const docRef = doc(db, "documents", params.documentId as string);
       const unsubscribe = onSnapshot(docRef, (docSnap) => {
         if (docSnap.exists()) {
-          setDocument(docSnap.data() as Document);
+          setDocument({
+            id: docSnap.id,
+            ...docSnap.data(),
+          } as Document);
         } else {
           // If the document does not exist, redirect to the documents page
           router.push("/documents");
@@ -65,38 +69,11 @@ export const Navbar = () => {
       {document ? (
         <div className="flex flex-row justify-between items-center">
           <div className="truncate flex-1">
-            <Title docId={params.documentId as string} />
+            <Title initialData={document} />
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="hug"
-                className="p-1 focus:outline-none ml-3"
-              >
-                <MoreHorizontal className="h-5 w-5 text-muted-foreground" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              side="bottom"
-            >
-              <DropdownMenuGroup>
-                <DropdownMenuItem className="cursor-pointer group/delete">
-                  <div className="text-muted-foreground flex items-center">
-                    <Share className="h-4 w-4 mr-2" />
-                    <span>Share</span>
-                  </div>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
-                  <div className="text-muted-foreground flex items-center">
-                    <Download className="h-4 w-4 mr-2" />
-                    <span>Download PDF</span>
-                  </div>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div>
+            <Actions initialData={document} />
+          </div>
         </div>
       ) : (
         <Skeleton className="w-full h-8" />
