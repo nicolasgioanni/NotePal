@@ -7,8 +7,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Scroll } from "lucide-react";
 
 const DocumentIdPage = () => {
-  const params = useParams();
-
   return (
     <>
       <EditorContent />

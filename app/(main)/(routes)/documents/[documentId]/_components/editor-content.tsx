@@ -1,27 +1,37 @@
 "use client";
 
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase/config";
 import Editor from "@/components/editor/advanced-editor";
-
-import { DefaultContent } from "../../../../_components/default-content";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
-import { Document } from "@/models/document";
-import { useEffect, useState } from "react";
 import { DocTitle } from "./doc-title";
+import { useDocumentById } from "@/hooks/use-document-by-id";
+import { LoadingSkeleton } from "./loading-skeleton";
 
 export function EditorContent() {
-  const [user, loading, error] = useAuthState(auth);
-  const [document, setDocument] = useState<Document>();
   const params = useParams();
+  const { document, isLoading, error } = useDocumentById(
+    params.documentId as string
+  );
+
+  if (isLoading) {
+    return (
+      <div className="px-8 sm:px-12 pt-12">
+        <LoadingSkeleton />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>Oops, something went wrong</div>;
+  }
+
+  if (!document) {
+    return <div>Document does not exist</div>;
+  }
 
   return (
     <div>
-      <DocTitle documentId={params.documentId as string} />
-      <Editor docId={params.documentId as string} />
+      <DocTitle initialData={document} />
+      <Editor initialData={document} />
     </div>
   );
 }

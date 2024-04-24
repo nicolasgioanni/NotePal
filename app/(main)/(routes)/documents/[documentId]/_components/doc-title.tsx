@@ -3,51 +3,38 @@
 import { useState, useRef, useEffect } from "react";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
-import { Document } from "@/models/document";
+import { Document } from "@/models/types";
 import TextareaAutosize from "react-textarea-autosize";
-import { Skeleton } from "@/components/ui/skeleton";
+import { updateDocument } from "@/firebase/firestoreService";
 
 interface DocTitleProps {
-  documentId: string;
+  initialData: Document;
 }
 
-export const DocTitle = ({ documentId }: DocTitleProps) => {
+export const DocTitle = ({ initialData }: DocTitleProps) => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [title, setTitle] = useState("");
-  const [document, setDocument] = useState<Document>();
-  const [isLoading, setIsLoading] = useState(true);
+  const [title, setTitle] = useState(initialData.title);
 
   useEffect(() => {
-    if (documentId) {
-      const docRef = doc(db, "documents", documentId);
-      const unsubscribe = onSnapshot(docRef, (docSnap) => {
-        if (docSnap.exists()) {
-          setDocument(docSnap.data() as Document);
-          setTitle(docSnap.data().title);
-          setIsLoading(false);
-        } else {
-          console.log("Document does not exist");
-        }
-      });
-
-      return () => unsubscribe(); // Cleanup the listener when the component unmounts or the documentId changes
-    }
-  }, [documentId]);
+    setTitle(initialData.title);
+  }, [initialData]);
 
   const setDocumentTitle = async (title: string) => {
+    if (!initialData.id) return;
     if (title.trim() === "") title = "Untitled";
-    updateDoc(doc(db, "documents", documentId), { title: title }).catch(
-      (error) => {
-        console.error("Error updating document title: ", error);
-      }
-    );
+    setTitle(title);
+
+    await updateDocument(initialData.id, { title: title }).catch((error) => {
+      console.error("Error updating document title: ", error);
+      setTitle(initialData.title);
+    });
   };
 
   const enableInput = () => {
     setIsEditing(true);
-    setTitle(document?.title || "");
     setTimeout(() => {
+      setTitle(initialData.title);
       inputRef.current?.focus();
       inputRef.current?.setSelectionRange(0, inputRef.current.value.length);
     }, 0);
@@ -64,19 +51,15 @@ export const DocTitle = ({ documentId }: DocTitleProps) => {
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       disableInput();
     }
     if (e.key === "Escape") {
+      e.preventDefault();
+      setTitle(initialData.title == "" ? "Untitled" : initialData.title);
       setIsEditing(false);
     }
   };
-
-  if (isLoading)
-    return (
-      <div className="px-8 sm:px-12 pt-12">
-        <Skeleton className="h-[60px] w-1/2 rounded-3xl" />
-      </div>
-    );
 
   return (
     <div className="text-[40px] font-extrabold flex justify-start px-8 sm:px-12 pt-12 min-h-[92px]">

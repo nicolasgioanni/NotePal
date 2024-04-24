@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import {
   ChevronDown,
   ChevronRight,
+  FilePlus,
   FolderPlus,
   MoreHorizontal,
   Plus,
@@ -30,10 +31,10 @@ import {
   where,
 } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
+import { deleteFolder } from "@/firebase/firestoreService";
 import { toast } from "sonner";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Folder } from "@/models/folder";
-import { Document } from "@/models/document";
+import { Document, Folder } from "@/models/types";
 import { defaultEditorContent } from "@/lib/content";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -65,39 +66,6 @@ export const FolderItem = ({
   };
 
   const handleDelete = async (id: string) => {
-    if (!user) return;
-    const deleteFolder = async (id: string) => {
-      const deleteDocument = async (documentId: string) => {
-        const docRef = doc(db, "documents", documentId);
-        return deleteDoc(docRef); // Use deleteDoc to remove the document
-      };
-      const folderRef = doc(db, "folders", id);
-      await deleteDoc(folderRef); // Delete the folder itself
-
-      // Recursively delete all contents
-      const subFoldersQuery = query(
-        collection(db, "folders"),
-        where("parentFolderId", "==", id),
-        where("userId", "==", user.uid)
-      );
-      const subFoldersSnapshot = await getDocs(subFoldersQuery);
-
-      for (const doc of subFoldersSnapshot.docs) {
-        await deleteFolder(doc.id); // Recursive call
-      }
-
-      const documentsQuery = query(
-        collection(db, "documents"),
-        where("parentFolderId", "==", id),
-        where("userId", "==", user.uid)
-      );
-      const documentsSnapshot = await getDocs(documentsQuery);
-
-      for (const doc of documentsSnapshot.docs) {
-        await deleteDocument(doc.id);
-      }
-    };
-
     toast.promise(deleteFolder(id), {
       loading: "Deleting folder...",
       success: "Folder deleted!",
@@ -191,7 +159,7 @@ export const FolderItem = ({
                   className="cursor-pointer"
                   onClick={handleCreateDocument}
                 >
-                  <FolderPlus className="mr-2 h-4 w-4" />
+                  <FilePlus className="mr-2 h-4 w-4" />
                   <span>Blank Document</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem

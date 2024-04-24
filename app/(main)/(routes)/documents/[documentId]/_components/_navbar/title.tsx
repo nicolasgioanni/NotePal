@@ -1,10 +1,11 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Document } from "@/models/document";
+import { Document } from "@/models/types";
 import { useEffect, useRef, useState } from "react";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
+import { updateDocument } from "@/firebase/firestoreService";
 
 interface TitleProps {
   initialData: Document;
@@ -14,39 +15,26 @@ export const Title = ({ initialData }: TitleProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState("");
-  const [document, setDocument] = useState<Document>();
 
   useEffect(() => {
-    if (initialData.id) {
-      const docRef = doc(db, "documents", initialData.id);
-      const unsubscribe = onSnapshot(docRef, (docSnap) => {
-        if (docSnap.exists()) {
-          setDocument(docSnap.data() as Document);
-          setTitle(docSnap.data().title);
-        } else {
-          console.log("Document does not exist");
-          setTitle("Untitled");
-        }
-      });
-
-      return () => unsubscribe(); // Cleanup the listener when the component unmounts or the documentId changes
-    }
+    setTitle(initialData.title);
   }, [initialData]);
 
   const setDocumentTitle = async (title: string) => {
     if (!initialData.id) return;
     if (title.trim() === "") title = "Untitled";
-    updateDoc(doc(db, "documents", initialData.id), { title: title }).catch(
-      (error) => {
-        console.error("Error updating document title: ", error);
-      }
-    );
+    setTitle(title);
+
+    await updateDocument(initialData.id, { title: title }).catch((error) => {
+      console.error("Error updating document title: ", error);
+      setTitle(initialData.title);
+    });
   };
 
   const enableInput = () => {
     setIsEditing(true);
-    setTitle(document?.title || "");
     setTimeout(() => {
+      setTitle(initialData.title);
       inputRef.current?.focus();
       inputRef.current?.setSelectionRange(0, inputRef.current.value.length);
     }, 0);
@@ -63,9 +51,12 @@ export const Title = ({ initialData }: TitleProps) => {
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       disableInput();
     }
     if (e.key === "Escape") {
+      e.preventDefault();
+      setTitle(initialData.title == "" ? "Untitled" : initialData.title);
       setIsEditing(false);
     }
   };

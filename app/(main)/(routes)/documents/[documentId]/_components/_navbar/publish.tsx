@@ -1,6 +1,6 @@
 "use client";
 
-import { Document } from "@/models/document";
+import { Document } from "@/models/types";
 import {
   PopoverTrigger,
   Popover,
@@ -80,6 +80,7 @@ export const Publish = ({ initialData }: PublishProps) => {
         <Button
           size="sm"
           variant="ghost"
+          className="max-h-8"
         >
           Publish
           {initialData.isPublished && (

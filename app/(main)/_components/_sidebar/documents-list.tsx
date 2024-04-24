@@ -1,5 +1,5 @@
 "use client";
-import { Document } from "@/models/document";
+import { Document, Folder } from "@/models/types";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
@@ -8,9 +8,10 @@ import { auth } from "@/firebase/config";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { cn } from "@/lib/utils";
 import { FileIcon } from "lucide-react";
-import { Folder } from "@/models/folder";
 import { DocumentItem } from "./document-item";
 import { FolderItem } from "./folder-item";
+import { useDocuments } from "@/hooks/use-documents";
+import { useFolders } from "@/hooks/use-folders";
 
 interface DocumentsListProps {
   parentFolderId?: string;
@@ -24,12 +25,18 @@ export const DocumentsList = ({
 }: DocumentsListProps) => {
   const params = useParams();
   const router = useRouter();
-  const [user, loading, error] = useAuthState(auth);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-  const [documents, setDocuments] = useState<Document[]>([]);
-  const [folders, setFolders] = useState<Folder[]>([]);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const {
+    documents,
+    isLoading: documentsLoading,
+    error: documentsError,
+  } = useDocuments(parentFolderId);
+  const {
+    folders,
+    isLoading: foldersLoading,
+    error: foldersError,
+  } = useFolders(parentFolderId);
 
   const onExpand = (id?: string) => {
     if (!id) return;
@@ -45,45 +52,7 @@ export const DocumentsList = ({
     router.push(`/documents/${documentId}`);
   };
 
-  useEffect(() => {
-    if (loading || !user) return;
-
-    // Query for documents
-    const docQuery = query(
-      collection(db, "documents"),
-      where("userId", "==", user.uid),
-      where("parentFolderId", "==", parentFolderId || null) // Handle root-level documents
-    );
-
-    // Query for folders
-    const folderQuery = query(
-      collection(db, "folders"),
-      where("userId", "==", user.uid),
-      where("parentFolderId", "==", parentFolderId || null) // Handle root-level folders
-    );
-
-    const unsubscribeDocuments = onSnapshot(docQuery, (querySnapshot) => {
-      const loadedDocuments = querySnapshot.docs.map(
-        (doc) => ({ id: doc.id, ...doc.data() } as Document)
-      );
-      setDocuments(loadedDocuments);
-    });
-
-    const unsubscribeFolders = onSnapshot(folderQuery, (querySnapshot) => {
-      const loadedFolders = querySnapshot.docs.map(
-        (doc) => ({ id: doc.id, ...doc.data() } as Folder)
-      );
-      setFolders(loadedFolders);
-      setIsLoading(false);
-    });
-
-    return () => {
-      unsubscribeDocuments();
-      unsubscribeFolders();
-    };
-  }, [user, loading, parentFolderId]);
-
-  if (isLoading) {
+  if (documentsLoading || foldersLoading) {
     return (
       <>
         <DocumentItem.Skeleton level={level} />

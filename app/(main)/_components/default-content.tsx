@@ -7,7 +7,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/config";
 import { doc, setDoc, collection } from "firebase/firestore";
 import { db } from "@/firebase/config";
-import { Document } from "@/models/document";
+import { Document } from "@/models/types";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";

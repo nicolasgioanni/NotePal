@@ -8,7 +8,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Download, MoreHorizontal, Share } from "lucide-react";
 import { Publish } from "./publish";
-import { Document } from "@/models/document";
+import { Document } from "@/models/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ActionsProps {
   initialData: Document;
@@ -16,16 +17,16 @@ interface ActionsProps {
 
 export const Actions = ({ initialData }: ActionsProps) => {
   return (
-    <div className="flex items-center gap-x-2">
+    <div className="flex items-center gap-x-2 max-h-8">
       <Publish initialData={initialData} />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
             size="hug"
-            className="p-1 focus:outline-none ml-3"
+            className="p-1 focus:outline-none max-h-8"
           >
-            <MoreHorizontal className="h-5 w-5 text-muted-foreground" />
+            <MoreHorizontal className="h-5 w-5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent

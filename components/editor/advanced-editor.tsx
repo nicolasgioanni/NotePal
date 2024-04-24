@@ -26,16 +26,17 @@ import { handleImageDrop, handleImagePaste } from "novel/plugins";
 import { uploadFn } from "./image-upload";
 import { updateDoc, doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase/config";
-import { Document } from "@/models/document";
+import { Document } from "@/models/types";
 import { LoadingSkeleton } from "./loading-skeleton";
+import { updateDocument } from "@/firebase/firestoreService";
 
 const extensions = [...defaultExtensions, slashCommand];
 
 interface EditorProps {
-  docId: string;
+  initialData: Document;
 }
 
-const Editor = ({ docId }: EditorProps) => {
+const Editor = ({ initialData }: EditorProps) => {
   const [content, setContent] = useState<JSONContent | null>(null);
   const [saveStatus, setSaveStatus] = useState("Saved");
 
@@ -45,31 +46,19 @@ const Editor = ({ docId }: EditorProps) => {
   const [openAI, setOpenAI] = useState(false);
 
   useEffect(() => {
-    const docRef = doc(db, "documents", docId);
-    const unsubscribe = onSnapshot(docRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.data() as Document;
-        if (data.content) {
-          setContent(data.content);
-        } else {
-          console.log("Document does not contain valid JSONContent");
-          setContent(defaultEditorContent);
-        }
-      } else {
-        console.log("No such document!");
-        setContent(null); // Fallback content if document doesn't exist
-      }
-    });
-
-    return () => unsubscribe(); // Cleanup the subscription
-  }, [docId]);
+    if (initialData.content) {
+      setContent(initialData.content);
+    } else {
+      setContent(defaultEditorContent);
+    }
+  }, [initialData]);
 
   const debouncedUpdates = useDebouncedCallback(
     async (editor: EditorInstance) => {
       const json = editor.getJSON();
-      const docRef = doc(db, "documents", docId);
       // Save the content to firebase here
-      await updateDoc(docRef, { content: json })
+      if (!initialData.id) return;
+      await updateDocument(initialData.id, { content: json })
         .then(() => {
           setSaveStatus("Saved");
         })
