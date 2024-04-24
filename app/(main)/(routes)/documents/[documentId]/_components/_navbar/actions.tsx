@@ -17,14 +17,14 @@ interface ActionsProps {
 
 export const Actions = ({ initialData }: ActionsProps) => {
   return (
-    <div className="flex items-center gap-x-2 max-h-8">
+    <div className="flex items-center gap-x-2 max-h-8 ml-2">
       <Publish initialData={initialData} />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
             size="hug"
-            className="p-1 focus:outline-none max-h-8"
+            className="p-1 focus:outline-none max-h-8 rounded-md"
           >
             <MoreHorizontal className="h-5 w-5" />
           </Button>

@@ -10,8 +10,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { auth } from "@/firebase/config";
-import { Document } from "@/models/document";
-import { Folder } from "@/models/folder";
+import { Document, Folder } from "@/models/types";
 import { FilePlus, FolderPlus, PlusCircle, Search, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
