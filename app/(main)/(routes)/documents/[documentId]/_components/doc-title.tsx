@@ -6,6 +6,7 @@ import { db } from "@/firebase/config";
 import { Document } from "@/models/types";
 import TextareaAutosize from "react-textarea-autosize";
 import { updateDocument } from "@/firebase/firestoreService";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface DocTitleProps {
   initialData: Document;
@@ -82,4 +83,8 @@ export const DocTitle = ({ initialData }: DocTitleProps) => {
       )}
     </div>
   );
+};
+
+DocTitle.Skeleton = function DocTitleSkeleton() {
+  return <Skeleton className="w-1/2 h-[60px] rounded-2xl" />;
 };

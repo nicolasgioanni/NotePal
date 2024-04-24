@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { DocTitle } from "./doc-title";
 import { useDocumentById } from "@/hooks/use-document-by-id";
 import { LoadingSkeleton } from "./loading-skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function EditorContent() {
   const params = useParams();
@@ -35,3 +36,14 @@ export function EditorContent() {
     </div>
   );
 }
+
+EditorContent.Skeleton = function EditorContentSkeleton() {
+  return (
+    <div className="pt-[25px] flex flex-col gap-y-6">
+      <Skeleton className="w-full h-8 rounded-2xl" />
+      <Skeleton className="w-10/12 h-8 rounded-2xl" />
+      <Skeleton className="w-11/12 h-8 rounded-2xl" />
+      <Skeleton className="w-8/12 h-8 rounded-2xl" />
+    </div>
+  );
+};

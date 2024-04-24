@@ -1,5 +1,11 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { DocTitle } from "./doc-title";
+import { EditorContent } from "./editor-content";
 
 export const LoadingSkeleton = () => {
-  return <Skeleton className="w-1/2 h-[60px]" />;
+  return (
+    <>
+      <DocTitle.Skeleton />
+      <EditorContent.Skeleton />
+    </>
+  );
 };
