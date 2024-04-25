@@ -21,21 +21,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { DeleteAlertDialog } from "../delete-alert-dialog";
 import { useState } from "react";
+import { auth } from "@/firebase/config";
 import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where,
-} from "firebase/firestore";
-import { auth, db } from "@/firebase/config";
-import { deleteFolder } from "@/firebase/firestoreService";
+  createDocument,
+  createFolder,
+  deleteFolder,
+} from "@/firebase/firestoreService";
 import { toast } from "sonner";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Document, Folder } from "@/models/types";
-import { defaultEditorContent } from "@/lib/content";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -76,18 +69,15 @@ export const FolderItem = ({
   const handleCreateFolder = () => {
     if (!user) return;
 
-    const newFolder: Folder = {
-      title: "Untitled",
-      userId: user.uid,
-      parentFolderId: id,
-    };
-
-    const docRef = doc(collection(db, "folders"));
-    const promise = setDoc(docRef, newFolder).then(() => {
-      if (!expanded) {
-        onClick?.();
-      }
-    });
+    const promise = createFolder({ parentFolderId: id })
+      .then(() => {
+        if (!expanded) {
+          onClick?.();
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 
     toast.promise(promise, {
       loading: "Creating a new folder...",
@@ -99,21 +89,16 @@ export const FolderItem = ({
   const handleCreateDocument = () => {
     if (!user) return;
 
-    const newDocument: Document = {
-      title: "Untitled",
-      userId: user.uid,
-      content: defaultEditorContent,
-      isPublished: false,
-      parentFolderId: id,
-    };
-
-    const docRef = doc(collection(db, "documents"));
-    const promise = setDoc(docRef, newDocument).then(() => {
-      if (!expanded) {
-        onClick?.();
-      }
-      router.push(`/documents/${docRef.id}`);
-    });
+    const promise = createDocument({ parentFolderId: id })
+      .then((docId) => {
+        if (!expanded) {
+          onClick?.();
+        }
+        router.push(`/documents/${docId}`);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 
     toast.promise(promise, {
       loading: "Creating a new note...",
@@ -143,7 +128,7 @@ export const FolderItem = ({
               <Button
                 size="hug"
                 variant="ghost"
-                className="opacity-0 group-hover:opacity-100 transition hover:bg-foreground/15 p-[1px]"
+                className="opacity-0 group-hover:opacity-100 transition hover:bg-foreground/15 p-[1px] rounded-sm"
               >
                 <Plus className="h-4 w-4 text-muted-foreground" />
               </Button>
@@ -179,7 +164,7 @@ export const FolderItem = ({
               <Button
                 size="hug"
                 variant="ghost"
-                className="opacity-0 group-hover:opacity-100 transition hover:bg-foreground/15 p-[1px]"
+                className="opacity-0 group-hover:opacity-100 transition hover:bg-foreground/15 p-[1px] rounded-sm"
               >
                 <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
               </Button>

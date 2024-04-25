@@ -35,7 +35,7 @@ interface FolderUpdateData {
 }
 
 interface FolderCreateData {
-  title: string;
+  title?: string;
   parentFolderId?: string | null;
 }
 

@@ -16,6 +16,7 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { deleteDocument } from "@/firebase/firestoreService";
 
 interface DocumentItemProps {
   id: string;
@@ -41,11 +42,7 @@ export const DocumentItem = ({
   };
 
   const handleDelete = async () => {
-    const deleteDocument = async () => {
-      const docRef = doc(db, "documents", id);
-      return deleteDoc(docRef);
-    };
-    toast.promise(deleteDocument, {
+    toast.promise(deleteDocument(id), {
       loading: "Deleting document...",
       success: "Document deleted!",
       error: "Failed to delete document.",
@@ -74,7 +71,7 @@ export const DocumentItem = ({
               <Button
                 size="hug"
                 variant="ghost"
-                className="opacity-0 group-hover:opacity-100 transition hover:bg-foreground/15 p-[1px]"
+                className="opacity-0 group-hover:opacity-100 transition hover:bg-foreground/15 p-[1px] rounded-sm"
               >
                 <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
               </Button>

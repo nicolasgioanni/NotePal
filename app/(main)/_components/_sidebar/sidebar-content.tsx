@@ -33,6 +33,7 @@ import { useSearch } from "@/hooks/use-search";
 import { useRouter } from "next/navigation";
 import { defaultEditorContent } from "@/lib/content";
 import { SearchButton } from "./search-button";
+import { createDocument, createFolder } from "@/firebase/firestoreService";
 
 interface SidebarContentProps {
   isCollapsed: boolean;
@@ -46,18 +47,13 @@ export function SidebarContent({ isCollapsed }: SidebarContentProps) {
   const handleCreateDocument = () => {
     if (!user) return;
 
-    const newDocument: Document = {
-      title: "Untitled",
-      userId: user.uid,
-      content: defaultEditorContent,
-      isPublished: false,
-      parentFolderId: null,
-    };
-
-    const docRef = doc(collection(db, "documents"));
-    const promise = setDoc(docRef, newDocument).then(() => {
-      router.push(`/documents/${docRef.id}`);
-    });
+    const promise = createDocument()
+      .then((docId) => {
+        router.push(`/documents/${docId}`);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 
     toast.promise(promise, {
       loading: "Creating a new note...",
@@ -69,14 +65,9 @@ export function SidebarContent({ isCollapsed }: SidebarContentProps) {
   const handleCreateFolder = () => {
     if (!user) return;
 
-    const newFolder: Folder = {
-      title: "Untitled",
-      userId: user.uid,
-      parentFolderId: null,
-    };
-
-    const docRef = doc(collection(db, "folders"));
-    const promise = setDoc(docRef, newFolder);
+    const promise = createFolder().catch((error) => {
+      console.error(error);
+    });
 
     toast.promise(promise, {
       loading: "Creating a new folder...",

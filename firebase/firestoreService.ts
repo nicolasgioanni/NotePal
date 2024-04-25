@@ -1,4 +1,3 @@
-// src/firebase/firestoreService.ts
 import { auth, db } from "@/firebase/config";
 import {
   doc,
@@ -50,7 +49,7 @@ export const updateDocument = async (
   await updateDoc(docRef, { ...data });
 };
 
-export const createDocument = async (data: DocumentCreateData) => {
+export const createDocument = async (data?: DocumentCreateData) => {
   const user = auth.currentUser;
   if (!user) throw new Error("Authentication required to create documents.");
 
@@ -89,7 +88,7 @@ export const updateFolder = async (
   await updateDoc(docRef, { ...data });
 };
 
-export const createFolder = async (data: FolderCreateData) => {
+export const createFolder = async (data?: FolderCreateData) => {
   const user = auth.currentUser;
   if (!user) throw new Error("Authentication required to create folders.");
 
@@ -105,37 +104,46 @@ export const createFolder = async (data: FolderCreateData) => {
   return docRef.id;
 };
 
-export const deleteFolder = async (folderId: string) => {
+export const deleteFolder = async (folderId: string): Promise<void> => {
   if (!(await checkUserMatch(folderId, "folders"))) {
     throw new Error("Unauthorized to delete this folder");
   }
 
-  const deleteDocument = async (documentId: string) => {
-    const docRef = doc(db, "documents", documentId);
-    return deleteDoc(docRef); // Use deleteDoc to remove the document
+  const batch = writeBatch(db);
+
+  const recursiveDelete = async (folderId: string) => {
+    // Handle subfolders
+    const subFoldersQuery = query(
+      collection(db, "folders"),
+      where("userId", "==", auth.currentUser?.uid),
+      where("parentFolderId", "==", folderId)
+    );
+    const subFoldersSnapshot = await getDocs(subFoldersQuery);
+    for (const folderDoc of subFoldersSnapshot.docs) {
+      await recursiveDelete(folderDoc.id); // Recursive call for subfolders
+      batch.delete(folderDoc.ref);
+    }
+
+    // Handle documents in the folder
+    const documentsQuery = query(
+      collection(db, "documents"),
+      where("userId", "==", auth.currentUser?.uid),
+      where("parentFolderId", "==", folderId)
+    );
+    const documentsSnapshot = await getDocs(documentsQuery);
+    documentsSnapshot.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+
+    // Finally delete the folder itself
+    const folderRef = doc(db, "folders", folderId);
+    batch.delete(folderRef);
   };
 
-  const folderRef = doc(db, "folders", folderId);
-  await deleteDoc(folderRef); // Delete the folder itself
-
-  // Recursively delete all contents
-  const subFoldersQuery = query(
-    collection(db, "folders"),
-    where("parentFolderId", "==", folderId)
-  );
-  const subFoldersSnapshot = await getDocs(subFoldersQuery);
-
-  for (const doc of subFoldersSnapshot.docs) {
-    await deleteFolder(doc.id); // Recursive call
-  }
-
-  const documentsQuery = query(
-    collection(db, "documents"),
-    where("parentFolderId", "==", folderId)
-  );
-  const documentsSnapshot = await getDocs(documentsQuery);
-
-  for (const doc of documentsSnapshot.docs) {
-    await deleteDocument(doc.id);
-  }
+  await recursiveDelete(folderId);
+  await batch.commit().catch((error) => {
+    throw new Error(
+      "Failed to delete folder and its contents: " + error.message
+    );
+  });
 };

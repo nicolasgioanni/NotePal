@@ -101,7 +101,7 @@ export function SidebarControl({
                           {user
                             ? user.displayName
                               ? user.displayName
-                              : user.email
+                              : user.email?.split("@")[0]
                             : "User"}
                           &apos;s NotePal
                         </div>
@@ -119,7 +119,7 @@ export function SidebarControl({
                         {user
                           ? user.displayName
                             ? user.displayName
-                            : user.email
+                            : user.email?.split("@")[0]
                           : "User"}
                         &apos;s NotePal
                       </span>

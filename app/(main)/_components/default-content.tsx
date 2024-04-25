@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { defaultEditorContent } from "@/lib/content";
+import { createDocument } from "@/firebase/firestoreService";
 
 export function DefaultContent() {
   const [user, loading, error] = useAuthState(auth);
@@ -20,18 +21,13 @@ export function DefaultContent() {
   const handleCreateDocument = () => {
     if (!user) return;
 
-    const newDocument: Document = {
-      title: "Untitled",
-      userId: user.uid,
-      content: defaultEditorContent,
-      isPublished: false,
-      parentFolderId: null,
-    };
-
-    const docRef = doc(collection(db, "documents"));
-    const promise = setDoc(docRef, newDocument).then(() => {
-      router.push(`/documents/${docRef.id}`);
-    });
+    const promise = createDocument()
+      .then((docId) => {
+        router.push(`/documents/${docId}`);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 
     toast.promise(promise, {
       loading: "Creating a new note...",
@@ -60,8 +56,9 @@ export function DefaultContent() {
         {loading ? <Skeleton className="w-72 h-7" /> : null}
         {user ? (
           <>
-            Welcome to {user.displayName ? user.displayName : user.email}
-            &apos; NotePal
+            Welcome to{" "}
+            {user.displayName ? user.displayName : user.email?.split("@")[0]}
+            &apos;s NotePal
           </>
         ) : null}
       </h2>
