@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Document } from "@/models/types";
 import { useEffect, useRef, useState } from "react";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { db } from "@/firebase/config";
-import { updateDocument } from "@/firebase/firestoreService";
+import { db } from "@/db/firebase/config";
+import { updateDocument } from "@/db/firebase/document";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface TitleProps {
   initialData: Document;

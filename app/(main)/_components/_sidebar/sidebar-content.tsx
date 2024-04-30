@@ -8,8 +8,8 @@ import {
   doc,
   setDoc,
 } from "firebase/firestore";
-import { db } from "@/firebase/config";
-import { auth } from "@/firebase/config";
+import { db } from "@/db/firebase/config";
+import { auth } from "@/db/firebase/config";
 import { Document, Folder } from "@/models/types";
 import { FilePlus, FolderPlus, PlusCircle, Search, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,20 +33,18 @@ import { useSearch } from "@/hooks/use-search";
 import { useRouter } from "next/navigation";
 import { defaultEditorContent } from "@/lib/content";
 import { SearchButton } from "./search-button";
-import { createDocument, createFolder } from "@/firebase/firestoreService";
+import { createFolder } from "@/db/firebase/folder";
+import { createDocument } from "@/db/firebase/document";
 
 interface SidebarContentProps {
   isCollapsed: boolean;
 }
 
 export function SidebarContent({ isCollapsed }: SidebarContentProps) {
-  const [user, loading, error] = useAuthState(auth);
   const search = useSearch();
   const router = useRouter();
 
-  const handleCreateDocument = () => {
-    if (!user) return;
-
+  const handleCreateDocument = async () => {
     const promise = createDocument()
       .then((docId) => {
         router.push(`/documents/${docId}`);
@@ -63,8 +61,6 @@ export function SidebarContent({ isCollapsed }: SidebarContentProps) {
   };
 
   const handleCreateFolder = () => {
-    if (!user) return;
-
     const promise = createFolder().catch((error) => {
       console.error(error);
     });

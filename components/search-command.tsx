@@ -15,40 +15,19 @@ import {
 } from "@/components/ui/command";
 
 import { useSearch } from "@/hooks/use-search";
-import { auth, db } from "@/firebase/config";
+import { auth, db } from "@/db/firebase/config";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
-import { Document } from "@/models/document";
+import { Document } from "@/models/types";
+import { useAllDocuments } from "@/hooks/use-documents-by-user";
 
 export const SearchCommand = () => {
-  const [user, loading, error] = useAuthState(auth);
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
-  const [documents, setDocuments] = useState<Document[]>([]);
+  const { documents, isLoading, error } = useAllDocuments();
 
   const toggle = useSearch((store) => store.toggle);
   const isOpen = useSearch((store) => store.isOpen);
   const onClose = useSearch((store) => store.onClose);
-
-  useEffect(() => {
-    if (loading || !user) return;
-
-    // Query for documents
-    const docQuery = query(
-      collection(db, "documents"),
-      where("userId", "==", user.uid)
-    );
-
-    const unsubscribeDocuments = onSnapshot(docQuery, (querySnapshot) => {
-      const loadedDocuments = querySnapshot.docs.map(
-        (doc) => ({ id: doc.id, ...doc.data() } as Document)
-      );
-      setDocuments(loadedDocuments);
-    });
-
-    return () => {
-      unsubscribeDocuments();
-    };
-  }, [user, loading]);
 
   useEffect(() => {
     setIsMounted(true);

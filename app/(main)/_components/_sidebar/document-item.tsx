@@ -12,11 +12,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { DeleteAlertDialog } from "../delete-alert-dialog";
 import { useState } from "react";
-import { deleteDoc, doc } from "firebase/firestore";
-import { db } from "@/firebase/config";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
-import { deleteDocument } from "@/firebase/firestoreService";
+import { deleteDocument } from "@/db/firebase/document";
 
 interface DocumentItemProps {
   id: string;

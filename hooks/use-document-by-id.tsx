@@ -1,26 +1,27 @@
 // src/hooks/useRealTimeDocuments.ts
 import { useEffect, useState } from "react";
 import { collection, query, where, onSnapshot, doc } from "firebase/firestore";
-import { db } from "@/firebase/config";
+import { db } from "@/db/firebase/config";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase/config";
+import { auth } from "@/db/firebase/config";
 import { Document } from "@/models/types";
+import { useCurrentUser } from "./use-current-user";
 
 export const useDocumentById = (documentId: string) => {
-  const [user, loading, authError] = useAuthState(auth);
+  const user = useCurrentUser();
   const [document, setDocument] = useState<Document>();
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | undefined>(authError);
+  const [error, setError] = useState<Error | undefined>();
 
   useEffect(() => {
-    if (loading) return;
-    if (!user) {
+    if (!user || !user.id) {
       setIsLoading(false);
       setError(new Error("User not authenticated"));
       return;
     }
 
-    const docRef = doc(db, "documents", documentId);
+    const userDocumentsRef = doc(db, "users", user.id!);
+    const docRef = doc(userDocumentsRef, "documents", documentId);
     const unsubscribe = onSnapshot(
       docRef,
       (docSnap) => {
@@ -44,7 +45,7 @@ export const useDocumentById = (documentId: string) => {
     );
 
     return () => unsubscribe();
-  }, [user, loading, documentId]);
+  }, [user, documentId]);
 
   return { document, isLoading, error };
 };

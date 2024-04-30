@@ -4,23 +4,22 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase/config";
+import { auth } from "@/db/firebase/config";
 import { doc, setDoc, collection } from "firebase/firestore";
-import { db } from "@/firebase/config";
+import { db } from "@/db/firebase/config";
 import { Document } from "@/models/types";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { defaultEditorContent } from "@/lib/content";
-import { createDocument } from "@/firebase/firestoreService";
+import { createDocument } from "@/db/firebase/document";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 export function DefaultContent() {
-  const [user, loading, error] = useAuthState(auth);
   const router = useRouter();
+  const user = useCurrentUser();
 
   const handleCreateDocument = () => {
-    if (!user) return;
-
     const promise = createDocument()
       .then((docId) => {
         router.push(`/documents/${docId}`);
@@ -53,14 +52,10 @@ export function DefaultContent() {
         className="hidden dark:block"
       />
       <h2 className="text-lg font-medium">
-        {loading ? <Skeleton className="w-72 h-7" /> : null}
-        {user ? (
-          <>
-            Welcome to{" "}
-            {user.displayName ? user.displayName : user.email?.split("@")[0]}
-            &apos;s NotePal
-          </>
-        ) : null}
+        <div>
+          Welcome to {user?.name}
+          &apos;s NotePal
+        </div>
       </h2>
       <Button
         variant="secondary"

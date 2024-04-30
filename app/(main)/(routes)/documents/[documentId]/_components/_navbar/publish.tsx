@@ -9,10 +9,11 @@ import {
 import { useOrigin } from "@/hooks/use-origin";
 import { useState } from "react";
 import { doc, updateDoc } from "firebase/firestore";
-import { db } from "@/firebase/config";
+import { db } from "@/db/firebase/config";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Globe } from "lucide-react";
+import { updateDocument } from "@/db/firebase/document";
 
 interface PublishProps {
   initialData: Document;
@@ -29,9 +30,8 @@ export const Publish = ({ initialData }: PublishProps) => {
   const onPublish = () => {
     if (!initialData.id) return;
     setIsSubmitting(true);
-    const docRef = doc(db, "documents", initialData.id);
 
-    const promise = updateDoc(docRef, { isPublished: true })
+    const promise = updateDocument(initialData.id, { isPublished: true })
       .catch((error) => {
         console.error("Error publishing document: ", error);
       })

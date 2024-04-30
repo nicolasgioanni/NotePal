@@ -7,6 +7,7 @@ interface Document {
   parentFolderId: string | null;
   content: JSONContent | null;
   isPublished: boolean;
+  createdAt: Date;
 }
 
 interface DocumentUpdateData {
@@ -27,6 +28,7 @@ interface Folder {
   title: string;
   userId: string;
   parentFolderId?: string | null;
+  createdAt: Date;
 }
 
 interface FolderUpdateData {
@@ -39,6 +41,12 @@ interface FolderCreateData {
   parentFolderId?: string | null;
 }
 
+interface UserUpdateData {
+  name?: string;
+  photoURL?: string;
+  emailVerified?: Date;
+}
+
 export type {
   Document,
   DocumentUpdateData,
@@ -46,4 +54,5 @@ export type {
   Folder,
   FolderUpdateData,
   FolderCreateData,
+  UserUpdateData,
 };

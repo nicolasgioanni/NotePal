@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 // firebase imports
-import { auth, googleProvider } from "@/firebase/config";
+import { auth, googleProvider } from "@/db/firebase/config";
 import { sendSignInLinkToEmail, signInWithPopup } from "firebase/auth";
 
 // next imports
@@ -28,6 +28,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import { signIn } from "next-auth/react";
+
 const formSchema = z.object({
   email: z.string().email(),
 });
@@ -42,12 +44,13 @@ const LogInBody = () => {
 
   const [emailSent, setEmailSent] = useState(false);
   const [email, setEmail] = useState("");
+  const router = useRouter();
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     const { email } = values;
 
     const actionCodeSettings = {
-      url: "http://localhost:3000/documents",
+      url: `${window.location.origin}/documents`,
       handleCodeInApp: true,
     };
 
@@ -64,9 +67,9 @@ const LogInBody = () => {
   };
 
   const handleContinueWithGoogle = async () => {
-    const res = signInWithPopup(auth, googleProvider)
+    await signInWithPopup(auth, googleProvider)
       .then((result) => {
-        redirect("/documents");
+        router.push("/documents");
       })
       .catch((error) => {
         console.error(error);
@@ -86,7 +89,12 @@ const LogInBody = () => {
           <div className="flex flex-col text-left">
             <Form {...form}>
               <form
-                onSubmit={form.handleSubmit(handleSubmit)}
+                onSubmit={form.handleSubmit(async (formData) => {
+                  await signIn("resend", {
+                    ...formData,
+                    callbackUrl: "/documents",
+                  });
+                })}
                 className="w-full flex flex-col gap-4"
               >
                 <FormField
@@ -106,7 +114,12 @@ const LogInBody = () => {
                     );
                   }}
                 />
-                <Button type="submit">Continue</Button>
+                <Button
+                  disabled={!form.formState.isValid}
+                  type="submit"
+                >
+                  Continue
+                </Button>
               </form>
             </Form>
           </div>
@@ -128,7 +141,7 @@ const LogInBody = () => {
         <div className="space-y-3 flex flex-col w-full text-center">
           <Button
             variant="outline"
-            onClick={handleContinueWithGoogle}
+            onClick={() => signIn("google", { callbackUrl: "/documents" })}
           >
             <Image
               src="/google-icon-logo.svg"

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { collection, query, where, onSnapshot, doc } from "firebase/firestore";
 import { db } from "@/db/firebase/config";
-import { Folder } from "@/models/types";
+import { Document } from "@/models/types";
 import { useCurrentUser } from "./use-current-user";
 
-export const useFolders = (parentFolderId?: string | null) => {
+export const useAllDocuments = () => {
   const user = useCurrentUser();
-  const [folders, setFolders] = useState<Folder[]>([]);
+  const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();
 
@@ -18,32 +18,29 @@ export const useFolders = (parentFolderId?: string | null) => {
     }
 
     const userDocumentsRef = doc(db, "users", user.id!);
-    const foldersRef = collection(userDocumentsRef, "folders");
+    const documentsRef = collection(userDocumentsRef, "documents");
 
-    const docQuery = query(
-      foldersRef,
-      where("parentFolderId", "==", parentFolderId || null)
-    );
+    const docQuery = query(documentsRef);
 
     const unsubscribe = onSnapshot(
       docQuery,
       (querySnapshot) => {
         const loadedDocuments = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          ...(doc.data() as Folder),
+          ...(doc.data() as Document),
         }));
-        setFolders(loadedDocuments);
+        setDocuments(loadedDocuments);
         setIsLoading(false);
       },
       (fetchError) => {
-        console.error("Error fetching folders:", fetchError);
+        console.error("Error fetching documents:", fetchError);
         setError(fetchError);
         setIsLoading(false);
       }
     );
 
     return () => unsubscribe();
-  }, [user, parentFolderId]);
+  }, [user]);
 
-  return { folders, isLoading, error };
+  return { documents, isLoading, error };
 };

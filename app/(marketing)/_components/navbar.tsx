@@ -41,7 +41,7 @@ export const Navbar = () => {
   return (
     <div
       className={cn(
-        "z-50 bg-background fixed top-0 flex items-center w-screen py-4 px-6 transition-shadow duration-100 ease-in",
+        "z-50 bg-background fixed top-0 flex items-center w-full py-4 px-6 transition-shadow duration-100 ease-in",
         isScrolled && "border-b shadow-sm"
       )}
     >
@@ -107,7 +107,6 @@ export const Navbar = () => {
             </NavigationMenuList>
           </NavigationMenu>
           <Button onClick={handleEnterNotePal}>Start Learning</Button>
-          <ModeToggle />
         </div>
       </div>
     </div>

@@ -1,3 +1,5 @@
+import { ChatBot } from "./chat-bot";
+
 interface ChatContentProps {
   isCollapsed: boolean;
 }
@@ -7,5 +9,5 @@ export function ChatContent({ isCollapsed }: ChatContentProps) {
     return <div className="h-full"></div>;
   }
 
-  return <div className="h-full">Chat Content ( TO BE IMPLEMENTED )</div>;
+  return <ChatBot />;
 }

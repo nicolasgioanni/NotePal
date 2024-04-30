@@ -23,12 +23,15 @@ import { TextButtons } from "./selectors/text-buttons";
 import { slashCommand, suggestionItems } from "./slash-command";
 import GenerativeMenuSwitch from "./generative/generative-menu-switch";
 import { handleImageDrop, handleImagePaste } from "novel/plugins";
-import { uploadFn } from "./image-upload";
 import { updateDoc, doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/firebase/config";
+import { db } from "@/db/firebase/config";
 import { Document } from "@/models/types";
 import { LoadingSkeleton } from "./loading-skeleton";
-import { updateDocument } from "@/firebase/firestoreService";
+import {
+  testFunction,
+  updateDocument,
+  updateDocumentContent,
+} from "@/db/firebase/document";
 
 const extensions = [...defaultExtensions, slashCommand];
 
@@ -53,12 +56,45 @@ const Editor = ({ initialData }: EditorProps) => {
     }
   }, [initialData]);
 
+  function cleanJSON(json: JSONContent) {
+    if (!json) return json;
+
+    // If the json object contains 'attrs', handle it
+    if (json.attrs) {
+      // You can delete it to test without it
+      delete json.attrs;
+      // Or modify it in a way you suspect might be more "safe" to handle
+      // json.attrs = { safeKey: json.attrs.problematicKey };
+    }
+
+    // Recursively clean content arrays
+    if (json.content) {
+      json.content = json.content.map(cleanJSON);
+    }
+
+    // Optionally handle other structures such as marks or specific nested properties
+    if (json.marks) {
+      json.marks = json.marks.map((mark) => {
+        if (mark.attrs) {
+          delete mark.attrs; // Or modify as needed
+        }
+        return mark;
+      });
+    }
+
+    return json;
+  }
+
   const debouncedUpdates = useDebouncedCallback(
     async (editor: EditorInstance) => {
       const json = editor.getJSON();
+      console.log({ json });
       // Save the content to firebase here
       if (!initialData.id) return;
-      await updateDocument(initialData.id, { content: json })
+
+      const jsonString = JSON.stringify(json);
+
+      await updateDocumentContent(initialData.id, jsonString)
         .then(() => {
           setSaveStatus("Saved");
         })
@@ -69,7 +105,7 @@ const Editor = ({ initialData }: EditorProps) => {
 
       setSaveStatus("Saved");
     },
-    500
+    750
   );
 
   if (!content) {
@@ -91,10 +127,7 @@ const Editor = ({ initialData }: EditorProps) => {
             handleDOMEvents: {
               keydown: (_view, event) => handleCommandNavigation(event),
             },
-            handlePaste: (view, event) =>
-              handleImagePaste(view, event, uploadFn),
-            handleDrop: (view, event, _slice, moved) =>
-              handleImageDrop(view, event, moved, uploadFn),
+
             attributes: {
               class: `prose prose-lg dark:prose-invert prose-headings:font-title font-default focus:outline-none max-w-full`,
             },

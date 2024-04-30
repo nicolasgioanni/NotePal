@@ -1,27 +1,27 @@
 import { useEffect, useState } from "react";
-import { collection, query, where, onSnapshot } from "firebase/firestore";
-import { db } from "@/firebase/config";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase/config";
+import { collection, query, where, onSnapshot, doc } from "firebase/firestore";
+import { db } from "@/db/firebase/config";
 import { Document } from "@/models/types";
+import { useCurrentUser } from "./use-current-user";
 
 export const useDocuments = (parentFolderId?: string | null) => {
-  const [user, loading, authError] = useAuthState(auth);
+  const user = useCurrentUser();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | undefined>(authError);
+  const [error, setError] = useState<Error | undefined>();
 
   useEffect(() => {
-    if (loading) return;
-    if (!user) {
+    if (!user || !user.id) {
       setIsLoading(false);
       setError(new Error("User not authenticated"));
       return;
     }
 
+    const userDocumentsRef = doc(db, "users", user.id!);
+    const documentsRef = collection(userDocumentsRef, "documents");
+
     const docQuery = query(
-      collection(db, "documents"),
-      where("userId", "==", user.uid),
+      documentsRef,
       where("parentFolderId", "==", parentFolderId || null)
     );
 
@@ -43,7 +43,7 @@ export const useDocuments = (parentFolderId?: string | null) => {
     );
 
     return () => unsubscribe();
-  }, [user, loading, parentFolderId]);
+  }, [user, parentFolderId]);
 
   return { documents, isLoading, error };
 };

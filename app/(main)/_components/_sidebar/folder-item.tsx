@@ -21,12 +21,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { DeleteAlertDialog } from "../delete-alert-dialog";
 import { useState } from "react";
-import { auth } from "@/firebase/config";
-import {
-  createDocument,
-  createFolder,
-  deleteFolder,
-} from "@/firebase/firestoreService";
+import { auth } from "@/db/firebase/config";
+import { createFolder, deleteFolder } from "@/db/firebase/folder";
+import { createDocument } from "@/db/firebase/document";
 import { toast } from "sonner";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRouter } from "next/navigation";
@@ -47,7 +44,6 @@ export const FolderItem = ({
   level,
   onClick,
 }: FolderItemProps) => {
-  const [user, loading, error] = useAuthState(auth);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const router = useRouter();
@@ -67,8 +63,6 @@ export const FolderItem = ({
   };
 
   const handleCreateFolder = () => {
-    if (!user) return;
-
     const promise = createFolder({ parentFolderId: id })
       .then(() => {
         if (!expanded) {
@@ -87,8 +81,6 @@ export const FolderItem = ({
   };
 
   const handleCreateDocument = () => {
-    if (!user) return;
-
     const promise = createDocument({ parentFolderId: id })
       .then((docId) => {
         if (!expanded) {

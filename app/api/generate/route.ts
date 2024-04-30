@@ -27,7 +27,7 @@ export async function POST(req: Request): Promise<Response> {
       "Missing OPENAI_API_KEY - make sure to add it to your .env file.",
       {
         status: 400,
-      },
+      }
     );
   }
   if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
@@ -38,7 +38,7 @@ export async function POST(req: Request): Promise<Response> {
     });
 
     const { success, limit, reset, remaining } = await ratelimit.limit(
-      `novel_ratelimit_${ip}`,
+      `novel_ratelimit_${ip}`
     );
 
     if (!success) {
@@ -147,6 +147,7 @@ export async function POST(req: Request): Promise<Response> {
 
   // Convert the response into a friendly text-stream
   const stream = OpenAIStream(response);
+  console.log(stream);
 
   // Respond with the stream
   return new StreamingTextResponse(stream);

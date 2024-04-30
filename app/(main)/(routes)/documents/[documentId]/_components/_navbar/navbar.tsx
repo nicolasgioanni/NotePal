@@ -12,7 +12,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { auth, db } from "@/firebase/config";
+import { auth, db } from "@/db/firebase/config";
 import { useRouter } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Skeleton } from "@/components/ui/skeleton";

@@ -1,6 +1,5 @@
 //firebase imports
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase/config";
+import { signOut } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -39,7 +38,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 interface SidebarControlProps {
   isCollapsed: boolean;
@@ -51,17 +50,8 @@ export function SidebarControl({
   onToggleSidebar,
 }: SidebarControlProps) {
   const { setTheme } = useTheme();
-  const [user, loading, error] = useAuthState(auth);
-  const router = useRouter();
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
-
-  function handleLogOut() {
-    console.log("Logout clicked");
-    router.push("/logout");
-  }
+  const loading = false;
+  const user = useCurrentUser();
 
   if (isCollapsed) {
     return (
@@ -98,11 +88,7 @@ export function SidebarControl({
                     <div className="flex items-center justify-start py-1 px-2">
                       <div className="flex flex-col mr-2 overflow-hidden">
                         <div className="font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
-                          {user
-                            ? user.displayName
-                              ? user.displayName
-                              : user.email?.split("@")[0]
-                            : "User"}
+                          {user?.name}
                           &apos;s NotePal
                         </div>
                       </div>
@@ -115,19 +101,10 @@ export function SidebarControl({
                 <DropdownMenuContent className="w-60 ml-4">
                   <DropdownMenuLabel>
                     <div className="flex flex-col gap-y-1">
-                      <span>
-                        {user
-                          ? user.displayName
-                            ? user.displayName
-                            : user.email?.split("@")[0]
-                          : "User"}
-                        &apos;s NotePal
+                      <span>{user?.name}&apos;s NotePal</span>
+                      <span className="text-xs text-muted-foreground">
+                        {user?.email}
                       </span>
-                      {user ? (
-                        <span className="font-normal text-sm text-muted-foreground">
-                          {user.email}
-                        </span>
-                      ) : null}
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
@@ -180,7 +157,9 @@ export function SidebarControl({
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     className="hover:cursor-pointer"
-                    onClick={handleLogOut}
+                    onClick={() => {
+                      signOut({ callbackUrl: "/" });
+                    }}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>

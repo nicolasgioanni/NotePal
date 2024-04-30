@@ -2,10 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { db } from "@/firebase/config";
+import { db } from "@/db/firebase/config";
 import { Document } from "@/models/types";
 import TextareaAutosize from "react-textarea-autosize";
-import { updateDocument } from "@/firebase/firestoreService";
+import { updateDocument } from "@/db/firebase/document";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface DocTitleProps {

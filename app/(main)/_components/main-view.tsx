@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Sidebar } from "./_sidebar/sidebar";
 import { ChatBar } from "./_chat/chatbar";
-import { useParams } from "next/navigation";
 
 interface MainViewProps {
   defaultNavCollapsed?: boolean;
@@ -32,7 +31,6 @@ export function MainView({
 
   const navRef = useRef<ImperativePanelHandle>(null);
   const chatRef = useRef<ImperativePanelHandle>(null);
-  const params = useParams();
 
   function handleToggleNav() {
     if (navRef.current) {
@@ -58,11 +56,6 @@ export function MainView({
     <TooltipProvider delayDuration={400}>
       <ResizablePanelGroup
         direction="horizontal"
-        onLayout={(sizes: number[]) => {
-          document.cookie = `react-resizable-panels:layout=${JSON.stringify(
-            sizes
-          )}`;
-        }}
         className="h-full items-stretch"
       >
         <ResizablePanel
@@ -92,34 +85,7 @@ export function MainView({
           </div>
         </ResizablePanel>
         <ResizableHandle />
-        <ResizablePanel defaultSize={60}>{children}</ResizablePanel>
-        <ResizableHandle />
-        <ResizablePanel
-          ref={chatRef}
-          defaultSize={20}
-          collapsedSize={navCollapsedSize}
-          collapsible
-          minSize={15}
-          maxSize={30}
-          onCollapse={() => {
-            setIsChatCollapsed(true);
-          }}
-          onExpand={() => {
-            setIsChatCollapsed(false);
-          }}
-          className={cn(
-            "group/chat",
-            isChatCollapsed &&
-              "min-w-[50px] transition-all duration-300 ease-in-out"
-          )}
-        >
-          <div className="flex flex-col flex-grow h-full px-4 py-5">
-            <ChatBar
-              isChatCollapsed={isChatCollapsed}
-              onToggleChat={handleToggleChat}
-            />
-          </div>
-        </ResizablePanel>
+        <ResizablePanel defaultSize={80}>{children}</ResizablePanel>
       </ResizablePanelGroup>
     </TooltipProvider>
   );
