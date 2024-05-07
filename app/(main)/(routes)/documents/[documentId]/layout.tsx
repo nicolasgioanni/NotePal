@@ -11,7 +11,7 @@ import {
 import { useRef, useState } from "react";
 import { ImperativePanelHandle } from "react-resizable-panels";
 import { cn } from "@/lib/utils";
-import { ChatBar } from "@/app/(main)/_components/_chat/chatbar";
+import { ChatBar } from "@/app/(main)/(routes)/documents/[documentId]/_components/_chat/chatbar";
 
 const EditorLayout = ({ children }: { children: React.ReactNode }) => {
   const params = useParams();
@@ -54,8 +54,8 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
         defaultSize={20}
         collapsedSize={4}
         collapsible
-        minSize={15}
-        maxSize={30}
+        minSize={20}
+        maxSize={70}
         onCollapse={() => {
           setIsChatCollapsed(true);
         }}
@@ -63,12 +63,12 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
           setIsChatCollapsed(false);
         }}
         className={cn(
-          "group/chat",
+          "group/chat min-w-[275px]",
           isChatCollapsed &&
             "min-w-[50px] transition-all duration-300 ease-in-out"
         )}
       >
-        <div className="flex flex-col flex-grow h-full px-4 py-5">
+        <div className="flex flex-col flex-grow h-full">
           <ChatBar
             isChatCollapsed={isChatCollapsed}
             onToggleChat={handleToggleChat}

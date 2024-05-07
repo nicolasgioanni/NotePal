@@ -2,6 +2,11 @@
 
 import { currentUser } from "@/lib/auth";
 import { DocumentCreateData, DocumentUpdateData } from "@/models/types";
+import {
+  schema,
+  defaultMarkdownParser,
+  defaultMarkdownSerializer,
+} from "prosemirror-markdown";
 
 import { db } from "@/db/firebase/config";
 import {
@@ -10,10 +15,19 @@ import {
   deleteDoc,
   doc,
   updateDoc,
+  runTransaction,
+  getDoc,
 } from "firebase/firestore";
 import { getUserById } from "./user";
 import { getEmbedding } from "@/lib/openai";
 import { JSONContent } from "novel";
+import { pineconeDB } from "../pinecone/pinecone";
+import { Node } from "prosemirror-model";
+import {
+  deleteEmbeddingsForDoc,
+  generateAndStoreEmbeddings,
+} from "@/lib/vector-store";
+import { getChunksFromMarkdown } from "@/lib/markdown-chunker";
 
 export const createDocument = async (data?: DocumentCreateData) => {
   const user = await currentUser();
@@ -41,17 +55,21 @@ export const createDocument = async (data?: DocumentCreateData) => {
     createdAt: new Date(),
   };
 
-  // const embedding = await getEmbeddingForDoc(
-  //   defaultData.title,
-  //   defaultData.content
-  // );
-
   // Create a new document in the documents collection for the user in the users collection
   try {
     const userDocRef = doc(db, "users", user.id);
     const documentsCollectionRef = collection(userDocRef, "documents");
-    const docRef = await addDoc(documentsCollectionRef, defaultData);
-    return docRef.id;
+
+    // const embedding = await getEmbeddingForDoc(defaultData.title);
+
+    const docRefId = await addDoc(documentsCollectionRef, defaultData).then(
+      async (docRef) => {
+        console.log("Document written with ID: ", docRef.id);
+
+        return docRef.id;
+      }
+    );
+    return docRefId;
   } catch (error) {
     throw new Error("Failed to create a new document");
   }
@@ -61,8 +79,6 @@ export const updateDocument = async (
   docId: string,
   data: DocumentUpdateData
 ) => {
-  console.log("inside function");
-
   const user = await currentUser();
 
   if (!user) {
@@ -82,6 +98,7 @@ export const updateDocument = async (
   try {
     const userDocRef = doc(db, "users", user.id);
     const documentRef = doc(userDocRef, "documents", docId);
+
     await updateDoc(documentRef, { ...data });
   } catch (error) {
     throw new Error("Failed to update the document");
@@ -107,22 +124,22 @@ export const deleteDocument = async (docId: string) => {
   try {
     const userDocRef = doc(db, "users", user.id);
     const documentRef = doc(userDocRef, "documents", docId);
-    await deleteDoc(documentRef);
+
+    // Perform Firestore document deletion within a transaction
+    await runTransaction(db, async (transaction) => {
+      await transaction.delete(documentRef);
+      await deleteEmbeddingsForDoc(docId);
+    });
   } catch (error) {
-    throw new Error("Failed to delete the document");
+    throw new Error("Failed to delete document");
   }
 };
 
-async function getEmbeddingForDoc(title: string, content: JSONContent | null) {
-  return getEmbedding(title + "\n\n" + content ?? "");
-}
-
-export const testFunction = async (data: string) => {
-  console.log(JSON.parse(data));
-};
-
-export const updateDocumentContent = async (docId: string, content: string) => {
-  const json = JSON.parse(content);
+export const updateDocumentContent = async (
+  docId: string,
+  jsonString: string
+) => {
+  const json = JSON.parse(jsonString);
 
   await updateDocument(docId, { content: json });
 };

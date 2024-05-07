@@ -21,6 +21,7 @@ export const useDocumentById = (documentId: string) => {
     }
 
     const userDocumentsRef = doc(db, "users", user.id!);
+
     const docRef = doc(userDocumentsRef, "documents", documentId);
     const unsubscribe = onSnapshot(
       docRef,

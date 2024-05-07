@@ -1,6 +1,9 @@
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { PineconeStore } from "@langchain/pinecone";
 import { Pinecone } from "@pinecone-database/pinecone";
 
 const apiKey = process.env.PINECONE_API_KEY;
+console.log(apiKey);
 
 if (!apiKey) {
   throw Error(
@@ -12,4 +15,6 @@ const pinecone = new Pinecone({
   apiKey: apiKey,
 });
 
-export const notesIndex = pinecone.index("notepal-chatbot");
+export default pinecone;
+
+export const pineconeDB = pinecone.index("notepal-chatbot");

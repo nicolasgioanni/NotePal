@@ -11,6 +11,7 @@ import {
   type JSONContent,
   EditorInstance,
   EditorCommandList,
+  useEditor,
 } from "novel";
 import { ImageResizer, handleCommandNavigation } from "novel/extensions";
 import { defaultExtensions } from "./extensions";
@@ -23,25 +24,33 @@ import { TextButtons } from "./selectors/text-buttons";
 import { slashCommand, suggestionItems } from "./slash-command";
 import GenerativeMenuSwitch from "./generative/generative-menu-switch";
 import { handleImageDrop, handleImagePaste } from "novel/plugins";
-import { updateDoc, doc, onSnapshot } from "firebase/firestore";
+import { updateDoc, doc, onSnapshot, getDoc } from "firebase/firestore";
 import { db } from "@/db/firebase/config";
 import { Document } from "@/models/types";
 import { LoadingSkeleton } from "./loading-skeleton";
+import { updateDocument, updateDocumentContent } from "@/db/firebase/document";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { useDocumentById } from "@/hooks/use-document-by-id";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getChunksFromMarkdown } from "@/lib/markdown-chunker";
+import pinecone, { pineconeDB } from "@/db/pinecone/pinecone";
 import {
-  testFunction,
-  updateDocument,
-  updateDocumentContent,
-} from "@/db/firebase/document";
+  generateAndStoreEmbeddings,
+  getEmbeddingsForDoc,
+} from "@/lib/vector-store";
 
 const extensions = [...defaultExtensions, slashCommand];
 
 interface EditorProps {
-  initialData: Document;
+  docId: string;
 }
 
-const Editor = ({ initialData }: EditorProps) => {
+const Editor = ({ docId }: EditorProps) => {
   const [content, setContent] = useState<JSONContent | null>(null);
   const [saveStatus, setSaveStatus] = useState("Saved");
+  const user = useCurrentUser();
+  const { document, isLoading, error } = useDocumentById(docId);
+  const [hasContentChanged, setHasContentChanged] = useState(false);
 
   const [openNode, setOpenNode] = useState(false);
   const [openColor, setOpenColor] = useState(false);
@@ -49,52 +58,24 @@ const Editor = ({ initialData }: EditorProps) => {
   const [openAI, setOpenAI] = useState(false);
 
   useEffect(() => {
-    if (initialData.content) {
-      setContent(initialData.content);
-    } else {
-      setContent(defaultEditorContent);
+    if (document) {
+      setContent(document.content || defaultEditorContent);
     }
-  }, [initialData]);
-
-  function cleanJSON(json: JSONContent) {
-    if (!json) return json;
-
-    // If the json object contains 'attrs', handle it
-    if (json.attrs) {
-      // You can delete it to test without it
-      delete json.attrs;
-      // Or modify it in a way you suspect might be more "safe" to handle
-      // json.attrs = { safeKey: json.attrs.problematicKey };
-    }
-
-    // Recursively clean content arrays
-    if (json.content) {
-      json.content = json.content.map(cleanJSON);
-    }
-
-    // Optionally handle other structures such as marks or specific nested properties
-    if (json.marks) {
-      json.marks = json.marks.map((mark) => {
-        if (mark.attrs) {
-          delete mark.attrs; // Or modify as needed
-        }
-        return mark;
-      });
-    }
-
-    return json;
-  }
+  }, [document]);
 
   const debouncedUpdates = useDebouncedCallback(
     async (editor: EditorInstance) => {
       const json = editor.getJSON();
-      console.log({ json });
       // Save the content to firebase here
-      if (!initialData.id) return;
 
+      if (!user) return;
       const jsonString = JSON.stringify(json);
 
-      await updateDocumentContent(initialData.id, jsonString)
+      await updateDocumentContent(
+        docId,
+        jsonString,
+        editor.storage.markdown.getMarkdown()
+      )
         .then(() => {
           setSaveStatus("Saved");
         })
@@ -108,13 +89,34 @@ const Editor = ({ initialData }: EditorProps) => {
     750
   );
 
-  if (!content) {
+  const updateEmbedding = async (editor: EditorInstance) => {
+    if (!user) return;
+    const markdown = editor.storage.markdown.getMarkdown();
+    await generateAndStoreEmbeddings(docId, markdown)
+      .then(async () => {
+        // await getEmbeddingsForDoc(docId);
+      })
+      .catch((error) => {
+        console.error("Error generating embeddings: ", error);
+      });
+  };
+
+  if (isLoading) {
     return (
-      <div className="px-8 sm:px-12 py-12">
-        <LoadingSkeleton />
+      <div className="flex flex-col px-12 py-[25px] gap-y-6">
+        <Skeleton className="h-8 w-full rounded-2xl" />
+        <Skeleton className="h-8 w-5/6 rounded-2xl" />
+        <Skeleton className="h-8 w-11/12 rounded-2xl" />
+        <Skeleton className="h-8 w-2/3 rounded-2xl" />
       </div>
     );
   }
+
+  if (error) {
+    return <div>Something went wrong!</div>;
+  }
+
+  if (!content) return null;
 
   return (
     <div className="w-full">
@@ -134,9 +136,26 @@ const Editor = ({ initialData }: EditorProps) => {
           }}
           onUpdate={({ editor }) => {
             debouncedUpdates(editor);
+            setHasContentChanged(true);
             setSaveStatus("Unsaved");
           }}
           slotAfter={<ImageResizer />}
+          // onSelectionUpdate={({ editor }) => {
+          //   const slice = editor.state.selection.content();
+          //   const text = editor.storage.markdown.serializer.serialize(
+          //     slice.content
+          //   );
+          //   console.log(text);
+          // }}
+          onBlur={({ editor }) => {
+            if (hasContentChanged) {
+              updateEmbedding(editor);
+              setHasContentChanged(false);
+            }
+          }}
+          onCreate={({ editor }) => {
+            updateEmbedding(editor);
+          }}
         >
           <EditorCommand className="z-50 h-auto max-h-[330px] overflow-y-auto rounded-md border border-muted bg-background px-1 py-2 shadow-md transition-all">
             <EditorCommandEmpty className="px-2 text-muted-foreground">

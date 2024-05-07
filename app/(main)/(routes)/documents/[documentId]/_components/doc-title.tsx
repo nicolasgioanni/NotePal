@@ -7,35 +7,40 @@ import { Document } from "@/models/types";
 import TextareaAutosize from "react-textarea-autosize";
 import { updateDocument } from "@/db/firebase/document";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDocumentById } from "@/hooks/use-document-by-id";
 
 interface DocTitleProps {
-  initialData: Document;
+  docId: string;
 }
 
-export const DocTitle = ({ initialData }: DocTitleProps) => {
+export const DocTitle = ({ docId }: DocTitleProps) => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [title, setTitle] = useState(initialData.title);
+  const { document, isLoading, error } = useDocumentById(docId);
+  const [title, setTitle] = useState("");
 
   useEffect(() => {
-    setTitle(initialData.title);
-  }, [initialData]);
+    if (document) {
+      setTitle(document.title);
+    }
+  }, [document]);
 
   const setDocumentTitle = async (title: string) => {
-    if (!initialData.id) return;
+    if (!document || !document.id) return;
     if (title.trim() === "") title = "Untitled";
     setTitle(title);
 
-    await updateDocument(initialData.id, { title: title }).catch((error) => {
+    await updateDocument(document.id, { title: title }).catch((error) => {
       console.error("Error updating document title: ", error);
-      setTitle(initialData.title);
+      setTitle(document.title);
     });
   };
 
   const enableInput = () => {
+    if (!document) return;
     setIsEditing(true);
     setTimeout(() => {
-      setTitle(initialData.title);
+      setTitle(document.title);
       inputRef.current?.focus();
       inputRef.current?.setSelectionRange(0, inputRef.current.value.length);
     }, 0);
@@ -56,11 +61,20 @@ export const DocTitle = ({ initialData }: DocTitleProps) => {
       disableInput();
     }
     if (e.key === "Escape") {
+      if (!document) return;
       e.preventDefault();
-      setTitle(initialData.title == "" ? "Untitled" : initialData.title);
+      setTitle(document.title == "" ? "Untitled" : document.title);
       setIsEditing(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="px-8 sm:px-12 pt-12">
+        <DocTitle.Skeleton />
+      </div>
+    );
+  }
 
   return (
     <div className="text-[40px] font-extrabold flex justify-start px-8 sm:px-12 pt-12 min-h-[92px]">

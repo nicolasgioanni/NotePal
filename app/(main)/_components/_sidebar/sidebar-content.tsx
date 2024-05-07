@@ -80,12 +80,18 @@ export function SidebarContent({ isCollapsed }: SidebarContentProps) {
       >
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <div className=" flex flex-row items-center w-full justify-center text-muted-foreground border rounded-md text-sm hover:text-muted-foreground gap-x-[6px] h-9 hover:bg-accent cursor-pointer transition">
+            <Button
+              variant="outline"
+              className="shrink-0 h-9"
+            >
               <span className="truncate">Add</span>
-              <PlusCircle size={16} />
-            </div>
+              <PlusCircle className="h-4 w-4 ml-1" />
+            </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="text-muted-foreground">
+          <DropdownMenuContent
+            className="text-muted-foreground"
+            onCloseAutoFocus={(e) => e.preventDefault()}
+          >
             <DropdownMenuGroup>
               <DropdownMenuItem
                 className="cursor-pointer"
