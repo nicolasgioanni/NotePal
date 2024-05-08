@@ -5,21 +5,21 @@ interface Document {
   title: string;
   userId: string;
   parentFolderId: string | null;
-  content: JSONContent | null;
+  markdown: string;
   isPublished: boolean;
   createdAt: Date;
 }
 
 interface DocumentUpdateData {
   title?: string;
-  content?: JSONContent | null;
+  markdown?: string;
   parentFolderId?: string | null;
   isPublished?: boolean;
 }
 
 interface DocumentCreateData {
   title?: string;
-  content?: JSONContent | null;
+  markdown?: string;
   parentFolderId?: string | null;
 }
 

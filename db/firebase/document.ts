@@ -1,7 +1,11 @@
 "use server";
 
 import { currentUser } from "@/lib/auth";
-import { DocumentCreateData, DocumentUpdateData } from "@/models/types";
+import {
+  Document,
+  DocumentCreateData,
+  DocumentUpdateData,
+} from "@/models/types";
 import {
   schema,
   defaultMarkdownParser,
@@ -29,6 +33,40 @@ import {
 } from "@/lib/vector-store";
 import { getChunksFromMarkdown } from "@/lib/markdown-chunker";
 
+export const getDocumentById = async (docId: string) => {
+  const user = await currentUser();
+  if (!user) {
+    throw new Error("Authentication required to get documents.");
+  }
+
+  if (!user.id) {
+    throw new Error("User ID is required");
+  }
+
+  const dbUser = await getUserById(user.id);
+
+  if (!dbUser) {
+    throw new Error("User not found");
+  }
+
+  try {
+    const userDocRef = doc(db, "users", user.id);
+    const documentRef = doc(userDocRef, "documents", docId);
+
+    const documentSnapshot = await getDoc(documentRef);
+
+    if (!documentSnapshot.exists()) {
+      throw new Error("Document not found");
+    }
+
+    const documentData = documentSnapshot.data() as Document;
+
+    return JSON.stringify(documentData);
+  } catch (error) {
+    throw new Error("Failed to get document");
+  }
+};
+
 export const createDocument = async (data?: DocumentCreateData) => {
   const user = await currentUser();
 
@@ -50,7 +88,7 @@ export const createDocument = async (data?: DocumentCreateData) => {
     title: data?.title || "Untitled",
     userId: user.id,
     parentFolderId: data?.parentFolderId || null,
-    content: data?.content || null,
+    markdown: "",
     isPublished: false,
     createdAt: new Date(),
   };
@@ -137,9 +175,9 @@ export const deleteDocument = async (docId: string) => {
 
 export const updateDocumentContent = async (
   docId: string,
-  jsonString: string
+  markdown: string
 ) => {
-  const json = JSON.parse(jsonString);
-
-  await updateDocument(docId, { content: json });
+  await updateDocument(docId, {
+    markdown: markdown,
+  });
 };

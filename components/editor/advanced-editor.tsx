@@ -28,7 +28,11 @@ import { updateDoc, doc, onSnapshot, getDoc } from "firebase/firestore";
 import { db } from "@/db/firebase/config";
 import { Document } from "@/models/types";
 import { LoadingSkeleton } from "./loading-skeleton";
-import { updateDocument, updateDocumentContent } from "@/db/firebase/document";
+import {
+  getDocumentById,
+  updateDocument,
+  updateDocumentContent,
+} from "@/db/firebase/document";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useDocumentById } from "@/hooks/use-document-by-id";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -46,10 +50,11 @@ interface EditorProps {
 }
 
 const Editor = ({ docId }: EditorProps) => {
-  const [content, setContent] = useState<JSONContent | null>(null);
+  const [markdownContent, setMarkdownContent] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState("Saved");
   const user = useCurrentUser();
-  const { document, isLoading, error } = useDocumentById(docId);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [hasContentChanged, setHasContentChanged] = useState(false);
 
   const [openNode, setOpenNode] = useState(false);
@@ -58,10 +63,21 @@ const Editor = ({ docId }: EditorProps) => {
   const [openAI, setOpenAI] = useState(false);
 
   useEffect(() => {
-    if (document) {
-      setContent(document.content || defaultEditorContent);
-    }
-  }, [document]);
+    const fetchDocument = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const docJson = await getDocumentById(docId);
+        const docData = JSON.parse(docJson) as Document;
+        setMarkdownContent(docData.markdown);
+      } catch (error) {
+        setError("Error fetching document");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (docId) fetchDocument();
+  }, [docId]);
 
   const debouncedUpdates = useDebouncedCallback(
     async (editor: EditorInstance) => {
@@ -71,11 +87,7 @@ const Editor = ({ docId }: EditorProps) => {
       if (!user) return;
       const jsonString = JSON.stringify(json);
 
-      await updateDocumentContent(
-        docId,
-        jsonString,
-        editor.storage.markdown.getMarkdown()
-      )
+      await updateDocumentContent(docId, editor.storage.markdown.getMarkdown())
         .then(() => {
           setSaveStatus("Saved");
         })
@@ -116,13 +128,15 @@ const Editor = ({ docId }: EditorProps) => {
     return <div>Something went wrong!</div>;
   }
 
-  if (!content) return null;
+  if (markdownContent == null) {
+    return null;
+  }
 
   return (
     <div className="w-full">
       <EditorRoot>
         <EditorContent
-          initialContent={content}
+          initialContent={undefined}
           extensions={extensions}
           className="relative min-h-[500px] w-full sm:mb-[calc(20vh)]"
           editorProps={{
@@ -140,13 +154,6 @@ const Editor = ({ docId }: EditorProps) => {
             setSaveStatus("Unsaved");
           }}
           slotAfter={<ImageResizer />}
-          // onSelectionUpdate={({ editor }) => {
-          //   const slice = editor.state.selection.content();
-          //   const text = editor.storage.markdown.serializer.serialize(
-          //     slice.content
-          //   );
-          //   console.log(text);
-          // }}
           onBlur={({ editor }) => {
             if (hasContentChanged) {
               updateEmbedding(editor);
@@ -155,6 +162,7 @@ const Editor = ({ docId }: EditorProps) => {
           }}
           onCreate={({ editor }) => {
             updateEmbedding(editor);
+            editor.commands.setContent(markdownContent);
           }}
         >
           <EditorCommand className="z-50 h-auto max-h-[330px] overflow-y-auto rounded-md border border-muted bg-background px-1 py-2 shadow-md transition-all">
