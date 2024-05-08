@@ -106,7 +106,7 @@ export const FolderItem = ({
         role="button"
         style={{ marginLeft: level ? `${level * 14}px` : "0px" }}
         className={cn(
-          "group py-1.5 px-2 flex items-center hover:bg-accent font-medium text-muted-foreground rounded-md text-sm transition"
+          "group py-1.5 px-1.5 flex items-center hover:bg-accent font-medium text-muted-foreground rounded-md text-sm transition"
         )}
       >
         <Icon className="h-4 w-4 mr-2 shrink-0" />
@@ -127,7 +127,7 @@ export const FolderItem = ({
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="start"
-              side="bottom"
+              side="right"
               className="text-muted-foreground"
               onCloseAutoFocus={(e) => e.preventDefault()}
             >
@@ -163,7 +163,7 @@ export const FolderItem = ({
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="start"
-              side="bottom"
+              side="right"
               className="text-muted-foreground"
               onCloseAutoFocus={(e) => e.preventDefault()}
             >

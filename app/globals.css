@@ -20,7 +20,7 @@ body,
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #d4d4d4;
+  background: hsl(var(--border));
   border-radius: 8px;
 }
 

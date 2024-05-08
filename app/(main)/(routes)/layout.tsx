@@ -1,5 +1,5 @@
 import { SearchCommand } from "@/components/search-command";
-import { MainView } from "../_components/main-view";
+import { MainView } from "./documents/_components/main-view";
 import { auth } from "@/auth";
 
 const MainLayout = async ({ children }: { children: React.ReactNode }) => {

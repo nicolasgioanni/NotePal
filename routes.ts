@@ -29,4 +29,4 @@ export const onboardingRoutes = ["/onboarding"];
  * The default route to redirect to after logging in
  * @type {string}
  */
-export const DEFAULT_LOGIN_REDIRECT = "/documents";
+export const DEFAULT_LOGIN_REDIRECT = "/dashboard";

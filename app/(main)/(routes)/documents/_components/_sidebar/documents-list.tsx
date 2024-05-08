@@ -76,10 +76,13 @@ export const DocumentsList = ({
           "hidden text-sm font-medium text-muted-foreground px-4",
           folders.length === 0 &&
             documents.length === 0 &&
-            "block text-muted-foreground/65"
+            "block text-muted-foreground/65",
+          !parentFolderId && "px-0 text-center mt-1"
         )}
       >
-        Empty
+        {folders.length === 0 && documents.length === 0 && !parentFolderId
+          ? "You don't have any documents."
+          : "Empty"}
       </p>
       {folders.map((folder) => (
         <div

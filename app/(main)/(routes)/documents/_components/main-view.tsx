@@ -11,7 +11,7 @@ import { ImperativePanelHandle } from "react-resizable-panels";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Sidebar } from "./_sidebar/sidebar";
-import { ChatBar } from "../(routes)/documents/[documentId]/_components/_chat/chatbar";
+import { ChatBar } from "../[documentId]/_components/_chat/chatbar";
 
 interface MainViewProps {
   defaultNavCollapsed?: boolean;
@@ -72,7 +72,7 @@ export function MainView({
             setIsNavCollapsed(false);
           }}
           className={cn(
-            "group/navbar",
+            "group/navbar min-w-[160px]",
             isNavCollapsed &&
               "min-w-[50px] transition-all duration-300 ease-in-out"
           )}

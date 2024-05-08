@@ -46,36 +46,6 @@ const LogInBody = () => {
   const [email, setEmail] = useState("");
   const router = useRouter();
 
-  const handleSubmit = (values: z.infer<typeof formSchema>) => {
-    const { email } = values;
-
-    const actionCodeSettings = {
-      url: `${window.location.origin}/documents`,
-      handleCodeInApp: true,
-    };
-
-    const res = sendSignInLinkToEmail(auth, email, actionCodeSettings)
-      .then(() => {
-        window.localStorage.setItem("emailForSignIn", email);
-        setEmailSent(true);
-        setEmail(email);
-        form.reset({ email: "" });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const handleContinueWithGoogle = async () => {
-    await signInWithPopup(auth, googleProvider)
-      .then((result) => {
-        router.push("/documents");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
   return (
     <div className="lg:p-8">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 md:w-[430px]">
@@ -92,7 +62,7 @@ const LogInBody = () => {
                 onSubmit={form.handleSubmit(async (formData) => {
                   await signIn("resend", {
                     ...formData,
-                    callbackUrl: "/documents",
+                    callbackUrl: "/dashboard",
                   });
                 })}
                 className="w-full flex flex-col gap-4"
@@ -141,7 +111,7 @@ const LogInBody = () => {
         <div className="space-y-3 flex flex-col w-full text-center">
           <Button
             variant="outline"
-            onClick={() => signIn("google", { callbackUrl: "/documents" })}
+            onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
           >
             <Image
               src="/google-icon-logo.svg"

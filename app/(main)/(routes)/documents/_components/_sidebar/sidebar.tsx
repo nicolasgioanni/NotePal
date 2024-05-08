@@ -1,6 +1,8 @@
 import { SidebarControl } from "./sidebar-control";
 import { Separator } from "@/components/ui/separator";
 import { SidebarContent } from "./sidebar-content";
+import { SidebarActions } from "./sidebar-actions";
+import { AddButton } from "./add-button";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -9,13 +11,17 @@ interface SidebarProps {
 
 export function Sidebar({ isCollapsed, onToggleSidebar }: SidebarProps) {
   return (
-    <>
+    <div className="flex flex-col">
       <SidebarControl
         isCollapsed={isCollapsed}
         onToggleSidebar={onToggleSidebar}
       />
-      <Separator className="my-3" />
-      <SidebarContent isCollapsed={isCollapsed} />
-    </>
+      <div className="mt-2">
+        <SidebarActions isCollapsed={isCollapsed} />
+      </div>
+      <div className="mt-4">
+        <SidebarContent isCollapsed={isCollapsed} />
+      </div>
+    </div>
   );
 }
