@@ -52,7 +52,6 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
       <ResizablePanel
         ref={chatRef}
         defaultSize={20}
-        collapsedSize={4}
         collapsible
         minSize={20}
         maxSize={70}

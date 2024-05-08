@@ -61,7 +61,6 @@ export function MainView({
         <ResizablePanel
           ref={navRef}
           defaultSize={20}
-          collapsedSize={navCollapsedSize}
           collapsible
           minSize={12}
           maxSize={30}
