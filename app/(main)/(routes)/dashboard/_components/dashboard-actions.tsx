@@ -1,13 +1,16 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { createDocument } from "@/db/firebase/document";
 import { cn } from "@/lib/utils";
-import { DollarSign, SquarePen, Zap } from "lucide-react";
+import { DollarSign, SquarePen, WandSparkles, Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export const DashboardActions = () => {
   const [width, setWidth] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
@@ -28,9 +31,16 @@ export const DashboardActions = () => {
   return (
     <div
       ref={ref}
-      className={cn("grid grid-cols-3 gap-4", width < 856 && "grid-cols-1")}
+      className={cn("grid grid-cols-3 gap-4", width < 880 && "grid-cols-1")}
     >
-      <Card className="flex flex-col hover:scale-[1.02] transition cursor-pointer hover:outline outline-1 outline-muted">
+      <Card
+        onClick={async () => {
+          await createDocument().then((docId) => {
+            router.push(`/documents/${docId}`);
+          });
+        }}
+        className="flex flex-col hover:scale-[1.01] transition cursor-pointer hover:outline outline-1 outline-muted"
+      >
         <CardContent className="px-6 py-10 my-auto">
           <div className="flex justify-between items-center">
             <div className="flex flex-col gap-y-1">
@@ -43,7 +53,7 @@ export const DashboardActions = () => {
           </div>
         </CardContent>
       </Card>
-      <Card className="flex flex-col hover:scale-[1.02] transition cursor-pointer hover:outline outline-1 outline-muted">
+      <Card className="flex flex-col hover:scale-[1.01] transition cursor-pointer hover:outline outline-1 outline-muted">
         <CardContent className="px-6 py-10">
           <div className="flex justify-between items-center">
             <div className="flex flex-col gap-y-1">
@@ -56,7 +66,7 @@ export const DashboardActions = () => {
           </div>
         </CardContent>
       </Card>
-      <Card className="flex flex-col hover:scale-[1.02] transition cursor-pointer hover:outline outline-1 outline-muted">
+      <Card className="flex flex-col hover:scale-[1.01] transition cursor-pointer hover:outline outline-1 outline-muted">
         <CardContent className="px-6 py-10">
           <div className="flex justify-between items-center">
             <div className="flex flex-col gap-y-1">
@@ -65,7 +75,7 @@ export const DashboardActions = () => {
                 Create flashcards from your notes
               </p>
             </div>
-            <Zap className="w-6 h-6 text-muted-foreground shrink-0" />
+            <WandSparkles className="w-6 h-6 text-muted-foreground shrink-0" />
           </div>
         </CardContent>
       </Card>

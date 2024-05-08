@@ -34,7 +34,7 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!document && !isLoading) {
-    redirect("/documents");
+    redirect("/dashboard");
   }
 
   return (
