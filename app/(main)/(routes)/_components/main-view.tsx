@@ -11,7 +11,7 @@ import { ImperativePanelHandle } from "react-resizable-panels";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Sidebar } from "./_sidebar/sidebar";
-import { ChatBar } from "../[documentId]/_components/_chat/chatbar";
+import { ChatBar } from "../documents/[documentId]/_components/_chat/chatbar";
 
 interface MainViewProps {
   defaultNavCollapsed?: boolean;

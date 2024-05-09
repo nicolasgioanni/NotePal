@@ -1,3 +1,5 @@
+"use client";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,6 +10,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
 
 interface DeleteAlertDialogProps {
   open: boolean;
@@ -20,6 +24,8 @@ export function DeleteAlertDialog({
   onClose,
   onConfirm,
 }: DeleteAlertDialogProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
   return (
     <AlertDialog open={open}>
       <AlertDialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
@@ -31,23 +37,32 @@ export function DeleteAlertDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel
-            onClick={(e) => {
-              e.stopPropagation();
-              onClose();
-            }}
-          >
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction
-            onClick={(e) => {
-              e.stopPropagation();
-              onConfirm();
-            }}
-            className="hover:bg-red-600 hover:text-white"
-          >
-            Delete
-          </AlertDialogAction>
+          {isDeleting ? (
+            <Loader2 className="w-6 h-6 text-muted-foreground animate-spin my-2 mr-2" />
+          ) : (
+            <>
+              <AlertDialogCancel
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClose();
+                }}
+                disabled={isDeleting}
+              >
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsDeleting(true);
+                  onConfirm();
+                }}
+                className="hover:bg-red-600 hover:text-white"
+                disabled={isDeleting}
+              >
+                Delete
+              </AlertDialogAction>
+            </>
+          )}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

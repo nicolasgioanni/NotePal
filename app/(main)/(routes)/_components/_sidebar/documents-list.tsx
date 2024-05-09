@@ -8,7 +8,7 @@ import { auth } from "@/db/firebase/config";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { cn } from "@/lib/utils";
 import { FileIcon } from "lucide-react";
-import { DocumentItem } from "./document-item";
+import { DocumentItem } from "../document-item";
 import { FolderItem } from "./folder-item";
 import { useDocuments } from "@/hooks/use-documents";
 import { useFolders } from "@/hooks/use-folders";

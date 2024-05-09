@@ -3,9 +3,9 @@ import { Navbar } from "./_components/navbar";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div>
+    <div className="h-full">
       <Navbar />
-      <main className="pt-60">{children}</main>
+      <main className="pt-48">{children}</main>
     </div>
   );
 };

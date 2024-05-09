@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const VerifyEmailPage = () => {
   return (
-    <main className="pt-60 h-full px-8">
+    <main className="pt-48 h-full px-8">
       <div className="flex justify-center">
         <div className="flex flex-col justify-center items-center text-center gap-y-3">
           <MailCheck className="h-20 w-20 text-blue-500" />

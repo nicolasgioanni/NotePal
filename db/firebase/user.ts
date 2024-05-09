@@ -1,3 +1,4 @@
+"use server";
 import { db } from "@/db/firebase/config";
 import { currentUser } from "@/lib/auth";
 import { UserUpdateData } from "@/models/types";

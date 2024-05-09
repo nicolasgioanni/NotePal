@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { DeleteAlertDialog } from "../delete-alert-dialog";
+import { DeleteAlertDialog } from "./delete-alert-dialog";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
