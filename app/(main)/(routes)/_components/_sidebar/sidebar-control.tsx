@@ -109,23 +109,23 @@ export function SidebarControl({
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem className="hover:cursor-pointer">
+                    <DropdownMenuItem className="hover:cursor-pointer text-muted-foreground">
                       <User className="mr-2 h-4 w-4" />
                       <span>Profile</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="hover:cursor-pointer">
+                    <DropdownMenuItem className="hover:cursor-pointer text-muted-foreground">
                       <Settings className="mr-2 h-4 w-4" />
                       <span>Settings</span>
                     </DropdownMenuItem>
                     <DropdownMenuSub>
-                      <DropdownMenuSubTrigger className="hover:cursor-pointer">
+                      <DropdownMenuSubTrigger className="hover:cursor-pointer text-muted-foreground hover:text-primary">
                         <Sun className="mr-2 h-4 w-4 rotate-0 transition-all dark:-rotate-90 dark:hidden" />
                         <Moon className="mr-2 h-4 w-4 rotate-90 transition-all dark:rotate-0 hidden dark:block" />
                         <span className="sr-only">Toggle theme</span>
                         <span>Theme</span>
                       </DropdownMenuSubTrigger>
                       <DropdownMenuPortal>
-                        <DropdownMenuSubContent>
+                        <DropdownMenuSubContent className="text-muted-foreground">
                           <DropdownMenuItem
                             className="hover:cursor-pointer hover:bg-accent"
                             onClick={() => setTheme("light")}
@@ -150,13 +150,13 @@ export function SidebarControl({
                     </DropdownMenuSub>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="hover:cursor-pointer">
+                  <DropdownMenuItem className="hover:cursor-pointer text-muted-foreground">
                     <LifeBuoy className="mr-2 h-4 w-4" />
                     <span>Support</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    className="hover:cursor-pointer"
+                    className="hover:cursor-pointer text-muted-foreground"
                     onClick={() => {
                       signOut({ callbackUrl: "/" });
                     }}
