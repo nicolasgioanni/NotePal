@@ -60,14 +60,14 @@ export const SearchCommand = () => {
       <CommandInput placeholder="Search notes..." />
       <CommandList>
         <CommandEmpty>No results found</CommandEmpty>
-        <CommandGroup heading="Documents">
+        <CommandGroup heading="Notes">
           {documents.map((document) => (
             <CommandItem
               key={document.id}
               value={`${document.id}-${document.title}`}
               title={document.title}
               onSelect={() => onSelect(document.id)}
-              className="cursor-pointer"
+              className="cursor-pointer text-muted-foreground"
             >
               <File className="mr-2 h-4 w-4" />
               <span>{document.title}</span>

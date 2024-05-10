@@ -54,7 +54,7 @@ export const DocumentItem = ({
         role="button"
         style={{ marginLeft: level ? `${level * 14}px` : "0px" }}
         className={cn(
-          "group py-1.5 px-1.5 flex items-center hover:bg-accent font-medium text-muted-foreground rounded-md text-sm transition",
+          "group py-1.5 px-1.5 flex items-center hover:bg-accent font-medium text-muted-foreground hover:text-primary/80 rounded-md text-sm transition",
           active && "bg-accent text-accent-foreground"
         )}
       >

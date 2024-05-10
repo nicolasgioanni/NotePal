@@ -30,7 +30,12 @@ export const DashboardActions = () => {
           </div>
         </CardContent>
       </Card>
-      <Card className="flex-grow hover:scale-[1.02] transition cursor-pointer hover:outline outline-1 outline-muted">
+      <Card
+        onClick={() => {
+          router.push(`/flashcards`);
+        }}
+        className="flex-grow hover:scale-[1.02] transition cursor-pointer hover:outline outline-1 outline-muted"
+      >
         <CardContent className="px-6 py-10 my-auto">
           <div className="flex justify-between items-center">
             <div className="flex flex-col gap-y-1">
@@ -43,7 +48,12 @@ export const DashboardActions = () => {
           </div>
         </CardContent>
       </Card>
-      <Card className="flex-grow hover:scale-[1.02] transition cursor-pointer hover:outline outline-1 outline-muted">
+      <Card
+        onClick={() => {
+          router.push(`/quiz`);
+        }}
+        className="flex-grow hover:scale-[1.02] transition cursor-pointer hover:outline outline-1 outline-muted"
+      >
         <CardContent className="px-6 py-10 my-auto">
           <div className="flex justify-between items-center">
             <div className="flex flex-col gap-y-1">

@@ -3,7 +3,7 @@ import { DashboardTitle } from "./_components/dashboard-title";
 
 export default function DashboardPage() {
   return (
-    <div className="flex flex-col w-full h-full gap-y-5">
+    <div className="w-full h-full px-6 py-5 overflow-y-auto">
       <DashboardTitle />
       <DashboardBody />
     </div>

@@ -106,7 +106,7 @@ export const FolderItem = ({
         role="button"
         style={{ marginLeft: level ? `${level * 14}px` : "0px" }}
         className={cn(
-          "group py-1.5 px-1.5 flex items-center hover:bg-accent font-medium text-muted-foreground rounded-md text-sm transition"
+          "group py-1.5 px-1.5 flex items-center hover:bg-accent font-medium text-muted-foreground hover:text-primary/80 rounded-md text-sm transition"
         )}
       >
         <Icon className="h-4 w-4 mr-2 shrink-0" />

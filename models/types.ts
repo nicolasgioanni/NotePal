@@ -47,6 +47,19 @@ interface UserUpdateData {
   emailVerified?: Date;
 }
 
+interface FlashcardDeck {
+  id?: string;
+  title: string;
+  userId: string;
+  parentFolderId: string | null;
+  createdAt: Date;
+}
+
+interface FlashcardDeckUpdateData {
+  title?: string;
+  parentFolderId?: string | null;
+}
+
 export type {
   Document,
   DocumentUpdateData,
@@ -55,4 +68,6 @@ export type {
   FolderUpdateData,
   FolderCreateData,
   UserUpdateData,
+  FlashcardDeck,
+  FlashcardDeckUpdateData,
 };
