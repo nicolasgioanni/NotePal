@@ -5,6 +5,7 @@ import { getDocumentById } from "@/db//firebase/document";
 import { Document } from "@/models/types";
 import { createFlashcardDeck } from "@/db/firebase/flashcards";
 import { v4 as uuidv4 } from "uuid";
+import { Flashcard } from "@/models/types";
 
 const openai = new OpenAI();
 
@@ -49,7 +50,7 @@ export const POST = auth(async function GET(req) {
           back: flashcard.back,
         };
       }
-    );
+    ) as Flashcard[];
 
     const deckId = await createFlashcardDeck({
       title: flashcardDeck.title,
