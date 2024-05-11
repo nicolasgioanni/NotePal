@@ -89,10 +89,8 @@ export const Body = () => {
     if (!isLoading && selectedNote) {
       // Use find or some to check based on a property, commonly `id`
       const noteExists = documents.some((doc) => doc.id === selectedNote.id);
-      console.log("Note exists:", noteExists);
 
       if (!noteExists) {
-        console.log("Note was deleted");
         setSelectedNote(null);
       }
     }

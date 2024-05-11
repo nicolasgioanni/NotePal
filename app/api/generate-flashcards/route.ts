@@ -4,6 +4,7 @@ import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { getDocumentById } from "@/db//firebase/document";
 import { Document } from "@/models/types";
 import { createFlashcardDeck } from "@/db/firebase/flashcards";
+import { v4 as uuidv4 } from "uuid";
 
 const openai = new OpenAI();
 
@@ -39,9 +40,20 @@ export const POST = auth(async function GET(req) {
       );
     }
 
+    const flashcards = flashcardDeck.flashcards.map(
+      (flashcard: { back: string; front: string }) => {
+        // turn each flashcard into a Flashcard model
+        return {
+          id: uuidv4(),
+          front: flashcard.front,
+          back: flashcard.back,
+        };
+      }
+    );
+
     const deckId = await createFlashcardDeck({
       title: flashcardDeck.title,
-      flashcards: flashcardDeck.flashcards,
+      flashcards: flashcards,
     });
 
     return Response.json({ success: true, deckId }, { status: 200 });
