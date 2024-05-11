@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { Document } from "@/models/types";
-import { File, Plus } from "lucide-react";
+import { File, Plus, Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { SelectNoteCommand } from "./select-note";
 import { Button } from "@/components/ui/button";
@@ -196,8 +196,13 @@ export const Body = () => {
           onClick={handleSubmit}
           className="gap-x-2 w-[200px] hover:ring-1 hover:ring-primary hover:ring-offset-2 transition-all duration-200"
         >
-          <Sparkles className="w-4 h-4" />
-          <span>Generate</span>
+          {isGenerating ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Sparkles className="w-4 h-4" />
+          )}
+
+          <span>{isGenerating ? "Generating..." : "Generate"}</span>
         </Button>
       </div>
     </div>

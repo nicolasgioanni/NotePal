@@ -72,7 +72,7 @@ async function generateFlashcardsFromNote(
         "Each flashcard should consist of a front and an back. " +
         "The front and back should be concise, with the front ideally not exceeding 75 characters, and the back ideally not exceeding 50 characters. " +
         "Use concise and clear language suitable for educational purposes. " +
-        "You must generate the exact quantity of flashcards requested. " +
+        "You MUST generate the exact quantity of flashcards requested. " +
         "If the quantity of flashcards requested is 0, automatically determine the appropriate number of flashcards to create, up to a maximum of 20." +
         "Provide output in valid JSON format. The data schema should be like this: " +
         JSON.stringify(example_json),
@@ -109,7 +109,7 @@ async function generateFlashcardsFromTopic(
         "Each flashcard should consist of a front and an back. " +
         "The front and back should be concise, with the front ideally not exceeding 75 characters, and the back ideally not exceeding 50 characters. " +
         "Use concise and clear language suitable for educational purposes. " +
-        "You must generate the exact quantity of flashcards requested. " +
+        "You MUST generate the exact quantity of flashcards requested. " +
         "If the quantity of flashcards requested is 0, automatically determine the appropriate number of flashcards to create, up to a maximum of 20." +
         "Provide output in valid JSON format. The data schema should be like this: " +
         JSON.stringify(example_json),
