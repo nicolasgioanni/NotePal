@@ -64,6 +64,7 @@ interface FlashcardCreateData {
 }
 interface FlashcardDeck {
   id?: string;
+  parentFolderId?: string | null;
   title: string;
   userId: string;
   createdAt: Date;
@@ -73,11 +74,13 @@ interface FlashcardDeck {
 interface FlashcardDeckCreateData {
   title: string;
   flashcards: Flashcard[];
+  parentFolderId?: string | null;
 }
 
 interface FlashcardDeckUpdateData {
   title?: string;
   flashcards?: Flashcard[];
+  parentFolderId?: string | null;
 }
 
 export type {

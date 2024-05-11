@@ -110,7 +110,7 @@ export const FolderItem = ({
         )}
       >
         <Icon className="h-4 w-4 mr-2 shrink-0" />
-        <span className="truncate">{label}</span>
+        <span className="truncate mr-0.5">{label}</span>
         <div
           onClick={(e) => e.stopPropagation()}
           className="ml-auto flex items-center gap-x-2"

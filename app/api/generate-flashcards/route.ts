@@ -147,7 +147,7 @@ async function generateFlashcardsFromTopic(
 }
 
 const example_json = {
-  title: "Country Capital Flashcards",
+  title: "Country Capitals",
   flashcards: [
     {
       front: "What is the capital of France?",

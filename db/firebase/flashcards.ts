@@ -40,6 +40,7 @@ export const createFlashcardDeck = async (data: FlashcardDeckCreateData) => {
 
   const deckData = {
     title: data.title,
+    parentFolderId: data.parentFolderId || null,
     userId: user.id,
     createdAt: new Date(),
     flashcards: data.flashcards,
@@ -47,7 +48,7 @@ export const createFlashcardDeck = async (data: FlashcardDeckCreateData) => {
 
   try {
     const userDocRef = doc(db, "users", user.id);
-    const documentsCollectionRef = collection(userDocRef, "flashcard-deck");
+    const documentsCollectionRef = collection(userDocRef, "flashcard-decks");
 
     // const embedding = await getEmbeddingForDoc(defaultData.title);
 
@@ -82,7 +83,7 @@ export const getFlashcardDeckById = async (deckId: string) => {
 
   try {
     const userDocRef = doc(db, "users", user.id);
-    const documentRef = doc(userDocRef, "flashcard-deck", deckId);
+    const documentRef = doc(userDocRef, "flashcard-decks", deckId);
 
     const documentSnapshot = await getDoc(documentRef);
 
@@ -120,7 +121,7 @@ export const updateFlashcardDeck = async (
 
   try {
     const userDocRef = doc(db, "users", user.id);
-    const documentRef = doc(userDocRef, "flashcard-deck", deckId);
+    const documentRef = doc(userDocRef, "flashcard-decks", deckId);
 
     await updateDoc(documentRef, { ...data });
   } catch (error) {
@@ -146,7 +147,7 @@ export const deleteFlashcardDeck = async (deckId: string) => {
 
   try {
     const userDocRef = doc(db, "users", user.id);
-    const documentRef = doc(userDocRef, "flashcard-deck", deckId);
+    const documentRef = doc(userDocRef, "flashcard-decks", deckId);
 
     await deleteDoc(documentRef);
   } catch (error) {
@@ -182,7 +183,7 @@ export const createFlashcard = async (
 
   try {
     const userDocRef = doc(db, "users", user.id);
-    const documentRef = doc(userDocRef, "flashcard-deck", deckId);
+    const documentRef = doc(userDocRef, "flashcard-decks", deckId);
     const docSnapshot = await getDoc(documentRef);
 
     if (!docSnapshot.exists()) {
@@ -223,7 +224,7 @@ export const updateFlashcard = async (
 
   try {
     const userDocRef = doc(db, "users", user.id);
-    const documentRef = doc(userDocRef, "flashcard-deck", deckId);
+    const documentRef = doc(userDocRef, "flashcard-decks", deckId);
     const docSnapshot = await getDoc(documentRef);
 
     if (!docSnapshot.exists()) {
@@ -265,7 +266,7 @@ export const deleteFlashcard = async (deckId: string, flashcardId: string) => {
 
   try {
     const userDocRef = doc(db, "users", user.id);
-    const documentRef = doc(userDocRef, "flashcard-deck", deckId);
+    const documentRef = doc(userDocRef, "flashcard-decks", deckId);
     const docSnapshot = await getDoc(documentRef);
 
     if (!docSnapshot.exists()) {

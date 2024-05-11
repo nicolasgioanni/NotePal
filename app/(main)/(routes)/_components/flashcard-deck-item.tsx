@@ -1,7 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { File, MoreHorizontal, TextCursorInput, Trash } from "lucide-react";
+import {
+  GalleryHorizontalEnd,
+  MoreHorizontal,
+  TextCursorInput,
+  Trash,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,9 +19,9 @@ import { DeleteAlertDialog } from "./delete-alert-dialog";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
-import { deleteDocument } from "@/db/firebase/document";
+import { deleteFlashcardDeck } from "@/db/firebase/flashcards";
 
-interface DocumentItemProps {
+interface FlashcardDeckItemProps {
   id: string;
   label: string;
   active?: boolean;
@@ -24,14 +29,14 @@ interface DocumentItemProps {
   onClick?: () => void;
 }
 
-export const DocumentItem = ({
+export const FlashcardDeckItem = ({
   id,
   label,
   active,
   level,
   onClick,
-}: DocumentItemProps) => {
-  const Icon = File;
+}: FlashcardDeckItemProps) => {
+  const Icon = GalleryHorizontalEnd;
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -40,10 +45,10 @@ export const DocumentItem = ({
   };
 
   const handleDelete = async () => {
-    toast.promise(deleteDocument(id), {
-      loading: "Deleting document...",
-      success: "Document deleted!",
-      error: "Failed to delete document.",
+    toast.promise(deleteFlashcardDeck(id), {
+      loading: "Deleting flashcard deck...",
+      success: "Flashcard deck deleted!",
+      error: "Failed to delete flashcard deck.",
     });
   };
 
@@ -108,7 +113,7 @@ export const DocumentItem = ({
   );
 };
 
-DocumentItem.Skeleton = function DocumentItemSkeleton({
+FlashcardDeckItem.Skeleton = function FlashcardDeckItemSkeleton({
   level,
 }: {
   level?: number;

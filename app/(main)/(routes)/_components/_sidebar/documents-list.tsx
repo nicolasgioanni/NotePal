@@ -10,8 +10,10 @@ import { cn } from "@/lib/utils";
 import { FileIcon } from "lucide-react";
 import { DocumentItem } from "../document-item";
 import { FolderItem } from "./folder-item";
+import { FlashcardDeckItem } from "../flashcard-deck-item";
 import { useDocuments } from "@/hooks/use-documents";
 import { useFolders } from "@/hooks/use-folders";
+import { useFlashcardDecks } from "@/hooks/use-flashcard-decks";
 
 interface DocumentsListProps {
   parentFolderId?: string;
@@ -37,6 +39,11 @@ export const DocumentsList = ({
     isLoading: foldersLoading,
     error: foldersError,
   } = useFolders(parentFolderId);
+  const {
+    flashcardDecks,
+    isLoading: flashcardDecksLoading,
+    error: flashcardDeckError,
+  } = useFlashcardDecks(parentFolderId);
 
   const onExpand = (id?: string) => {
     if (!id) return;
@@ -46,13 +53,19 @@ export const DocumentsList = ({
     }));
   };
 
-  const onRedirect = (documentId?: string) => {
+  const onDocumentRedirect = (documentId?: string) => {
     if (!documentId) return;
 
     router.push(`/documents/${documentId}`);
   };
 
-  if (documentsLoading || foldersLoading) {
+  const onFlashcardDeckRedirect = (deckId?: string) => {
+    if (!deckId) return;
+
+    router.push(`/flashcards/${deckId}`);
+  };
+
+  if (documentsLoading || foldersLoading || flashcardDecksLoading) {
     return (
       <>
         <DocumentItem.Skeleton level={level} />
@@ -109,8 +122,19 @@ export const DocumentsList = ({
           <DocumentItem
             id={document.id as string}
             label={document.title}
-            onClick={() => onRedirect(document.id)}
+            onClick={() => onDocumentRedirect(document.id)}
             active={params.documentId === document.id}
+            level={level}
+          />
+        </div>
+      ))}
+      {flashcardDecks.map((deck) => (
+        <div key={deck.id}>
+          <FlashcardDeckItem
+            id={deck.id as string}
+            label={deck.title}
+            onClick={() => onFlashcardDeckRedirect(deck.id)}
+            active={params.flashcardDeckId === deck.id}
             level={level}
           />
         </div>
