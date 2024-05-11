@@ -10,7 +10,7 @@ import { ResizablePanelGroup } from "@/components/ui/resizable";
 
 const DocumentIdPage = () => {
   return (
-    <div>
+    <div className="flex justify-center">
       <EditorContent />
     </div>
   );
