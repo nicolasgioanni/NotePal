@@ -47,17 +47,37 @@ interface UserUpdateData {
   emailVerified?: Date;
 }
 
+interface Flashcard {
+  id: string;
+  front: string;
+  back: string;
+}
+
+interface FlashcardUpdateData {
+  front?: string;
+  back?: string;
+}
+
+interface FlashcardCreateData {
+  front: string;
+  back: string;
+}
 interface FlashcardDeck {
   id?: string;
   title: string;
   userId: string;
-  parentFolderId: string | null;
   createdAt: Date;
+  flashcards: Flashcard[];
+}
+
+interface FlashcardDeckCreateData {
+  title: string;
+  flashcards: Flashcard[];
 }
 
 interface FlashcardDeckUpdateData {
   title?: string;
-  parentFolderId?: string | null;
+  flashcards?: Flashcard[];
 }
 
 export type {
@@ -69,5 +89,9 @@ export type {
   FolderCreateData,
   UserUpdateData,
   FlashcardDeck,
+  FlashcardDeckCreateData,
   FlashcardDeckUpdateData,
+  Flashcard,
+  FlashcardUpdateData,
+  FlashcardCreateData,
 };

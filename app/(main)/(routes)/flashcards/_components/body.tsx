@@ -20,6 +20,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAllDocuments } from "@/hooks/use-documents-by-user";
+import { toast } from "sonner";
 
 const cardQuantityOptions = [
   { value: 0, label: "Auto", icon: Sparkles },
@@ -37,6 +39,64 @@ export const Body = () => {
     cardQuantityOptions.find((option) => option.value === 5)
   );
   const [textareaValue, setTextareaValue] = useState("");
+  const { documents, isLoading, error } = useAllDocuments();
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleSubmit = async () => {
+    setIsGenerating(true);
+    const payload =
+      tabValue === "notes"
+        ? {
+            type: "note",
+            noteId: selectedNote?.id,
+            cardQuantity: cardQuantity?.value,
+          }
+        : {
+            type: "custom",
+            topic: textareaValue,
+            cardQuantity: cardQuantity?.value,
+          };
+
+    const promise = fetch("/api/generate-flashcards", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((response) => {
+        setSelectedNote(null);
+        setTextareaValue("");
+        if (!response.ok) {
+          throw new Error("Failed to generate flashcards");
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to generate flashcards");
+      })
+      .finally(() => {
+        setIsGenerating(false);
+      });
+
+    toast.promise(promise, {
+      loading: "Generating flashcards...",
+      success: "Flashcards created!",
+      error: "Failed to create a flashcards.",
+    });
+  };
+
+  useEffect(() => {
+    if (!isLoading && selectedNote) {
+      // Use find or some to check based on a property, commonly `id`
+      const noteExists = documents.some((doc) => doc.id === selectedNote.id);
+      console.log("Note exists:", noteExists);
+
+      if (!noteExists) {
+        console.log("Note was deleted");
+        setSelectedNote(null);
+      }
+    }
+  }, [documents, selectedNote, isLoading]);
 
   return (
     <div className="flex flex-col gap-y-4 mt-4">
@@ -60,6 +120,7 @@ export const Body = () => {
           <Button
             variant="ghost"
             className="w-full border-2 border-dotted h-24 text-muted-foreground"
+            disabled={isGenerating}
             onClick={() => setSearchOpen(true)}
           >
             {selectedNote ? (
@@ -84,6 +145,7 @@ export const Body = () => {
             onChange={(e) => setTextareaValue(e.target.value)}
             className="w-full h-24 resize-none focus-visible:ring-primary/50"
             placeholder="Type some topic. e.g. 'JavaScript'"
+            disabled={isGenerating}
           />
         </TabsContent>
       </Tabs>
@@ -93,6 +155,7 @@ export const Body = () => {
             <Button
               variant="outline"
               className="gap-x-2 text-primary/80 w-[200px]"
+              disabled={isGenerating}
             >
               {cardQuantity?.icon && <cardQuantity.icon className="w-4 h-4" />}
               {cardQuantity?.label}
@@ -127,8 +190,10 @@ export const Body = () => {
         <Button
           disabled={
             (!selectedNote && tabValue === "notes") ||
-            (!textareaValue && tabValue === "custom")
+            (!textareaValue && tabValue === "custom") ||
+            isGenerating
           }
+          onClick={handleSubmit}
           className="gap-x-2 w-[200px] hover:ring-1 hover:ring-primary hover:ring-offset-2 transition-all duration-200"
         >
           <Sparkles className="w-4 h-4" />
