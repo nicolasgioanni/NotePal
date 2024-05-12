@@ -12,7 +12,7 @@ export function EditorContent() {
   const params = useParams();
 
   return (
-    <div className="h-full max-w-4xl">
+    <div className="h-full max-w-4xl w-full">
       <DocTitle docId={params.documentId as string} />
       <Editor docId={params.documentId as string} />
     </div>
