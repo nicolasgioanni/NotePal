@@ -46,14 +46,12 @@ import {
 const extensions = [...defaultExtensions, slashCommand];
 
 interface EditorProps {
-  docId: string;
+  initialData?: Document;
 }
 
-const Editor = ({ docId }: EditorProps) => {
-  const [markdownContent, setMarkdownContent] = useState<string | null>(null);
+const Editor = ({ initialData }: EditorProps) => {
   const [saveStatus, setSaveStatus] = useState("Saved");
   const user = useCurrentUser();
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hasContentChanged, setHasContentChanged] = useState(false);
 
@@ -62,32 +60,17 @@ const Editor = ({ docId }: EditorProps) => {
   const [openLink, setOpenLink] = useState(false);
   const [openAI, setOpenAI] = useState(false);
 
-  useEffect(() => {
-    const fetchDocument = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const docJson = await getDocumentById(docId);
-        const docData = JSON.parse(docJson) as Document;
-        setMarkdownContent(docData.markdown);
-      } catch (error) {
-        setError("Error fetching document");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    if (docId) fetchDocument();
-  }, [docId]);
-
   const debouncedUpdates = useDebouncedCallback(
     async (editor: EditorInstance) => {
       const json = editor.getJSON();
       // Save the content to firebase here
 
-      if (!user) return;
-      const jsonString = JSON.stringify(json);
+      if (!user || !initialData || !initialData.id) return;
 
-      await updateDocumentContent(docId, editor.storage.markdown.getMarkdown())
+      await updateDocumentContent(
+        initialData.id,
+        editor.storage.markdown.getMarkdown()
+      )
         .then(() => {
           setSaveStatus("Saved");
         })
@@ -102,18 +85,16 @@ const Editor = ({ docId }: EditorProps) => {
   );
 
   const updateEmbedding = async (editor: EditorInstance) => {
-    if (!user) return;
+    if (!user || !initialData || !initialData.id) return;
     const markdown = editor.storage.markdown.getMarkdown();
-    await generateAndStoreEmbeddings(docId, markdown)
-      .then(async () => {
-        // await getEmbeddingsForDoc(docId);
-      })
-      .catch((error) => {
+    await generateAndStoreEmbeddings(initialData.id, markdown).catch(
+      (error) => {
         console.error("Error generating embeddings: ", error);
-      });
+      }
+    );
   };
 
-  if (isLoading) {
+  if (!initialData) {
     return (
       <div className="flex flex-col px-12 py-[25px] gap-y-6">
         <Skeleton className="h-8 w-full rounded-2xl" />
@@ -126,10 +107,6 @@ const Editor = ({ docId }: EditorProps) => {
 
   if (error) {
     return <div>Something went wrong!</div>;
-  }
-
-  if (markdownContent == null) {
-    return null;
   }
 
   return (
@@ -161,8 +138,8 @@ const Editor = ({ docId }: EditorProps) => {
             }
           }}
           onCreate={({ editor }) => {
+            editor.commands.setContent(initialData.markdown);
             updateEmbedding(editor);
-            editor.commands.setContent(markdownContent);
           }}
         >
           <EditorCommand className="z-50 h-auto max-h-[330px] overflow-y-auto rounded-md border border-muted bg-background px-1 py-2 shadow-md transition-all">

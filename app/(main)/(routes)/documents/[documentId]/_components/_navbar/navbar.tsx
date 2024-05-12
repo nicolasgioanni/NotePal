@@ -31,10 +31,12 @@ import { Actions } from "./actions";
 import { useDocumentById } from "@/hooks/use-document-by-id";
 
 interface NavbarProps {
-  initialData: Document;
+  initialData?: Document;
 }
 
 export const Navbar = ({ initialData }: NavbarProps) => {
+  if (!initialData) return <Navbar.Skeleton />;
+
   return (
     <div className="px-4 pt-5 pb-3 sticky top-0 min-h-16">
       <div className="flex flex-row justify-between items-center">

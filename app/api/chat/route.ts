@@ -42,11 +42,11 @@ export const POST = auth(async function GET(req) {
       model: "gpt-3.5-turbo",
       streaming: true,
       callbacks: [handlers],
+      verbose: true,
     });
 
     const rephrasingModel = new ChatOpenAI({
       model: "gpt-3.5-turbo",
-      verbose: true,
     });
 
     const retriever = (await getVectorStore(docId)).asRetriever();

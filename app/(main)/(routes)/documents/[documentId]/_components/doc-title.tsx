@@ -10,37 +10,36 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useDocumentById } from "@/hooks/use-document-by-id";
 
 interface DocTitleProps {
-  docId: string;
+  initialData?: Document;
 }
 
-export const DocTitle = ({ docId }: DocTitleProps) => {
+export const DocTitle = ({ initialData }: DocTitleProps) => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const { document, isLoading, error } = useDocumentById(docId);
   const [title, setTitle] = useState("");
 
   useEffect(() => {
-    if (document) {
-      setTitle(document.title);
+    if (initialData) {
+      setTitle(initialData.title);
     }
-  }, [document]);
+  }, [initialData]);
 
   const setDocumentTitle = async (title: string) => {
-    if (!document || !document.id) return;
+    if (!initialData || !initialData.id) return;
     if (title.trim() === "") title = "Untitled";
     setTitle(title);
 
-    await updateDocument(document.id, { title: title }).catch((error) => {
+    await updateDocument(initialData.id, { title: title }).catch((error) => {
       console.error("Error updating document title: ", error);
-      setTitle(document.title);
+      setTitle(initialData.title);
     });
   };
 
   const enableInput = () => {
-    if (!document) return;
+    if (!initialData) return;
     setIsEditing(true);
     setTimeout(() => {
-      setTitle(document.title);
+      setTitle(initialData.title);
       inputRef.current?.focus();
       inputRef.current?.setSelectionRange(0, inputRef.current.value.length);
     }, 0);
@@ -61,14 +60,14 @@ export const DocTitle = ({ docId }: DocTitleProps) => {
       disableInput();
     }
     if (e.key === "Escape") {
-      if (!document) return;
+      if (!initialData) return;
       e.preventDefault();
-      setTitle(document.title == "" ? "Untitled" : document.title);
+      setTitle(initialData.title == "" ? "Untitled" : initialData.title);
       setIsEditing(false);
     }
   };
 
-  if (isLoading) {
+  if (!initialData) {
     return (
       <div className="px-8 sm:px-12 pt-12">
         <DocTitle.Skeleton />

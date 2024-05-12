@@ -18,7 +18,6 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
   const { document, isLoading, error } = useDocumentById(
     params.documentId as string
   );
-  const router = useRouter();
   const [isChatCollapsed, setIsChatCollapsed] = useState(false);
 
   const chatRef = useRef<ImperativePanelHandle>(null);
@@ -33,7 +32,7 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
     }
   }
 
-  if (!document && !isLoading) {
+  if (document == undefined && !isLoading) {
     redirect("/dashboard");
   }
 
@@ -41,7 +40,7 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
     <ResizablePanelGroup direction="horizontal">
       <ResizablePanel defaultSize={80}>
         <div className="h-full flex flex-col w-full">
-          {isLoading ? <Navbar.Skeleton /> : <Navbar initialData={document!} />}
+          {isLoading ? <Navbar.Skeleton /> : <Navbar initialData={document} />}
 
           <ScrollArea>
             <main className="h-full px-8">{children}</main>

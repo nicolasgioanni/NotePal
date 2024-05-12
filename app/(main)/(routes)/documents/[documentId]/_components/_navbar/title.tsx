@@ -72,14 +72,14 @@ export const Title = ({ initialData }: TitleProps) => {
           onChange={onChange}
           onKeyDown={onKeyDown}
           value={title}
-          className="h-8 px-2 focus-visible:ring-transparent w-full"
+          className="h-8 px-1.5 py-1 text-base focus-visible:ring-transparent w-full"
         />
       ) : (
         <Button
           onClick={enableInput}
           variant="ghost"
-          size="sm"
-          className="font-medium h-auto p-1 px-1.5 text-base max-w-full"
+          size="hug"
+          className="font-medium py-1 px-1.5 text-base max-w-full"
         >
           <span className="truncate">{title}</span>
         </Button>

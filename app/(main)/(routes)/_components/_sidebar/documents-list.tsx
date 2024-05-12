@@ -56,7 +56,7 @@ export const DocumentsList = ({
   const onRedirect = (path: string, documentId?: string) => {
     if (!documentId) return;
 
-    router.push(`/documents/${documentId}`);
+    router.push(`/${path}/${documentId}`);
   };
 
   if (documentsLoading || foldersLoading || flashcardDecksLoading) {

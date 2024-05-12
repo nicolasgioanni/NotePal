@@ -71,7 +71,7 @@ export function MainView({
             setIsNavCollapsed(false);
           }}
           className={cn(
-            "group/navbar min-w-[160px]",
+            "group/navbar min-w-[160px] bg-muted/20",
             isNavCollapsed &&
               "min-w-[50px] transition-all duration-300 ease-in-out"
           )}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Command, File } from "lucide-react";
+import { Command, File, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 
@@ -19,11 +19,21 @@ import { auth, db } from "@/db/firebase/config";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { Document } from "@/models/types";
 import { useAllDocuments } from "@/hooks/use-documents-by-user";
+import { useAllFlashcardDecks } from "@/hooks/use-flashcard-deck-by-user";
 
 export const SearchCommand = () => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
-  const { documents, isLoading, error } = useAllDocuments();
+  const {
+    documents,
+    isLoading: isDocumentsLoading,
+    error: documentsError,
+  } = useAllDocuments();
+  const {
+    flashcardDecks,
+    isLoading: isLoadingFlashcardDecks,
+    error: flashcardDeckError,
+  } = useAllFlashcardDecks();
 
   const toggle = useSearch((store) => store.toggle);
   const isOpen = useSearch((store) => store.isOpen);
@@ -44,9 +54,9 @@ export const SearchCommand = () => {
     return () => document.removeEventListener("keydown", down);
   }, [toggle]);
 
-  const onSelect = (documentId: string | undefined) => {
+  const onSelect = (path: string, documentId: string | undefined) => {
     if (!documentId) return;
-    router.push(`/documents/${documentId}`);
+    router.push(`/${path}/${documentId}`);
     onClose();
   };
 
@@ -66,11 +76,25 @@ export const SearchCommand = () => {
               key={document.id}
               value={`${document.id}-${document.title}`}
               title={document.title}
-              onSelect={() => onSelect(document.id)}
+              onSelect={() => onSelect("documents", document.id)}
               className="cursor-pointer text-muted-foreground"
             >
               <File className="mr-2 h-4 w-4" />
               <span>{document.title}</span>
+            </CommandItem>
+          ))}
+        </CommandGroup>
+        <CommandGroup heading="Flashcards">
+          {flashcardDecks.map((deck) => (
+            <CommandItem
+              key={deck.id}
+              value={`${deck.id}-${deck.title}`}
+              title={document.title}
+              onSelect={() => onSelect("flashcards", deck.id)}
+              className="cursor-pointer text-muted-foreground"
+            >
+              <Zap className="mr-2 h-4 w-4" />
+              <span>{deck.title}</span>
             </CommandItem>
           ))}
         </CommandGroup>

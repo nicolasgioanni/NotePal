@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAllDocuments } from "@/hooks/use-documents-by-user";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const cardQuantityOptions = [
   { value: 0, label: "Auto", icon: Sparkles },
@@ -41,6 +42,7 @@ export const Body = () => {
   const [textareaValue, setTextareaValue] = useState("");
   const { documents, isLoading, error } = useAllDocuments();
   const [isGenerating, setIsGenerating] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async () => {
     setIsGenerating(true);
@@ -64,12 +66,15 @@ export const Body = () => {
       },
       body: JSON.stringify(payload),
     })
-      .then((response) => {
+      .then(async (response) => {
         setSelectedNote(null);
         setTextareaValue("");
         if (!response.ok) {
           throw new Error("Failed to generate flashcards");
         }
+        const data = await response.json();
+        const deckId = data.deckId;
+        router.push(`/flashcards/${deckId}`);
       })
       .catch((error) => {
         console.error("Failed to generate flashcards");
