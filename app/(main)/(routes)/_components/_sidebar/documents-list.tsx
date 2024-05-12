@@ -53,16 +53,10 @@ export const DocumentsList = ({
     }));
   };
 
-  const onDocumentRedirect = (documentId?: string) => {
+  const onRedirect = (path: string, documentId?: string) => {
     if (!documentId) return;
 
     router.push(`/documents/${documentId}`);
-  };
-
-  const onFlashcardDeckRedirect = (deckId?: string) => {
-    if (!deckId) return;
-
-    router.push(`/flashcards/${deckId}`);
   };
 
   if (documentsLoading || foldersLoading || flashcardDecksLoading) {
@@ -122,7 +116,7 @@ export const DocumentsList = ({
           <DocumentItem
             id={document.id as string}
             label={document.title}
-            onClick={() => onDocumentRedirect(document.id)}
+            onClick={() => onRedirect("documents", document.id)}
             active={params.documentId === document.id}
             level={level}
           />
@@ -133,7 +127,7 @@ export const DocumentsList = ({
           <FlashcardDeckItem
             id={deck.id as string}
             label={deck.title}
-            onClick={() => onFlashcardDeckRedirect(deck.id)}
+            onClick={() => onRedirect("flashcards", deck.id)}
             active={params.flashcardDeckId === deck.id}
             level={level}
           />

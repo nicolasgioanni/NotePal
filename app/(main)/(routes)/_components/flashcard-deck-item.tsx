@@ -6,6 +6,7 @@ import {
   MoreHorizontal,
   TextCursorInput,
   Trash,
+  Zap,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -36,7 +37,7 @@ export const FlashcardDeckItem = ({
   level,
   onClick,
 }: FlashcardDeckItemProps) => {
-  const Icon = GalleryHorizontalEnd;
+  const Icon = Zap;
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
