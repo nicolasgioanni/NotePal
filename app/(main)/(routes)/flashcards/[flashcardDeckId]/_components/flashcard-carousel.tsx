@@ -86,7 +86,7 @@ export const FlashcardCarousel = ({ initialData }: FlashcardCarouselProps) => {
             <CarouselItem key={flashcard.id}>
               <div className="p-1 h-full">
                 <Card
-                  className="h-full cursor-pointer"
+                  className="h-full cursor-pointer shadow-md"
                   onClick={() => {
                     handleClick(flashcard.id);
                   }}
