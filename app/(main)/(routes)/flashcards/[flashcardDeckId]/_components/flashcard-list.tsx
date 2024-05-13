@@ -9,15 +9,16 @@ import {
 } from "@/components/ui/tooltip";
 import { FlashcardDeck } from "@/models/types";
 import { Pencil, Plus, Trash } from "lucide-react";
+import { EditFlashcardButton } from "./edit-flashcard-button";
 
 interface FlashcardDeckListProps {
   initialData?: FlashcardDeck;
 }
 
 export const FlashcardList = ({ initialData }: FlashcardDeckListProps) => {
-  if (!initialData) return <FlashcardList.Skeleton />;
+  if (!initialData || !initialData.id) return <FlashcardList.Skeleton />;
 
-  const { flashcards } = initialData;
+  const { flashcards, id } = initialData;
 
   return (
     <div className="flex flex-col gap-y-4">
@@ -37,14 +38,11 @@ export const FlashcardList = ({ initialData }: FlashcardDeckListProps) => {
             <p className="text-sm sm:text-base md:text-lg text-muted-foreground w-1/2 content ">
               {flashcard.back}
             </p>
-            <div className="flex items-start gap-x-1 ml-1">
-              <Button
-                variant="ghost"
-                size="hug"
-                className="p-1.5 text-muted-foreground hover:text-primary/80 md:opacity-0 group-hover:opacity-100 transition"
-              >
-                <Pencil className="w-4 h-4" />
-              </Button>
+            <div className="flex items-start gap-x-1 ml-1 ">
+              <EditFlashcardButton
+                deckId={id}
+                flashcard={flashcard}
+              />
             </div>
           </div>
         </div>

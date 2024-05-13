@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { createDocument } from "@/db/firebase/document";
-import { FilePlus, FolderPlus, Plus, PlusCircle } from "lucide-react";
+import { FilePlus, FolderPlus, Plus, PlusCircle, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createFolder } from "@/db/firebase/folder";
@@ -83,6 +83,13 @@ export const AddButton = ({ isCollapsed }: AddButtonProps) => {
           >
             <FolderPlus className="mr-2 h-4 w-4" />
             <span>New Folder</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => router.push("/flashcards")}
+          >
+            <Zap className="mr-2 h-4 w-4" />
+            <span>New Flashcards</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
