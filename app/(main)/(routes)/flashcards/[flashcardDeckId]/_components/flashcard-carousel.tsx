@@ -35,7 +35,7 @@ export const FlashcardCarousel = ({ initialData }: FlashcardCarouselProps) => {
       return;
     }
 
-    setCount(api.scrollSnapList().length);
+    setCount(initialData.flashcards.length);
     setCurrent(api.selectedScrollSnap() + 1);
 
     api.on("select", () => {
