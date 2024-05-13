@@ -41,7 +41,7 @@ export const FlashcardList = ({ initialData }: FlashcardDeckListProps) => {
               <Button
                 variant="ghost"
                 size="hug"
-                className="p-1.5 text-muted-foreground hover:text-primary/80 opacity-0 group-hover:opacity-100 transition"
+                className="p-1.5 text-muted-foreground hover:text-primary/80 md:opacity-0 group-hover:opacity-100 transition"
               >
                 <Pencil className="w-4 h-4" />
               </Button>

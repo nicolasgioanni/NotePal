@@ -10,8 +10,11 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useEffect, useState } from "react";
+import ReactCardFlip from "react-card-flip";
+import { Button } from "@/components/ui/button";
+import { Lightbulb } from "lucide-react";
 
 interface FlashcardCarouselProps {
   initialData?: FlashcardDeck;
@@ -38,32 +41,22 @@ export const FlashcardCarousel = ({ initialData }: FlashcardCarouselProps) => {
     api.on("select", () => {
       const newIndex = api.selectedScrollSnap();
       setCurrent(newIndex + 1);
-      const newlyVisibleFlashcardId = initialData.flashcards[newIndex].id; // Assuming flashcards array is accessible and correctly ordered
-      setDisplayState((prevState) => ({
-        ...prevState,
-        [newlyVisibleFlashcardId]: true,
-      }));
+      //set all cards to front
+      setDisplayState((prevState) => {
+        const newState = { ...prevState };
+        Object.keys(newState).forEach((key) => {
+          newState[key] = false;
+        });
+        return newState;
+      });
     });
   }, [api, initialData]);
 
-  useEffect(() => {
-    // Initialize display state for each flashcard to show the front
-    if (initialData) {
-      const initialDisplayState: DisplayState = {};
-      initialData.flashcards.forEach((flashcard) => {
-        initialDisplayState[flashcard.id] = true; // true for front, false for back
-      });
-      setDisplayState(initialDisplayState);
-    }
-  }, [initialData]);
-
-  const handleClick = (id: string) => {
-    setDisplayState((prevState) => {
-      return {
-        ...prevState,
-        [id]: !prevState[id],
-      };
-    });
+  const flipCard = (cardId: string) => {
+    setDisplayState((prevState) => ({
+      ...prevState,
+      [cardId]: !prevState[cardId],
+    }));
   };
 
   if (!initialData)
@@ -84,26 +77,35 @@ export const FlashcardCarousel = ({ initialData }: FlashcardCarouselProps) => {
         <CarouselContent>
           {flashcards.map((flashcard) => (
             <CarouselItem key={flashcard.id}>
-              <div className="p-1 h-full">
-                <Card
-                  className="h-full cursor-pointer shadow-md"
-                  onClick={() => {
-                    handleClick(flashcard.id);
-                  }}
-                >
-                  <CardContent className="flex h-full aspect-video items-center justify-center p-6 overflow-x-hidden">
-                    {displayState[flashcard.id] ? (
-                      <span className="text-xl sm:text-2xl md:text-3xl font-medium text-center">
+              <ReactCardFlip
+                flipDirection="horizontal"
+                isFlipped={displayState[flashcard.id]}
+              >
+                <div className="p-1">
+                  <Card
+                    onClick={() => flipCard(flashcard.id)}
+                    className="h-full cursor-pointer"
+                  >
+                    <CardContent className="flex flex-col h-full aspect-video items-center justify-center p-6 overflow-x-hidden">
+                      <div className="flex flex-grow items-center text-lg md:text-2xl lg:text-3xl font-medium text-center">
                         {flashcard.front}
-                      </span>
-                    ) : (
-                      <span className="text-xl sm:text-2xl md:text-3xl font-medium text-center text-primary/80">
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+                <div className="p-1">
+                  <Card
+                    onClick={() => flipCard(flashcard.id)}
+                    className="h-full cursor-pointer"
+                  >
+                    <CardContent className="flex flex-col h-full aspect-video items-center justify-center p-6 overflow-x-hidden">
+                      <span className="flex flex-grow items-center text-lg md:text-2xl lg:text-3xl font-medium text-center text-primary/80">
                         {flashcard.back}
                       </span>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </ReactCardFlip>
             </CarouselItem>
           ))}
         </CarouselContent>

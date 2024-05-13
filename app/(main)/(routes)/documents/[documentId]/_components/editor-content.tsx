@@ -17,7 +17,7 @@ export function EditorContent({ initialData }: EditorContentProps) {
   const params = useParams();
 
   return (
-    <div className="h-full max-w-4xl w-full">
+    <div className="h-full max-w-4xl w-full min-w-96">
       <DocTitle initialData={initialData} />
       <Editor initialData={initialData} />
     </div>

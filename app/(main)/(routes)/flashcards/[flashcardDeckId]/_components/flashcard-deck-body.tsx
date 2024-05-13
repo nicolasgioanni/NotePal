@@ -16,7 +16,7 @@ interface FlashcardDeckBodyProps {
 
 export const FlashcardDeckBody = ({ initialData }: FlashcardDeckBodyProps) => {
   return (
-    <div className="flex flex-col mt-4 gap-y-8">
+    <div className="flex flex-col mt-6 gap-y-8">
       <FlashcardCarousel initialData={initialData} />
       <div className="flex flex-col gap-y-6">
         <div className="flex justify-between">
