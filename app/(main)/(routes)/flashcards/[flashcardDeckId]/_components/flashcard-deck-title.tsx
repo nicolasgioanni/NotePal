@@ -90,7 +90,7 @@ export const FlashcardDeckTitle = ({
           size="hug"
           className="px-1.5 py-1 text-3xl font-semibold"
         >
-          <span className="truncate">{title}</span>
+          <span className="text-wrap text-left">{title}</span>
         </Button>
       )}
     </div>
