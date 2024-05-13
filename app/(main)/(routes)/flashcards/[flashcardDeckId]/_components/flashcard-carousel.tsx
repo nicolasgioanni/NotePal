@@ -79,6 +79,8 @@ export const FlashcardCarousel = ({ initialData }: FlashcardCarouselProps) => {
             <CarouselItem key={flashcard.id}>
               <ReactCardFlip
                 flipDirection="horizontal"
+                flipSpeedFrontToBack={0.35}
+                flipSpeedBackToFront={0.35}
                 isFlipped={displayState[flashcard.id]}
               >
                 <div className="p-1">
