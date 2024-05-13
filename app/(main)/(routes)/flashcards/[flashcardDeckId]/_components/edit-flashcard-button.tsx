@@ -78,6 +78,7 @@ export const EditFlashcardButton = ({
       <DialogContent
         className="sm:max-w-[425px]"
         onOpenAutoFocus={(e) => e.preventDefault()}
+        onCloseAutoFocus={(e) => e.preventDefault()}
       >
         <DialogHeader>
           <DialogTitle>Edit flashcard</DialogTitle>
@@ -96,8 +97,7 @@ export const EditFlashcardButton = ({
             <Textarea
               id="front"
               placeholder="eg. 'Spider-man's real name'"
-              defaultValue={flashcard.front}
-              className="resize-none"
+              className="resize-none bg-transparent"
               value={newFront}
               disabled={isDeleting}
               onChange={(e) => {
@@ -115,9 +115,8 @@ export const EditFlashcardButton = ({
             <Textarea
               id="back"
               placeholder="eg. 'Peter Parker'"
-              className="resize-none"
+              className="resize-none bg-transparent"
               value={newBack}
-              defaultValue={flashcard.back}
               disabled={isDeleting}
               onChange={(e) => {
                 setNewBack(e.target.value);

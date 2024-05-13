@@ -73,6 +73,9 @@ export const FlashcardCarousel = ({ initialData }: FlashcardCarouselProps) => {
       <Carousel
         className="w-5/6"
         setApi={setApi}
+        opts={{
+          duration: 15,
+        }}
       >
         <CarouselContent>
           {flashcards.map((flashcard) => (
