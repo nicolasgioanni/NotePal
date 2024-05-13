@@ -12,6 +12,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandSeparator,
 } from "@/components/ui/command";
 
 import { useSearch } from "@/hooks/use-search";
@@ -70,34 +71,42 @@ export const SearchCommand = () => {
       <CommandInput placeholder="Search notes..." />
       <CommandList>
         <CommandEmpty>No results found</CommandEmpty>
-        <CommandGroup heading="Notes">
-          {documents.map((document) => (
-            <CommandItem
-              key={document.id}
-              value={`${document.id}-${document.title}`}
-              title={document.title}
-              onSelect={() => onSelect("documents", document.id)}
-              className="cursor-pointer text-muted-foreground"
-            >
-              <File className="mr-2 h-4 w-4" />
-              <span>{document.title}</span>
-            </CommandItem>
-          ))}
-        </CommandGroup>
-        <CommandGroup heading="Flashcards">
-          {flashcardDecks.map((deck) => (
-            <CommandItem
-              key={deck.id}
-              value={`${deck.id}-${deck.title}`}
-              title={document.title}
-              onSelect={() => onSelect("flashcards", deck.id)}
-              className="cursor-pointer text-muted-foreground"
-            >
-              <Zap className="mr-2 h-4 w-4" />
-              <span>{deck.title}</span>
-            </CommandItem>
-          ))}
-        </CommandGroup>
+        {documents.length !== 0 && (
+          <CommandGroup heading="Notes">
+            {documents.map((document) => (
+              <CommandItem
+                key={document.id}
+                value={`${document.id}-${document.title}`}
+                title={document.title}
+                onSelect={() => onSelect("documents", document.id)}
+                className="cursor-pointer text-muted-foreground"
+              >
+                <File className="mr-2 h-4 w-4" />
+                <span>{document.title}</span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        )}
+
+        {flashcardDecks.length !== 0 && (
+          <>
+            <CommandSeparator className="mb-1" />
+            <CommandGroup heading="Flashcards">
+              {flashcardDecks.map((deck) => (
+                <CommandItem
+                  key={deck.id}
+                  value={`${deck.id}-${deck.title}`}
+                  title={document.title}
+                  onSelect={() => onSelect("flashcards", deck.id)}
+                  className="cursor-pointer text-muted-foreground"
+                >
+                  <Zap className="mr-2 h-4 w-4" />
+                  <span>{deck.title}</span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
       </CommandList>
     </CommandDialog>
   );
