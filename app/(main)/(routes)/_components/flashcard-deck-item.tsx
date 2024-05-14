@@ -47,9 +47,9 @@ export const FlashcardDeckItem = ({
 
   const handleDelete = async () => {
     toast.promise(deleteFlashcardDeck(id), {
-      loading: "Deleting flashcard deck...",
-      success: "Flashcard deck deleted!",
-      error: "Failed to delete flashcard deck.",
+      loading: "Deleting flashcards...",
+      success: "Flashcards deleted!",
+      error: "Failed to delete flashcards.",
     });
   };
 
