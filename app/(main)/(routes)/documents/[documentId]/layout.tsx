@@ -63,18 +63,16 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
           setIsChatCollapsed(false);
         }}
         className={cn(
-          "group/chat min-w-[275px]",
+          "group/chat min-w-[275px] pt-5 pb-8",
           isChatCollapsed &&
             "min-w-[50px] transition-all duration-300 ease-in-out",
           !isDesktop && "hidden"
         )}
       >
-        <div className="flex flex-col flex-grow h-full">
-          <ChatBar
-            isChatCollapsed={isChatCollapsed}
-            onToggleChat={handleToggleChat}
-          />
-        </div>
+        <ChatBar
+          isChatCollapsed={isChatCollapsed}
+          onToggleChat={handleToggleChat}
+        />
       </ResizablePanel>
     </ResizablePanelGroup>
   );

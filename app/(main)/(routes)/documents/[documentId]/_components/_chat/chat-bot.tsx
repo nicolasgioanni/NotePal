@@ -54,7 +54,7 @@ export function ChatBot() {
   return (
     <div className="w-full h-full flex flex-col justify-between">
       <div
-        className=" flex flex-col gap-y-2 overflow-y-auto mb-[64px] px-3"
+        className=" flex flex-col gap-y-2 px-4 overflow-y-auto"
         ref={scrollAreaRef}
       >
         {messages.map((message) => (
@@ -82,7 +82,7 @@ export function ChatBot() {
           />
         )}
       </div>
-      <div className="px-3 py-4 flex sticky bottom-0">
+      <div className="py-4 px-4 flex">
         <form
           className={cn(
             "flex w-full items-center pl-3 pr-2 py-2 border rounded-md gap-x-1 bg-background shadow-md",

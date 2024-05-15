@@ -45,7 +45,7 @@ export const Navbar = ({ initialData }: NavbarProps) => {
   return (
     <div className="px-4 pt-5 pb-3 sticky top-0 min-h-16">
       <div className="flex flex-row justify-between items-center">
-        <div className="flex items-center gap-x-4">
+        <div className="flex items-center gap-x-4 flex-grow truncate">
           <MobileSidebarButton />
           <div className="truncate flex-1">
             <Title initialData={initialData} />

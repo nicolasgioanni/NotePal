@@ -7,7 +7,7 @@ interface ChatContentProps {
 
 export function ChatContent({ isCollapsed }: ChatContentProps) {
   return (
-    <div className={cn("h-full", isCollapsed && "hidden")}>
+    <div className={cn("h-full pt-4", isCollapsed && "hidden")}>
       <ChatBot />
     </div>
   );

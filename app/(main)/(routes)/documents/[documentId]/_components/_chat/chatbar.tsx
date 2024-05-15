@@ -10,14 +10,14 @@ interface ChatBarProps {
 
 export function ChatBar({ isChatCollapsed, onToggleChat }: ChatBarProps) {
   return (
-    <div className="flex flex-col h-full justify-between">
-      <div className="flex flex-col px-4 pt-5 mb-3">
+    <>
+      <div className="px-4">
         <ChatControl
           isCollapsed={isChatCollapsed}
           onToggleChat={onToggleChat}
         />
       </div>
       <ChatContent isCollapsed={isChatCollapsed} />
-    </div>
+    </>
   );
 }

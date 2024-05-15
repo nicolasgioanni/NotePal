@@ -15,6 +15,7 @@ import { Menu } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { ProfileDropdown } from "@/app/(main)/(routes)/_components/_sidebar/profile-dropdown";
 
 export const MobileSidebarButton = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -43,11 +44,13 @@ export const MobileSidebarButton = () => {
         </SheetTrigger>
         <SheetContent
           side="left"
-          className="px-0"
+          className="sm:max-w-full w-2/3"
+          onCloseAutoFocus={(e) => e.preventDefault()}
+          onOpenAutoFocus={(e) => e.preventDefault()}
         >
-          <SheetHeader className="px-3">
-            <SheetTitle>Edit profile</SheetTitle>
-          </SheetHeader>
+          <div className="w-fit">
+            <ProfileDropdown />
+          </div>
         </SheetContent>
       </Sheet>
     </div>

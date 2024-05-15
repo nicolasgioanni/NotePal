@@ -45,11 +45,11 @@ export const MobileChatbarButton = () => {
         </SheetTrigger>
         <SheetContent
           side="right"
-          className="sm:max-w-full w-2/3 px-0"
+          className="sm:max-w-full w-2/3 pb-8 px-0"
           onCloseAutoFocus={(e) => e.preventDefault()}
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
-          <SheetHeader className="px-3">
+          <SheetHeader className="px-6">
             <SheetTitle>Chat</SheetTitle>
           </SheetHeader>
           <ChatContent isCollapsed={false} />
