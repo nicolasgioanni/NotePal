@@ -51,15 +51,14 @@ export function SidebarContent({ isCollapsed }: SidebarContentProps) {
   const router = useRouter();
 
   return (
-    <>
-      <div className={cn("flex flex-col gap-y-2", isCollapsed && "hidden")}>
-        <span className="text-muted-foreground truncate font-medium text-sm">
-          Documents
-        </span>
-        <Separator />
-
+    <div className={cn("flex flex-col gap-y-2", isCollapsed && "hidden")}>
+      <span className="text-muted-foreground truncate font-medium text-sm">
+        Documents
+      </span>
+      <Separator />
+      <div className="overflow-y-auto">
         <DocumentsList />
       </div>
-    </>
+    </div>
   );
 }

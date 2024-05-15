@@ -61,7 +61,7 @@ export const DocumentsList = ({
 
   if (documentsLoading || foldersLoading || flashcardDecksLoading) {
     return (
-      <>
+      <div className="flex flex-col gap-y-2">
         <DocumentItem.Skeleton level={level} />
         {level === 0 && (
           <>
@@ -69,7 +69,7 @@ export const DocumentsList = ({
             <DocumentItem.Skeleton level={level} />
           </>
         )}
-      </>
+      </div>
     );
   }
 
