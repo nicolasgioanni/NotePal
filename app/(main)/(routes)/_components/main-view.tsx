@@ -11,7 +11,7 @@ import { ImperativePanelHandle } from "react-resizable-panels";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Sidebar } from "./_sidebar/sidebar";
-import { ChatBar } from "../documents/[documentId]/_components/_chat/chatbar";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 interface MainViewProps {
   defaultNavCollapsed?: boolean;
@@ -22,15 +22,12 @@ interface MainViewProps {
 
 export function MainView({
   defaultNavCollapsed = false,
-  defaultChatCollapsed = false,
-  navCollapsedSize,
   children,
 }: MainViewProps) {
   const [isNavCollapsed, setIsNavCollapsed] = useState(defaultNavCollapsed);
-  const [isChatCollapsed, setIsChatCollapsed] = useState(defaultChatCollapsed);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const navRef = useRef<ImperativePanelHandle>(null);
-  const chatRef = useRef<ImperativePanelHandle>(null);
 
   function handleToggleNav() {
     if (navRef.current) {
@@ -38,16 +35,6 @@ export function MainView({
         navRef.current.expand();
       } else {
         navRef.current.collapse();
-      }
-    }
-  }
-
-  function handleToggleChat() {
-    if (chatRef.current) {
-      if (chatRef.current.isCollapsed()) {
-        chatRef.current.expand();
-      } else {
-        chatRef.current.collapse();
       }
     }
   }
@@ -73,7 +60,8 @@ export function MainView({
           className={cn(
             "group/navbar min-w-[160px] bg-muted/20",
             isNavCollapsed &&
-              "min-w-[50px] transition-all duration-300 ease-in-out"
+              "min-w-[50px] transition-all duration-300 ease-in-out",
+            !isDesktop && "hidden"
           )}
         >
           <div className="flex flex-col h-full px-4 py-5 flex-grow">
@@ -83,7 +71,7 @@ export function MainView({
             />
           </div>
         </ResizablePanel>
-        <ResizableHandle />
+        <ResizableHandle className={cn(!isDesktop && "hidden")} />
         <ResizablePanel defaultSize={80}>{children}</ResizablePanel>
       </ResizablePanelGroup>
     </TooltipProvider>

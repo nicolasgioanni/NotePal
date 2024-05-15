@@ -29,22 +29,32 @@ import {
 import { Button } from "@/components/ui/button";
 import { Actions } from "./actions";
 import { useDocumentById } from "@/hooks/use-document-by-id";
+import { MobileSidebarButton } from "@/components/mobile-sidebar-button";
+import { cn } from "@/lib/utils";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { MobileChatbarButton } from "@/components/mobile-chatbar-button";
 
 interface NavbarProps {
   initialData?: Document;
 }
 
 export const Navbar = ({ initialData }: NavbarProps) => {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   if (!initialData) return <Navbar.Skeleton />;
 
   return (
     <div className="px-4 pt-5 pb-3 sticky top-0 min-h-16">
       <div className="flex flex-row justify-between items-center">
-        <div className="truncate flex-1">
-          <Title initialData={initialData} />
+        <div className="flex items-center gap-x-4">
+          <MobileSidebarButton />
+          <div className="truncate flex-1">
+            <Title initialData={initialData} />
+          </div>
         </div>
-        <div>
+
+        <div className="flex gap-x-2 items-center">
           <Actions initialData={initialData} />
+          <MobileChatbarButton />
         </div>
       </div>
     </div>

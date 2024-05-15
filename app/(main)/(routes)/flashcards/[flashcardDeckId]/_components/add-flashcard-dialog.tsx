@@ -1,6 +1,6 @@
 "use client";
 
-import { Flashcard, FlashcardDeck } from "@/models/types";
+import { FlashcardDeck } from "@/models/types";
 import {
   Dialog,
   DialogContent,
@@ -21,81 +21,66 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { Loader2, Pencil, Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  createFlashcard,
-  deleteFlashcard,
-  updateFlashcard,
-} from "@/db/firebase/flashcards";
+import { createFlashcard } from "@/db/firebase/flashcards";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
-interface EditFlashcardButtonProps {
-  deckId: string;
-  flashcard: Flashcard;
+interface AddFlashcardButtonProps {
+  initialData: FlashcardDeck;
+  button: React.ReactNode;
 }
 
-export const EditFlashcardButton = ({
-  deckId,
-  flashcard,
-}: EditFlashcardButtonProps) => {
-  const [newFront, setNewFront] = useState(flashcard.front);
-  const [newBack, setNewBack] = useState(flashcard.back);
+export const AddFlashcardDialog = ({
+  initialData,
+  button,
+}: AddFlashcardButtonProps) => {
+  const [frontValue, setFrontValue] = useState("");
+  const [backValue, setBackValue] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const handleEditFlashcard = () => {
-    updateFlashcard(deckId, flashcard.id, {
-      front: newFront,
-      back: newBack,
-    }).catch((error) => {
-      console.error(error);
-    });
-    setIsOpen(false);
-  };
-
-  const handleDelete = async () => {
-    setIsDeleting(true);
-    await deleteFlashcard(deckId, flashcard.id)
+  const handleAddFlashcard = async () => {
+    if (!initialData.id) return;
+    setIsSubmitting(true);
+    // Create a new flashcard
+    await createFlashcard(initialData.id, {
+      back: backValue,
+      front: frontValue,
+    })
       .then(() => {
+        // Reset the form
+        setFrontValue("");
+        setBackValue("");
         setIsOpen(false);
       })
       .catch((error) => {
         console.error(error);
       })
       .finally(() => {
-        setIsDeleting(false);
+        setIsSubmitting(false);
       });
   };
 
-  if (!isDesktop) {
+  if (!isDesktop)
     return (
       <Drawer
         open={isOpen}
         onOpenChange={setIsOpen}
       >
-        <DrawerTrigger asChild>
-          <Button
-            variant="ghost"
-            size="hug"
-            className="p-1.5 text-muted-foreground hover:text-primary/80"
-          >
-            <Pencil className="w-4 h-4" />
-          </Button>
-        </DrawerTrigger>
-
+        <DrawerTrigger asChild>{button}</DrawerTrigger>
         <DrawerContent
           onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
           <DrawerHeader>
-            <DrawerTitle>Edit flashcard</DrawerTitle>
+            <DrawerTitle>Create flashcard</DrawerTitle>
             <DrawerDescription>
-              Edit the front and back of this flashcard.
+              Create a new flashcard to add to this deck.
             </DrawerDescription>
           </DrawerHeader>
           <div className="grid gap-4 px-4">
@@ -109,11 +94,11 @@ export const EditFlashcardButton = ({
               <Textarea
                 id="front"
                 placeholder="eg. 'Spider-man's real name'"
-                className="resize-none bg-transparent"
-                value={newFront}
-                disabled={isDeleting}
+                className="resize-none"
+                value={frontValue}
+                disabled={isSubmitting}
                 onChange={(e) => {
-                  setNewFront(e.target.value);
+                  setFrontValue(e.target.value);
                 }}
               />
             </div>
@@ -127,11 +112,11 @@ export const EditFlashcardButton = ({
               <Textarea
                 id="back"
                 placeholder="eg. 'Peter Parker'"
-                className="resize-none bg-transparent"
-                value={newBack}
-                disabled={isDeleting}
+                className="resize-none"
+                value={backValue}
+                disabled={isSubmitting}
                 onChange={(e) => {
-                  setNewBack(e.target.value);
+                  setBackValue(e.target.value);
                 }}
               />
             </div>
@@ -139,61 +124,38 @@ export const EditFlashcardButton = ({
           <DrawerFooter className="w-full mt-3">
             <Button
               type="submit"
-              disabled={isDeleting}
-              className="w-full gap-x-1.5 bg-red-600 hover:bg-red-600/90 text-white"
+              className="w-full gap-x-1.5"
+              disabled={!frontValue || !backValue || isSubmitting}
               onClick={async () => {
-                await handleDelete();
+                await handleAddFlashcard();
               }}
             >
-              {isDeleting ? (
+              {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Deleting</span>
+                  <span>Adding</span>
                 </>
               ) : (
-                "Delete"
+                "Add"
               )}
-            </Button>
-            <Button
-              type="submit"
-              className="w-full gap-x-1.5"
-              disabled={!newFront || !newBack || isDeleting}
-              onClick={() => {
-                handleEditFlashcard();
-              }}
-            >
-              Save
             </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
     );
-  }
 
   return (
     <Dialog
       open={isOpen}
       onOpenChange={setIsOpen}
     >
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="hug"
-          className="p-1.5 text-muted-foreground hover:text-primary/80"
-        >
-          <Pencil className="w-4 h-4" />
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{button}</DialogTrigger>
 
-      <DialogContent
-        className="sm:max-w-[425px]"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        onCloseAutoFocus={(e) => e.preventDefault()}
-      >
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit flashcard</DialogTitle>
+          <DialogTitle>Create flashcard</DialogTitle>
           <DialogDescription>
-            Edit the front and back of this flashcard.
+            Create a new flashcard to add to this deck.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4">
@@ -207,11 +169,11 @@ export const EditFlashcardButton = ({
             <Textarea
               id="front"
               placeholder="eg. 'Spider-man's real name'"
-              className="resize-none bg-transparent"
-              value={newFront}
-              disabled={isDeleting}
+              className="resize-none"
+              value={frontValue}
+              disabled={isSubmitting}
               onChange={(e) => {
-                setNewFront(e.target.value);
+                setFrontValue(e.target.value);
               }}
             />
           </div>
@@ -225,11 +187,11 @@ export const EditFlashcardButton = ({
             <Textarea
               id="back"
               placeholder="eg. 'Peter Parker'"
-              className="resize-none bg-transparent"
-              value={newBack}
-              disabled={isDeleting}
+              className="resize-none"
+              value={backValue}
+              disabled={isSubmitting}
               onChange={(e) => {
-                setNewBack(e.target.value);
+                setBackValue(e.target.value);
               }}
             />
           </div>
@@ -237,30 +199,20 @@ export const EditFlashcardButton = ({
         <DialogFooter className="w-full mt-3">
           <Button
             type="submit"
-            disabled={isDeleting}
-            className="w-full gap-x-1.5 bg-red-600 hover:bg-red-600/90 text-white"
+            className="w-full gap-x-1.5"
+            disabled={!frontValue || !backValue || isSubmitting}
             onClick={async () => {
-              await handleDelete();
+              await handleAddFlashcard();
             }}
           >
-            {isDeleting ? (
+            {isSubmitting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Deleting</span>
+                <span>Adding</span>
               </>
             ) : (
-              "Delete"
+              "Add"
             )}
-          </Button>
-          <Button
-            type="submit"
-            className="w-full gap-x-1.5"
-            disabled={!newFront || !newBack || isDeleting}
-            onClick={() => {
-              handleEditFlashcard();
-            }}
-          >
-            Save
           </Button>
         </DialogFooter>
       </DialogContent>

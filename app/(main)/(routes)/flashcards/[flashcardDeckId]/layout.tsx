@@ -13,7 +13,7 @@ const FlashcardDeckLayout = ({ children }: { children: React.ReactNode }) => {
     redirect("/dashboard");
   }
 
-  return <main className="h-full">{children}</main>;
+  return <main className="min-h-full flex justify-center">{children}</main>;
 };
 
 export default FlashcardDeckLayout;

@@ -26,7 +26,7 @@ export const Actions = ({ initialData }: ActionsProps) => {
             size="hug"
             className="p-1 focus:outline-none max-h-8 rounded-md"
           >
-            <MoreHorizontal className="h-5 w-5" />
+            <MoreHorizontal className="h-6 w-6" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent

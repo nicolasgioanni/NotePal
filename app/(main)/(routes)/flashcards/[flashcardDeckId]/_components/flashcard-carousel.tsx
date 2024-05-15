@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Lightbulb } from "lucide-react";
 
 interface FlashcardCarouselProps {
-  initialData?: FlashcardDeck;
+  initialData: FlashcardDeck;
 }
 
 interface DisplayState {
@@ -31,11 +31,11 @@ export const FlashcardCarousel = ({ initialData }: FlashcardCarouselProps) => {
   const [displayState, setDisplayState] = useState<DisplayState>({});
 
   useEffect(() => {
-    if (!api || !initialData) {
+    if (!api) {
       return;
     }
 
-    setCount(initialData.flashcards.length);
+    setCount(api.slideNodes().length);
     setCurrent(api.selectedScrollSnap() + 1);
 
     api.on("select", () => {
@@ -50,7 +50,11 @@ export const FlashcardCarousel = ({ initialData }: FlashcardCarouselProps) => {
         return newState;
       });
     });
-  }, [api, initialData]);
+    api.on("slidesChanged", () => {
+      setCount(api.slideNodes().length);
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
 
   const flipCard = (cardId: string) => {
     setDisplayState((prevState) => ({
@@ -58,13 +62,6 @@ export const FlashcardCarousel = ({ initialData }: FlashcardCarouselProps) => {
       [cardId]: !prevState[cardId],
     }));
   };
-
-  if (!initialData)
-    return (
-      <div className="flex justify-center min-h-80">
-        <FlashcardCarousel.Skeleton />
-      </div>
-    );
 
   const { flashcards } = initialData;
 

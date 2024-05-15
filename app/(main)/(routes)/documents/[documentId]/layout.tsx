@@ -12,6 +12,7 @@ import { useRef, useState } from "react";
 import { ImperativePanelHandle } from "react-resizable-panels";
 import { cn } from "@/lib/utils";
 import { ChatBar } from "@/app/(main)/(routes)/documents/[documentId]/_components/_chat/chatbar";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 const EditorLayout = ({ children }: { children: React.ReactNode }) => {
   const params = useParams();
@@ -19,6 +20,7 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
     params.documentId as string
   );
   const [isChatCollapsed, setIsChatCollapsed] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const chatRef = useRef<ImperativePanelHandle>(null);
 
@@ -47,7 +49,7 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
           </ScrollArea>
         </div>
       </ResizablePanel>
-      <ResizableHandle />
+      <ResizableHandle className={cn(!isDesktop && "hidden")} />
       <ResizablePanel
         ref={chatRef}
         defaultSize={20}
@@ -63,7 +65,8 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
         className={cn(
           "group/chat min-w-[275px]",
           isChatCollapsed &&
-            "min-w-[50px] transition-all duration-300 ease-in-out"
+            "min-w-[50px] transition-all duration-300 ease-in-out",
+          !isDesktop && "hidden"
         )}
       >
         <div className="flex flex-col flex-grow h-full">

@@ -12,11 +12,11 @@ import { Pencil, Plus, Trash } from "lucide-react";
 import { EditFlashcardButton } from "./edit-flashcard-button";
 
 interface FlashcardDeckListProps {
-  initialData?: FlashcardDeck;
+  initialData: FlashcardDeck;
 }
 
 export const FlashcardList = ({ initialData }: FlashcardDeckListProps) => {
-  if (!initialData || !initialData.id) return <FlashcardList.Skeleton />;
+  if (!initialData.id) return <FlashcardList.Skeleton />;
 
   const { flashcards, id } = initialData;
 
