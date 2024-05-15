@@ -1,3 +1,4 @@
+"use client";
 import {
   Sheet,
   SheetClose,
@@ -16,6 +17,8 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { ProfileDropdown } from "@/app/(main)/(routes)/_components/_sidebar/profile-dropdown";
+import { SidebarActions } from "@/app/(main)/(routes)/_components/_sidebar/sidebar-actions";
+import { SidebarContent } from "@/app/(main)/(routes)/_components/_sidebar/sidebar-content";
 
 export const MobileSidebarButton = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -48,8 +51,16 @@ export const MobileSidebarButton = () => {
           onCloseAutoFocus={(e) => e.preventDefault()}
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
-          <div className="w-fit">
-            <ProfileDropdown />
+          <div className="flex flex-col">
+            <div className="w-fit">
+              <ProfileDropdown />
+            </div>
+            <div className="mt-3">
+              <SidebarActions isCollapsed={false} />
+            </div>
+            <div className="mt-5">
+              <SidebarContent isCollapsed={false} />
+            </div>
           </div>
         </SheetContent>
       </Sheet>
