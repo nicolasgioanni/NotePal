@@ -83,6 +83,55 @@ interface FlashcardDeckUpdateData {
   parentFolderId?: string | null;
 }
 
+interface FlashcardDeck {
+  id?: string;
+  parentFolderId?: string | null;
+  title: string;
+  userId: string;
+  createdAt: Date;
+  questions: Question[];
+}
+
+interface Quiz {
+  id?: string;
+  parentFolderId?: string | null;
+  title: string;
+  userId: string;
+  createdAt: Date;
+  questions: Question[];
+}
+
+interface QuizCreateData {
+  title: string;
+  questions: Question[];
+  parentFolderId?: string | null;
+}
+
+interface QuizUpdateData {
+  title?: string;
+  questions?: Question[];
+  parentFolderId?: string | null;
+}
+
+interface Question {
+  id: string;
+  question: string;
+  answer: string;
+  false_answers: string[];
+}
+
+interface QuestionCreateData {
+  question: string;
+  answer: string;
+  false_answers: string[];
+}
+
+interface QuestionUpdateData {
+  question?: string;
+  answer?: string;
+  false_answers?: string[];
+}
+
 export type {
   Document,
   DocumentUpdateData,
@@ -97,4 +146,10 @@ export type {
   Flashcard,
   FlashcardUpdateData,
   FlashcardCreateData,
+  Quiz,
+  QuizCreateData,
+  QuizUpdateData,
+  Question,
+  QuestionUpdateData,
+  QuestionCreateData,
 };

@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { Document } from "@/models/types";
-import { File, Plus, Loader2 } from "lucide-react";
+import { File, Plus, Loader2, Hash } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { SelectNoteCommand } from "./select-note";
 import { Button } from "@/components/ui/button";
@@ -24,20 +24,20 @@ import { useAllDocuments } from "@/hooks/use-documents-by-user";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-const cardQuantityOptions = [
+const questionQuantityOptions = [
   { value: 0, label: "Auto", icon: Sparkles },
-  { value: 5, label: "5 cards", icon: GalleryHorizontalEnd },
-  { value: 10, label: "10 cards", icon: GalleryHorizontalEnd },
-  { value: 15, label: "15 cards", icon: GalleryHorizontalEnd },
-  { value: 20, label: "20 cards", icon: GalleryHorizontalEnd },
+  { value: 5, label: "5 questions", icon: Hash },
+  { value: 10, label: "10 questions", icon: Hash },
+  { value: 15, label: "15 questions", icon: Hash },
+  { value: 20, label: "20 questions", icon: Hash },
 ];
 
 export const Body = () => {
   const [selectedNote, setSelectedNote] = useState<Document | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [tabValue, setTabValue] = useState("notes");
-  const [cardQuantity, setCardQuantity] = useState(
-    cardQuantityOptions.find((option) => option.value === 5)
+  const [questionQuantity, setQuestionQuantity] = useState(
+    questionQuantityOptions.find((option) => option.value === 5)
   );
   const [textareaValue, setTextareaValue] = useState("");
   const { documents, isLoading, error } = useAllDocuments();
@@ -51,15 +51,15 @@ export const Body = () => {
         ? {
             type: "note",
             noteId: selectedNote?.id,
-            cardQuantity: cardQuantity?.value,
+            questionQuantity: questionQuantity?.value,
           }
         : {
             type: "custom",
             topic: textareaValue,
-            cardQuantity: cardQuantity?.value,
+            questionQuantity: questionQuantity?.value,
           };
 
-    const promise = fetch("/api/generate-flashcards", {
+    const promise = fetch("/api/generate-quiz", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -70,23 +70,23 @@ export const Body = () => {
         setSelectedNote(null);
         setTextareaValue("");
         if (!response.ok) {
-          throw new Error("Failed to generate flashcards");
+          throw new Error("Failed to generate quiz");
         }
         const data = await response.json();
-        const deckId = data.deckId;
-        router.push(`/flashcards/${deckId}`);
+        const quizId = data.quizId;
+        router.push(`/quiz/${quizId}`);
       })
       .catch((error) => {
-        console.error("Failed to generate flashcards");
+        console.error("Failed to generate quiz");
       })
       .finally(() => {
         setIsGenerating(false);
       });
 
     toast.promise(promise, {
-      loading: "Generating flashcards...",
-      success: "Flashcards created!",
-      error: "Failed to create flashcards.",
+      loading: "Generating quiz...",
+      success: "Quiz created!",
+      error: "Failed to create quiz.",
     });
   };
 
@@ -160,8 +160,10 @@ export const Body = () => {
               className="gap-x-2 text-primary/80 w-[200px]"
               disabled={isGenerating}
             >
-              {cardQuantity?.icon && <cardQuantity.icon className="w-4 h-4" />}
-              {cardQuantity?.label}
+              {questionQuantity?.icon && (
+                <questionQuantity.icon className="w-4 h-4" />
+              )}
+              {questionQuantity?.label}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -169,17 +171,17 @@ export const Body = () => {
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
             <DropdownMenuLabel className="text-muted-foreground">
-              Number of cards
+              Number of questions
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup className="text-muted-foreground gap-y-1">
-              {cardQuantityOptions.map((option) => (
+              {questionQuantityOptions.map((option) => (
                 <DropdownMenuItem
                   key={option.value}
-                  onSelect={() => setCardQuantity(option)}
+                  onSelect={() => setQuestionQuantity(option)}
                   className={cn(
                     "cursor-pointer mt-1",
-                    cardQuantity?.value === option.value &&
+                    questionQuantity?.value === option.value &&
                       "bg-accent text-primary"
                   )}
                 >
