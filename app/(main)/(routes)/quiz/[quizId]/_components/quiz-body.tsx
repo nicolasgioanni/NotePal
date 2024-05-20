@@ -53,7 +53,7 @@ export const QuizBody = ({ initialData }: QuizBodyProps) => {
     );
 
   return (
-    <div className="flex flex-col gap-y-6">
+    <div className="flex flex-col gap-y-6 mt-4">
       <div className="flex justify-between">
         <h1 className="text-xl font-semibold text-primary/80">
           Questions in this quiz
