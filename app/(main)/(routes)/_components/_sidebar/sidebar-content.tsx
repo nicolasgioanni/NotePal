@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { DocumentsList } from "./documents-list";
+import { DocumentsList } from "../documents-list";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,

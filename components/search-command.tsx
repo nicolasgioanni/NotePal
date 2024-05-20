@@ -21,6 +21,7 @@ import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { Document } from "@/models/types";
 import { useAllDocuments } from "@/hooks/use-documents-by-user";
 import { useAllFlashcardDecks } from "@/hooks/use-flashcard-deck-by-user";
+import { useAllQuizzes } from "@/hooks/use-quizzes-by-user";
 
 export const SearchCommand = () => {
   const router = useRouter();
@@ -35,6 +36,11 @@ export const SearchCommand = () => {
     isLoading: isLoadingFlashcardDecks,
     error: flashcardDeckError,
   } = useAllFlashcardDecks();
+  const {
+    quizzes,
+    isLoading: isLoadingQuizzes,
+    error: quizzesError,
+  } = useAllQuizzes();
 
   const toggle = useSearch((store) => store.toggle);
   const isOpen = useSearch((store) => store.isOpen);
@@ -102,6 +108,25 @@ export const SearchCommand = () => {
                 >
                   <Zap className="mr-2 h-4 w-4" />
                   <span>{deck.title}</span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
+        {quizzes.length !== 0 && (
+          <>
+            <CommandSeparator className="mb-1" />
+            <CommandGroup heading="Quizzes">
+              {quizzes.map((quiz) => (
+                <CommandItem
+                  key={quiz.id}
+                  value={`${quiz.id}-${quiz.title}`}
+                  title={quiz.title}
+                  onSelect={() => onSelect("quizzes", quiz.id)}
+                  className="cursor-pointer text-muted-foreground"
+                >
+                  <Zap className="mr-2 h-4 w-4" />
+                  <span>{quiz.title}</span>
                 </CommandItem>
               ))}
             </CommandGroup>

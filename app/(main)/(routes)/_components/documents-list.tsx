@@ -8,12 +8,14 @@ import { auth } from "@/db/firebase/config";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { cn } from "@/lib/utils";
 import { FileIcon } from "lucide-react";
-import { DocumentItem } from "../document-item";
-import { FolderItem } from "./folder-item";
-import { FlashcardDeckItem } from "../flashcard-deck-item";
+import { DocumentItem } from "./document-item";
+import { FolderItem } from "./_sidebar/folder-item";
+import { FlashcardDeckItem } from "./flashcard-deck-item";
 import { useDocuments } from "@/hooks/use-documents";
 import { useFolders } from "@/hooks/use-folders";
 import { useFlashcardDecks } from "@/hooks/use-flashcard-decks";
+import { useQuizzes } from "@/hooks/use-quizzes";
+import { QuizItem } from "./quiz-item";
 
 interface DocumentsListProps {
   parentFolderId?: string;
@@ -44,6 +46,11 @@ export const DocumentsList = ({
     isLoading: flashcardDecksLoading,
     error: flashcardDeckError,
   } = useFlashcardDecks(parentFolderId);
+  const {
+    quizzes,
+    isLoading: quizzesLoading,
+    error: quizzesError,
+  } = useQuizzes(parentFolderId);
 
   const onExpand = (id?: string) => {
     if (!id) return;
@@ -59,7 +66,12 @@ export const DocumentsList = ({
     router.push(`/${path}/${documentId}`);
   };
 
-  if (documentsLoading || foldersLoading || flashcardDecksLoading) {
+  if (
+    documentsLoading ||
+    foldersLoading ||
+    flashcardDecksLoading ||
+    quizzesLoading
+  ) {
     return (
       <div className="flex flex-col gap-y-2">
         <DocumentItem.Skeleton level={level} />
@@ -84,6 +96,7 @@ export const DocumentsList = ({
           folders.length === 0 &&
             documents.length === 0 &&
             flashcardDecks.length === 0 &&
+            quizzes.length === 0 &&
             "block text-muted-foreground/65",
           !parentFolderId && "px-0 mt-1"
         )}
@@ -91,6 +104,7 @@ export const DocumentsList = ({
         {folders.length === 0 &&
         documents.length === 0 &&
         flashcardDecks.length === 0 &&
+        quizzes.length === 0 &&
         !parentFolderId
           ? "You don't have any documents yet."
           : "Empty"}
@@ -133,6 +147,17 @@ export const DocumentsList = ({
             label={deck.title}
             onClick={() => onRedirect("flashcards", deck.id)}
             active={params.flashcardDeckId === deck.id}
+            level={level}
+          />
+        </div>
+      ))}
+      {quizzes.map((quiz) => (
+        <div key={quiz.id}>
+          <QuizItem
+            id={quiz.id as string}
+            label={quiz.title}
+            onClick={() => onRedirect("quiz", quiz.id)}
+            active={params.quizId === quiz.id}
             level={level}
           />
         </div>

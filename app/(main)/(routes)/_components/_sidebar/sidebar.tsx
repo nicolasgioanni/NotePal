@@ -2,7 +2,7 @@ import { SidebarControl } from "./sidebar-control";
 import { Separator } from "@/components/ui/separator";
 import { SidebarContent } from "./sidebar-content";
 import { SidebarActions } from "./sidebar-actions";
-import { AddButton } from "./add-button";
+import { AddButton } from "../add-button";
 
 interface SidebarProps {
   isCollapsed: boolean;

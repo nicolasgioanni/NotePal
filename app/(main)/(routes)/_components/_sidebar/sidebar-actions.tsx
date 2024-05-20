@@ -1,9 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useSearch } from "@/hooks/use-search";
-import { Home, Search } from "lucide-react";
+import { Home, Plus, Search } from "lucide-react";
 import Link from "next/link";
-import { AddButton } from "./add-button";
+import { AddButton } from "../add-button";
 import { SearchButton } from "../search-button";
 
 interface SidebarActionsProps {
@@ -31,7 +31,21 @@ export const SidebarActions = ({ isCollapsed }: SidebarActionsProps) => {
         </Link>
       </Button>
       <SearchButton />
-      <AddButton isCollapsed={isCollapsed} />
+      <AddButton
+        button={
+          <Button
+            size="hug"
+            variant="ghost"
+            className="cursor-pointer justify-start py-1.5 px-1.5 text-muted-foreground hover:text-primary/80 transition"
+            asChild
+          >
+            <div className="flex items-center gap-x-1.5 truncate">
+              <Plus className="w-4 h-4 shrink-0" />
+              <span className="truncate">Add</span>
+            </div>
+          </Button>
+        }
+      />
     </div>
   );
 };

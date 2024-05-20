@@ -77,7 +77,8 @@ async function generateQuizFromNote(noteId: string, questionQuantity: number) {
       content:
         "You are an AI quiz generator. Based on the provided markdown content, generate valid JSON output that represents quiz questions for the markdown content" +
         "The response should have a title relevant to the content of the quiz" +
-        "Each question should consist of a question, answer, and 3 false answers. " +
+        "Each question should consist of a question, answer, and up to 4 false answers. " +
+        "You may include a mix of true/false questions and multiple choice questions. " +
         "The questions and answers should be concise, with the question ideally not exceeding 125 characters, and the answers ideally not exceeding 75 characters. " +
         "Use concise and clear language suitable for educational purposes. " +
         "You MUST generate the exact quantity of questions requested. " +
@@ -111,7 +112,8 @@ async function generateQuizFromTopic(topic: string, questionQuantity: number) {
       content:
         "You are an AI quiz generator. Based on the provided topic, generate valid JSON output that represents quiz questions" +
         "The response should have a title relevant to the content of the quiz" +
-        "Each question should consist of a question, answer, and an array of 3 false answers. " +
+        "Each question should consist of a question, answer, and an array of up to 4 false answers. " +
+        "You may include a mix of true/false questions and multiple choice questions. " +
         "The questions and answers should be concise, with the question ideally not exceeding 125 characters, and the answers ideally not exceeding 75 characters. " +
         "Use concise and clear language suitable for educational purposes. " +
         "You MUST generate the exact quantity of questions requested. " +
@@ -144,12 +146,22 @@ const example_json = {
     {
       question: "What is the capital of France?",
       answer: "Paris",
-      false_answers: ["London", "Berlin", "Madrid"],
+      false_answers: ["London", "Berlin", "Madrid", "Rome"],
     },
     {
-      question: "What is the capital of Spain?",
-      answer: "Madrid",
-      false_answers: ["Paris", "Berlin", "London"],
+      question: "Is Madrid the capital of Spain?",
+      answer: "True",
+      false_answers: ["False"],
+    },
+    {
+      question: "Is London the capital of Germany?",
+      answer: "False",
+      false_answers: ["True"],
+    },
+    {
+      question: "What is the capital of Italy?",
+      answer: "Rome",
+      false_answers: ["Paris", "Madrid"],
     },
   ],
 };

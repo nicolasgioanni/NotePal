@@ -21,12 +21,13 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Minus, Plus } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { createQuestion } from "@/db/firebase/quiz";
+import { Input } from "@/components/ui/input";
 
 interface AddQuestionButtonProps {
   initialData: Quiz;
@@ -68,11 +69,109 @@ export const AddQuestionDialog = ({
       });
   };
 
+  const content = (
+    <div className="grid gap-4">
+      <div className="flex flex-col gap-y-1.5">
+        <Label
+          htmlFor="question"
+          className="text-left"
+        >
+          Question
+        </Label>
+        <Textarea
+          id="question"
+          placeholder="eg. 'What is Spider-man's real name'"
+          className="resize-none"
+          value={questionValue}
+          disabled={isSubmitting}
+          onChange={(e) => {
+            setQuestionValue(e.target.value);
+          }}
+        />
+      </div>
+      <div className="flex flex-col gap-y-1.5">
+        <Label
+          htmlFor="answer"
+          className="text-left"
+        >
+          Answer
+        </Label>
+        <Input
+          id="answer"
+          placeholder="eg. 'Peter Parker'"
+          className="resize-none"
+          value={answerValue}
+          disabled={isSubmitting}
+          onChange={(e) => {
+            setAnswerValue(e.target.value);
+          }}
+        />
+      </div>
+      <div className="flex flex-col gap-y-1.5">
+        <Label
+          htmlFor="false_answers"
+          className="text-left"
+        >
+          False answers
+        </Label>
+        {falseAnswers.map((falseAnswer, index) => (
+          <div
+            key={index}
+            className="flex gap-x-1 relative items-center"
+          >
+            <Input
+              key={index}
+              id={`false_answer_${index}`}
+              placeholder="eg. 'Miles Morales'"
+              className="resize-none flex-1 pr-10"
+              value={falseAnswer}
+              disabled={isSubmitting}
+              onChange={(e) => {
+                const newFalseAnswers = [...falseAnswers];
+                newFalseAnswers[index] = e.target.value;
+                setFalseAnswers(newFalseAnswers);
+              }}
+            />
+            <Button
+              disabled={isSubmitting}
+              variant="ghost"
+              size="hug"
+              className="absolute right-0 p-1 m-2"
+              onClick={() => {
+                const newFalseAnswers = [...falseAnswers];
+                newFalseAnswers.splice(index, 1);
+                setFalseAnswers(newFalseAnswers);
+              }}
+            >
+              <Minus className="w-4 h-4" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          variant="outline"
+          onClick={() => {
+            setFalseAnswers([...falseAnswers, ""]);
+          }}
+          disabled={isSubmitting || falseAnswers.length >= 4}
+        >
+          <Plus className="w-4 h-4" />
+        </Button>
+      </div>
+    </div>
+  );
+
   if (!isDesktop)
     return (
       <Drawer
         open={isOpen}
-        onOpenChange={setIsOpen}
+        onOpenChange={(open) => {
+          if (open) {
+            setQuestionValue("");
+            setAnswerValue("");
+            setFalseAnswers([]);
+          }
+          setIsOpen(open);
+        }}
       >
         <DrawerTrigger asChild>{button}</DrawerTrigger>
         <DrawerContent
@@ -85,44 +184,7 @@ export const AddQuestionDialog = ({
               Create a new question to add to this quiz.
             </DrawerDescription>
           </DrawerHeader>
-          <div className="grid gap-4 px-4">
-            <div className="flex flex-col gap-y-1.5">
-              <Label
-                htmlFor="question"
-                className="text-left"
-              >
-                Question
-              </Label>
-              <Textarea
-                id="question"
-                placeholder="eg. 'What is Spider-man's real name'"
-                className="resize-none"
-                value={questionValue}
-                disabled={isSubmitting}
-                onChange={(e) => {
-                  setQuestionValue(e.target.value);
-                }}
-              />
-            </div>
-            <div className="flex flex-col gap-y-1.5">
-              <Label
-                htmlFor="answer"
-                className="text-left"
-              >
-                Answer
-              </Label>
-              <Textarea
-                id="answer"
-                placeholder="eg. 'Peter Parker'"
-                className="resize-none"
-                value={answerValue}
-                disabled={isSubmitting}
-                onChange={(e) => {
-                  setAnswerValue(e.target.value);
-                }}
-              />
-            </div>
-          </div>
+          <div className="px-4">{content}</div>
           <DrawerFooter className="w-full mt-3">
             <Button
               type="submit"
@@ -149,7 +211,14 @@ export const AddQuestionDialog = ({
   return (
     <Dialog
       open={isOpen}
-      onOpenChange={setIsOpen}
+      onOpenChange={(open) => {
+        if (open) {
+          setQuestionValue("");
+          setAnswerValue("");
+          setFalseAnswers([]);
+        }
+        setIsOpen(open);
+      }}
     >
       <DialogTrigger asChild>{button}</DialogTrigger>
 
@@ -160,49 +229,19 @@ export const AddQuestionDialog = ({
             Create a new question to add to this quiz.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4">
-          <div className="flex flex-col gap-y-1.5">
-            <Label
-              htmlFor="question"
-              className="text-left"
-            >
-              Question
-            </Label>
-            <Textarea
-              id="question"
-              placeholder="eg. 'What is Spider-man's real name'"
-              className="resize-none"
-              value={questionValue}
-              disabled={isSubmitting}
-              onChange={(e) => {
-                setQuestionValue(e.target.value);
-              }}
-            />
-          </div>
-          <div className="flex flex-col gap-y-1.5">
-            <Label
-              htmlFor="answer"
-              className="text-left"
-            >
-              Answer
-            </Label>
-            <Textarea
-              id="answer"
-              placeholder="eg. 'Peter Parker'"
-              className="resize-none"
-              value={answerValue}
-              disabled={isSubmitting}
-              onChange={(e) => {
-                setAnswerValue(e.target.value);
-              }}
-            />
-          </div>
-        </div>
+        {content}
         <DialogFooter className="w-full mt-3">
           <Button
             type="submit"
             className="w-full gap-x-1.5"
-            disabled={!questionValue || !answerValue || isSubmitting}
+            // disabled if at least one value in false answers is empty
+            disabled={
+              !questionValue ||
+              !answerValue ||
+              isSubmitting ||
+              falseAnswers.length === 0 ||
+              falseAnswers.some((answer) => answer === "")
+            }
             onClick={async () => {
               await handleAddQuestion();
             }}

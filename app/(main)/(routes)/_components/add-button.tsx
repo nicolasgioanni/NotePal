@@ -8,16 +8,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { createDocument } from "@/db/firebase/document";
-import { FilePlus, FolderPlus, Plus, PlusCircle, Zap } from "lucide-react";
+import {
+  FilePlus,
+  FolderPlus,
+  Plus,
+  PlusCircle,
+  WandSparkles,
+  Zap,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createFolder } from "@/db/firebase/folder";
 
 interface AddButtonProps {
-  isCollapsed: boolean;
+  button: React.ReactNode;
 }
 
-export const AddButton = ({ isCollapsed }: AddButtonProps) => {
+export const AddButton = ({ button }: AddButtonProps) => {
   const router = useRouter();
 
   const handleCreateDocument = async () => {
@@ -50,19 +57,7 @@ export const AddButton = ({ isCollapsed }: AddButtonProps) => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          size="hug"
-          variant="ghost"
-          className="cursor-pointer justify-start py-1.5 px-1.5 text-muted-foreground hover:text-primary/80 transition"
-          asChild
-        >
-          <div className="flex items-center gap-x-1.5 truncate">
-            <Plus className="w-4 h-4 shrink-0" />
-            <span className="truncate">Add</span>
-          </div>
-        </Button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>{button}</DropdownMenuTrigger>
       <DropdownMenuContent
         align="start"
         side="right"
@@ -72,13 +67,6 @@ export const AddButton = ({ isCollapsed }: AddButtonProps) => {
         <DropdownMenuGroup>
           <DropdownMenuItem
             className="cursor-pointer"
-            onClick={handleCreateDocument}
-          >
-            <FilePlus className="mr-2 h-4 w-4" />
-            <span>Blank Document</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="cursor-pointer"
             onClick={handleCreateFolder}
           >
             <FolderPlus className="mr-2 h-4 w-4" />
@@ -86,10 +74,24 @@ export const AddButton = ({ isCollapsed }: AddButtonProps) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             className="cursor-pointer"
+            onClick={handleCreateDocument}
+          >
+            <FilePlus className="mr-2 h-4 w-4" />
+            <span>Blank Document</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
             onClick={() => router.push("/flashcards")}
           >
             <Zap className="mr-2 h-4 w-4" />
             <span>New Flashcards</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => router.push("/quiz")}
+          >
+            <WandSparkles className="mr-2 h-4 w-4" />
+            <span>New Quiz</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
