@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Command, File, Zap } from "lucide-react";
+import { Command, File, WandSparkles, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 
@@ -125,7 +125,7 @@ export const SearchCommand = () => {
                   onSelect={() => onSelect("quizzes", quiz.id)}
                   className="cursor-pointer text-muted-foreground"
                 >
-                  <Zap className="mr-2 h-4 w-4" />
+                  <WandSparkles className="mr-2 h-4 w-4" />
                   <span>{quiz.title}</span>
                 </CommandItem>
               ))}

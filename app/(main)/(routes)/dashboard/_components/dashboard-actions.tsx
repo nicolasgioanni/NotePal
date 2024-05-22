@@ -32,7 +32,7 @@ export const DashboardActions = () => {
       </Card>
       <Card
         onClick={() => {
-          router.push(`/flashcards`);
+          router.push(`/flashcards/create`);
         }}
         className="flex-grow hover:scale-[1.02] transition cursor-pointer hover:outline outline-1 outline-muted"
       >
@@ -50,7 +50,7 @@ export const DashboardActions = () => {
       </Card>
       <Card
         onClick={() => {
-          router.push(`/quiz`);
+          router.push(`/quiz/create`);
         }}
         className="flex-grow hover:scale-[1.02] transition cursor-pointer hover:outline outline-1 outline-muted"
       >

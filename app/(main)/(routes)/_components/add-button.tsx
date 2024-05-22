@@ -81,14 +81,14 @@ export const AddButton = ({ button }: AddButtonProps) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             className="cursor-pointer"
-            onClick={() => router.push("/flashcards")}
+            onClick={() => router.push("/flashcards/create")}
           >
             <Zap className="mr-2 h-4 w-4" />
             <span>New Flashcards</span>
           </DropdownMenuItem>
           <DropdownMenuItem
             className="cursor-pointer"
-            onClick={() => router.push("/quiz")}
+            onClick={() => router.push("/quiz/create")}
           >
             <WandSparkles className="mr-2 h-4 w-4" />
             <span>New Quiz</span>
