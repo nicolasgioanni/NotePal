@@ -99,6 +99,7 @@ interface Quiz {
   userId: string;
   createdAt: Date;
   questions: Question[];
+  version: number;
 }
 
 interface QuizCreateData {
@@ -132,6 +133,39 @@ interface QuestionUpdateData {
   false_answers?: string[];
 }
 
+interface UserAnswer {
+  questionId: string;
+  answer: string;
+  correct: boolean;
+}
+
+interface PracticeQuiz {
+  id?: string;
+  quizId: string;
+  userId: string;
+  currentQuestionIndex: number;
+  questions: Question[];
+  userAnswers: UserAnswer[];
+  timeStarted: Date;
+}
+
+interface PracticeQuizUpdateData {
+  currentQuestionIndex?: number;
+  questions?: Question[];
+  userAnswers?: UserAnswer[];
+  timeStarted?: Date;
+}
+
+interface PracticeQuizResult {
+  id?: string;
+  quizId: string;
+  userId: string;
+  questions: Question[];
+  userAnswers: UserAnswer[];
+  timeStarted: Date;
+  timeEnded: Date;
+}
+
 export type {
   Document,
   DocumentUpdateData,
@@ -152,4 +186,8 @@ export type {
   Question,
   QuestionUpdateData,
   QuestionCreateData,
+  PracticeQuiz,
+  PracticeQuizUpdateData,
+  PracticeQuizResult,
+  UserAnswer,
 };

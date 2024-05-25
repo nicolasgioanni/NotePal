@@ -26,6 +26,8 @@ import {
   QuestionUpdateData,
 } from "@/models/types";
 import { v4 as uuidv4 } from "uuid";
+import { version } from "os";
+import { deletePracticeQuiz } from "./practice-quiz";
 
 export const createQuiz = async (data: QuizCreateData) => {
   const user = await currentUser();
@@ -50,6 +52,7 @@ export const createQuiz = async (data: QuizCreateData) => {
     userId: user.id,
     createdAt: new Date(),
     questions: data.questions,
+    version: 0,
   };
 
   try {
@@ -123,8 +126,14 @@ export const updateQuiz = async (quizId: string, data: QuizUpdateData) => {
   try {
     const userDocRef = doc(db, "users", user.id);
     const documentRef = doc(userDocRef, "quizzes", quizId);
+    const docSnapshot = await getDoc(documentRef);
+    if (!docSnapshot.exists()) {
+      throw new Error("Quiz not found");
+    }
 
-    await updateDoc(documentRef, { ...data });
+    const version = docSnapshot.data().version;
+
+    await updateDoc(documentRef, { ...data, version: version + 1 });
   } catch (error) {
     throw new Error("Failed to update the quiz");
   }
@@ -150,7 +159,9 @@ export const deleteQuiz = async (quizId: string) => {
     const userDocRef = doc(db, "users", user.id);
     const documentRef = doc(userDocRef, "quizzes", quizId);
 
-    await deleteDoc(documentRef);
+    await deleteDoc(documentRef).then(async () => {
+      await deletePracticeQuiz(quizId);
+    });
   } catch (error) {
     throw new Error("Failed to delete the quiz");
   }
@@ -196,7 +207,12 @@ export const createQuestion = async (
 
     const updatedQuestions = [...currentQuestions, newQuestionData];
 
-    await updateDoc(documentRef, { questions: updatedQuestions });
+    const version = docSnapshot.data().version;
+
+    await updateDoc(documentRef, {
+      questions: updatedQuestions,
+      version: version + 1,
+    });
   } catch (error) {
     throw new Error("Failed to create the question");
   }
@@ -241,7 +257,12 @@ export const updateQuestion = async (
       return question;
     });
 
-    await updateDoc(documentRef, { questions: updatedQuestions });
+    const version = docSnapshot.data().version;
+
+    await updateDoc(documentRef, {
+      questions: updatedQuestions,
+      version: version + 1,
+    });
   } catch (error) {
     throw new Error("Failed to update the question");
   }

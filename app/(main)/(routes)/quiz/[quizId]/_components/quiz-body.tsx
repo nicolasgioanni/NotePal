@@ -2,9 +2,10 @@ import { Quiz } from "@/models/types";
 
 import { QuestionList } from "./questions-list";
 import { AddQuestionButton } from "./add-question-button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AddQuestionDialog } from "./add-question-dialog";
+import { StartQuizOptions } from "./start-quiz-options";
 
 interface QuizBodyProps {
   initialData?: Quiz;
@@ -53,14 +54,15 @@ export const QuizBody = ({ initialData }: QuizBodyProps) => {
     );
 
   return (
-    <div className="flex flex-col gap-y-6 mt-4">
-      <div className="flex justify-between">
-        <h1 className="text-xl font-semibold text-primary/80">
-          Questions in this quiz
-        </h1>
-        <AddQuestionButton initialData={initialData} />
+    <div className="flex flex-col gap-y-6 mt-6">
+      <StartQuizOptions initialData={initialData} />
+      <div className="flex flex-col gap-y-6">
+        <div className="flex justify-between">
+          <h1 className="text-xl font-semibold text-primary/80">Questions</h1>
+          <AddQuestionButton initialData={initialData} />
+        </div>
+        <QuestionList initialData={initialData} />
       </div>
-      <QuestionList initialData={initialData} />
     </div>
   );
 };

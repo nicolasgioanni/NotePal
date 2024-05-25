@@ -13,6 +13,7 @@ import { ImperativePanelHandle } from "react-resizable-panels";
 import { cn } from "@/lib/utils";
 import { ChatBar } from "@/app/(main)/(routes)/documents/[documentId]/_components/_chat/chatbar";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { ErrorPage } from "@/components/error-page";
 
 const EditorLayout = ({ children }: { children: React.ReactNode }) => {
   const params = useParams();
@@ -35,7 +36,7 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (document == undefined && !isLoading) {
-    redirect("/dashboard");
+    return <ErrorPage />;
   }
 
   return (

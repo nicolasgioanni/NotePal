@@ -82,13 +82,13 @@ async function generateQuizFromNote(noteId: string, questionQuantity: number) {
         "The questions and answers should be concise, with the question ideally not exceeding 125 characters, and the answers ideally not exceeding 75 characters. " +
         "Use concise and clear language suitable for educational purposes. " +
         "You MUST generate the exact quantity of questions requested. " +
-        "If the quantity of questions requested is 0, automatically determine the appropriate number of questions to create, up to a maximum of 20." +
+        "If the quantity of questions requested is 0, automatically determine the appropriate number of questions to create which covers all of the content thoroughly, up to a maximum of 20." +
         "Provide output in valid JSON format. The data schema should be like this: " +
         JSON.stringify(example_json),
     },
     {
       role: "user",
-      content: `The markdown content is is\n: ${markdownContent}\n\n. The quantity of flashcards is: ${questionQuantity}.`,
+      content: `The markdown content is is\n: ${markdownContent}\n\n. The quantity of questions is: ${questionQuantity}.`,
     },
   ] as ChatCompletionMessageParam[];
 
@@ -117,13 +117,13 @@ async function generateQuizFromTopic(topic: string, questionQuantity: number) {
         "The questions and answers should be concise, with the question ideally not exceeding 125 characters, and the answers ideally not exceeding 75 characters. " +
         "Use concise and clear language suitable for educational purposes. " +
         "You MUST generate the exact quantity of questions requested. " +
-        "If the quantity of questions requested is 0, automatically determine the appropriate number of questions to create, up to a maximum of 20." +
+        "If the quantity of questions requested is 0, automatically determine the appropriate number of questions to create which covers all of the content thoroughly, up to a maximum of 20." +
         "Provide output in valid JSON format. The data schema should be like this: " +
         JSON.stringify(example_json),
     },
     {
       role: "user",
-      content: `The topic is: "${topic}\n\n". The quantity of flashcards is: ${questionQuantity}.`,
+      content: `The topic is: "${topic}\n\n". The quantity of questions is: ${questionQuantity}.`,
     },
   ] as ChatCompletionMessageParam[];
 

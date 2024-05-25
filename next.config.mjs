@@ -7,6 +7,21 @@ const nextConfig = {
         destination: "/dashboard",
         permanent: false,
       },
+      {
+        source: "/quiz/practice",
+        destination: "/dashboard",
+        permanent: false,
+      },
+      {
+        source: "/quiz",
+        destination: "/dashboard",
+        permanent: false,
+      },
+      {
+        source: "/flashcards",
+        destination: "/dashboard",
+        permanent: false,
+      },
     ];
   },
 };

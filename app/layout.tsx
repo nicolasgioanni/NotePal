@@ -51,7 +51,10 @@ export default async function RootLayout({
               disableTransitionOnChange
               storageKey="notepal-theme"
             >
-              <Toaster position="bottom-center" />
+              <Toaster
+                position="bottom-center"
+                richColors
+              />
               {children}
             </ThemeProvider>
           </body>
