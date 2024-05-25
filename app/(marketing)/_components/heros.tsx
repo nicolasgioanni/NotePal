@@ -12,7 +12,7 @@ export const Heros = () => {
             md:w-[400px] md:h-[400px]"
         >
           <Image
-            src="/logo.svg"
+            src="/logo-light.svg"
             fill
             alt="Logo"
             className="dark:hidden"
@@ -22,14 +22,6 @@ export const Heros = () => {
             fill
             alt="Logo"
             className="hidden dark:block"
-          />
-        </div>
-        <div className="relative h-[400px] w-[400px] hidden lg:block">
-          <Image
-            src="/logo-blue.svg"
-            fill
-            className="object-contain"
-            alt="Documents"
           />
         </div>
       </div>
