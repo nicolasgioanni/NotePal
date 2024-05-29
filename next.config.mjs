@@ -13,6 +13,11 @@ const nextConfig = {
         permanent: false,
       },
       {
+        source: "/quiz/results",
+        destination: "/dashboard",
+        permanent: false,
+      },
+      {
         source: "/quiz",
         destination: "/dashboard",
         permanent: false,

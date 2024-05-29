@@ -6,6 +6,7 @@ import { Loader2, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AddQuestionDialog } from "./add-question-dialog";
 import { StartQuizOptions } from "./start-quiz-options";
+import Link from "next/link";
 
 interface QuizBodyProps {
   initialData?: Quiz;
@@ -55,7 +56,18 @@ export const QuizBody = ({ initialData }: QuizBodyProps) => {
 
   return (
     <div className="flex flex-col gap-y-6 mt-6">
-      <StartQuizOptions initialData={initialData} />
+      <div className="flex gap-x-2">
+        <StartQuizOptions initialData={initialData} />
+        <Button
+          variant="outline"
+          asChild
+        >
+          <Link href={`/quiz/results/${initialData.id}`}>
+            Previous Attempts
+          </Link>
+        </Button>
+      </div>
+
       <div className="flex flex-col gap-y-6">
         <div className="flex justify-between">
           <h1 className="text-xl font-semibold text-primary/80">Questions</h1>

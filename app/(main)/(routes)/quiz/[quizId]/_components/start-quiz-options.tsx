@@ -42,7 +42,7 @@ export const StartQuizOptions = ({ initialData }: StartQuizOptionsProps) => {
   };
 
   return (
-    <div className="flex items-center gap-x-2">
+    <>
       <Button
         variant="outline"
         className="flex-1"
@@ -69,6 +69,6 @@ export const StartQuizOptions = ({ initialData }: StartQuizOptionsProps) => {
           )}
         </Button>
       )}
-    </div>
+    </>
   );
 };

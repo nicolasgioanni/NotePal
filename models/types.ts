@@ -162,8 +162,7 @@ interface PracticeQuizResult {
   userId: string;
   questions: Question[];
   userAnswers: UserAnswer[];
-  timeStarted: Date;
-  timeEnded: Date;
+  dateCreated: Date;
 }
 
 export type {

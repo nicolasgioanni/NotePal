@@ -79,9 +79,10 @@ export default function QuizPracticePage() {
               <Button
                 size="icon"
                 variant="ghost"
+                className="text-muted-foreground"
                 onClick={() => router.push(`/quiz/${quizId}`)}
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>

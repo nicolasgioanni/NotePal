@@ -3,11 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
   createPracticeQuiz,
+  deletePracticeQuiz,
   getPracticeQuizByQuizId,
   updatePracticeQuiz,
 } from "@/db/firebase/practice-quiz";
+import { createQuizResult } from "@/db/firebase/quiz-result";
 import { PracticeQuiz, UserAnswer } from "@/models/types";
 import { CheckCircle, ChevronRight, Loader2, XCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { toast } from "sonner";
 
@@ -29,8 +32,10 @@ export const Body = ({
   const [numCorrect, setNumCorrect] = useState(0);
   const [numIncorrect, setNumIncorrect] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const hasShuffledRef = useRef(false);
   const creatingQuizRef = useRef(false); // Ref to track quiz creation
+  const router = useRouter();
 
   const shuffleArray = (array: string[]) => {
     const shuffledArray = [...array];
@@ -147,6 +152,8 @@ export const Body = ({
   const handleFinish = async () => {
     if (practiceQuiz === null || selectedAnswer === null) return;
 
+    setSubmitting(true);
+
     hasShuffledRef.current = false;
 
     const userAnswer: UserAnswer = {
@@ -155,17 +162,23 @@ export const Body = ({
       correct: selectedAnswer === practiceQuiz.questions[questionIndex].answer,
     };
 
-    updatePracticeQuiz(practiceQuiz.quizId, {
-      userAnswers: [userAnswer],
-    });
-
     if (selectedAnswer !== practiceQuiz.questions[questionIndex].answer) {
       setNumIncorrect((prevNum) => prevNum + 1);
     } else {
       setNumCorrect((prevNum) => prevNum + 1);
     }
 
+    await updatePracticeQuiz(practiceQuiz.quizId, {
+      userAnswers: [userAnswer],
+    });
+
+    await createQuizResult(practiceQuiz.quizId);
+
     toast.success("Quiz completed!", { duration: 2000 });
+
+    router.push(`/quiz/results/${quizId}`);
+
+    deletePracticeQuiz(practiceQuiz.quizId);
   };
 
   const resetState = () => {
@@ -226,17 +239,18 @@ export const Body = ({
           </div>
           <div className="flex justify-center w-full">
             <Button
-              disabled={selectedAnswer === null}
+              disabled={selectedAnswer === null || submitting}
               onClick={
                 questionIndex === practiceQuiz.questions.length - 1
                   ? handleFinish
                   : handleNext
               }
             >
+              {submitting && <Loader2 className="animate-spin w-4 h-4 mr-2" />}
               {questionIndex === practiceQuiz.questions.length - 1
                 ? "Finish"
                 : "Next"}
-              <ChevronRight className="w-4 h-4 ml-2" />
+              {!submitting && <ChevronRight className="w-4 h-4 ml-2" />}
             </Button>
           </div>
         </div>

@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export const ErrorPage = () => {
   return (
-    <div className="flex flex-col items-center justify-center h-full">
+    <div className="flex flex-col items-center justify-center min-h-[500px] h-2/3">
       <div
         className="relative
             w-[200px] h-[200px]

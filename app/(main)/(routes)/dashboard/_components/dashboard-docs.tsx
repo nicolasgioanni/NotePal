@@ -6,6 +6,7 @@ import { DocumentsList } from "../../_components/documents-list";
 import { AddButton } from "../../_components/add-button";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { DashboardDocList } from "./dashboard-doc-list";
 
 export const DashboardDocs = () => {
   return (
@@ -27,7 +28,7 @@ export const DashboardDocs = () => {
           />
         </div>
         <Separator />
-        <DocumentsList />
+        <DashboardDocList />
       </div>
     </div>
   );

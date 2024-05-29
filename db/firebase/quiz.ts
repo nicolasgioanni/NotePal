@@ -28,6 +28,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { version } from "os";
 import { deletePracticeQuiz } from "./practice-quiz";
+import { deleteQuizResults } from "./quiz-result";
 
 export const createQuiz = async (data: QuizCreateData) => {
   const user = await currentUser();
@@ -160,7 +161,11 @@ export const deleteQuiz = async (quizId: string) => {
     const documentRef = doc(userDocRef, "quizzes", quizId);
 
     await deleteDoc(documentRef).then(async () => {
-      await deletePracticeQuiz(quizId);
+      // delete the practice quiz and all quiz results
+      const deletePractice = deletePracticeQuiz(quizId);
+      const deleteResults = deleteQuizResults(quizId);
+
+      await Promise.all([deletePractice, deleteResults]);
     });
   } catch (error) {
     throw new Error("Failed to delete the quiz");
