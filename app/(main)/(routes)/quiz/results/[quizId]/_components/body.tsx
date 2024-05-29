@@ -5,6 +5,14 @@ import { getQuizResultsByQuizId } from "@/db/firebase/quiz-result";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { CheckCircle, XCircle } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 interface BodyProps {
   quizId: string;
@@ -97,19 +105,33 @@ export const Body = ({ quizId }: BodyProps) => {
     <div className="mt-6">
       <div className="flex flex-col gap-y-4">
         {sortedQuizResults.map((result, index) => (
-          <div
+          <Card
             key={result.id}
-            className="border rounded-md px-5 py-4"
+            className="hover:scale-[1.005] transition-transform cursor-pointer"
           >
-            Result: {getCorrectAnswersCount(result.userAnswers)} /{" "}
-            {result.userAnswers.length}
-            <br />
-            id: {result.id}
-            <br />
-            <span className="text-muted-foreground">
-              {timeDifferences[index]}
-            </span>
-          </div>
+            <CardHeader>
+              <CardTitle className="flex justify-between items-center">
+                <div>Attempt: {sortedQuizResults.length - index}</div>
+                <div className="flex h-10 gap-x-3 items-center border rounded-lg p-2">
+                  <div className="flex gap-x-2 items-center text-green-500">
+                    <CheckCircle className="w-4 h-4" />
+                    {getCorrectAnswersCount(result.userAnswers)}
+                  </div>
+                  <Separator orientation="vertical" />
+                  <div className="flex gap-x-2 items-center text-red-500">
+                    {result.userAnswers.length -
+                      getCorrectAnswersCount(result.userAnswers)}
+                    <XCircle className="w-4 h-4" />
+                  </div>
+                </div>
+              </CardTitle>
+              <CardDescription>
+                <span className="text-muted-foreground">
+                  {timeDifferences[index]}
+                </span>
+              </CardDescription>
+            </CardHeader>
+          </Card>
         ))}
       </div>
     </div>
