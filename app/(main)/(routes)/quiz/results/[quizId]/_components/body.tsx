@@ -112,7 +112,7 @@ export const Body = ({ quizId }: BodyProps) => {
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
                 <div>Attempt: {sortedQuizResults.length - index}</div>
-                <div className="flex h-10 gap-x-3 items-center border rounded-lg p-2">
+                <div className="flex h-8 text-xl gap-x-3 items-center border rounded-lg p-2">
                   <div className="flex gap-x-2 items-center text-green-500">
                     <CheckCircle className="w-4 h-4" />
                     {getCorrectAnswersCount(result.userAnswers)}
@@ -126,9 +126,20 @@ export const Body = ({ quizId }: BodyProps) => {
                 </div>
               </CardTitle>
               <CardDescription>
-                <span className="text-muted-foreground">
-                  {timeDifferences[index]}
-                </span>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">
+                    {timeDifferences[index]}
+                  </span>
+                  {/* Percentage correct (Whole number) */}
+                  <div className="text-muted-foreground">
+                    {Math.round(
+                      (getCorrectAnswersCount(result.userAnswers) /
+                        result.userAnswers.length) *
+                        100
+                    )}
+                    %
+                  </div>
+                </div>
               </CardDescription>
             </CardHeader>
           </Card>
