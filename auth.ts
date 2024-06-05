@@ -4,6 +4,7 @@ import authConfig from "./auth.config";
 import { getUserById, updateUserById } from "@/db/firebase/user";
 import { updateUser } from "@/db/firebase/user";
 import Resend from "next-auth/providers/resend";
+import { cert } from "firebase-admin/app";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   events: {
@@ -32,7 +33,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token;
     },
   },
-  adapter: FirestoreAdapter(),
+  adapter: FirestoreAdapter({
+    credential: cert({
+      projectId: process.env.AUTH_FIREBASE_PROJECT_ID,
+      clientEmail: process.env.AUTH_FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.AUTH_FIREBASE_PRIVATE_KEY,
+    }),
+  }),
   session: { strategy: "jwt" },
   providers: [
     Resend({ from: "no-reply@mynotepal.ai" }),
