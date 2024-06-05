@@ -45,6 +45,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Resend({ from: "no-reply@mynotepal.ai" }),
     ...authConfig.providers,
   ],
+  secret: process.env.AUTH_SECRET,
   pages: {
     signIn: "/login",
     verifyRequest: "/verify-email",
