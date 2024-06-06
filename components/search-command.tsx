@@ -122,7 +122,7 @@ export const SearchCommand = () => {
                   key={quiz.id}
                   value={`${quiz.id}-${quiz.title}`}
                   title={quiz.title}
-                  onSelect={() => onSelect("quizzes", quiz.id)}
+                  onSelect={() => onSelect("quiz", quiz.id)}
                   className="cursor-pointer text-muted-foreground"
                 >
                   <WandSparkles className="mr-2 h-4 w-4" />
