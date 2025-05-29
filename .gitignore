@@ -37,3 +37,6 @@ yarn-error.log*
 next-env.d.ts
 
 service-account.json
+
+# python environment
+venv/
