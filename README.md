@@ -145,7 +145,7 @@ NotePal is an AI-powered note-taking application that transforms text, images, a
 ---
 
 ## Contributions
-This project was founded and developed by **Parth Gupta** and **Nicolas Gioanni** to enhcnace learning and note-taking through AI. We welcome contributions! To contribute:
+This project was founded and developed by **Parth Gupta** and **Nicolas Gioanni** to enhance learning and note-taking through AI. We welcome contributions! To contribute:
 
 1. **Fork the repository**.  
 2. Create a new branch:  
