@@ -1,7 +1,9 @@
 # NotePal
 
+
 ## Description
 NotePal is an AI-powered note-taking application that transforms text, images, audio, and video into concise, structured notes. It’s designed for students, professionals, and lifelong learners who want to save time and retain key information without manual effort.
+
 
 ## Features
 - **Quiz Generation**: Automatically creates multiple-choice and short-answer quizzes based on uploaded content to reinforce learning.
@@ -11,6 +13,7 @@ NotePal is an AI-powered note-taking application that transforms text, images, a
 - **OCR & Object Detection**: Extracts text from images (PaddleOCR) and identifies objects (YOLOv5) for context-aware summaries.
 - **Multi-Modal Input**: Supports `.txt`, `.pdf`, `.docx`, image, and video uploads to cover all content types seamlessly.
 
+
 ## Technologies Used
 
 ### Core
@@ -19,6 +22,7 @@ NotePal is an AI-powered note-taking application that transforms text, images, a
 - Firebase: Stores user-uploaded files, handles real-time data sync, and manages backend storage
 - NextAuth: Manages user authentication and session handling in the frontend (used for login, route protection, and session checks)
 - OpenAI API: Text summarization, quiz creation, and chatbot responses
+
 
 ### Supporting
 - LangChain: Manages chatbot logic and connects LLMs to external data
@@ -30,7 +34,6 @@ NotePal is an AI-powered note-taking application that transforms text, images, a
 - MoviePy & FFmpeg: Convert videos to MP4 and extract audio
 - PyPDF2 & python-docx: Read and extract text from PDF and Word files
 
----
 
 ## Installation
 1. **Clone the Repository**  
