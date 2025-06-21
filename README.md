@@ -139,7 +139,6 @@ NotePal is an AI-powered note-taking application that transforms text, images, a
 - **User Authentication**  
   - Secures routes and API endpoints via NextAuth, ensuring only authenticated users can generate or view notes.
 
----
 
 ## Contributions
 This project was founded and developed by **Parth Gupta** and **Nicolas Gioanni** to enhance learning and note-taking through AI. We welcome contributions! To contribute:
