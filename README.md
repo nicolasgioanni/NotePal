@@ -161,7 +161,6 @@ This project was founded and developed by **Parth Gupta** and **Nicolas Gioanni*
 
 If you encounter bugs, have suggestions, or want to improve functionality, please open an issue. We will review and address contributions promptly.
 
----
 
 ## License
 This project is licensed under the **Apache License 2.0**. See the [LICENSE](LICENSE) file for details.
