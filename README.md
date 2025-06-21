@@ -13,8 +13,6 @@ NotePal is an AI-powered note-taking application that transforms text, images, a
 - **OCR & Object Detection**: Extracts text from images (PaddleOCR) and identifies objects (YOLOv5) for context-aware summaries.
 - **Multi-Modal Input**: Supports `.txt`, `.pdf`, `.docx`, image, and video uploads to cover all content types seamlessly.
 
----
-
 ## Technologies Used
 
 ### Core
