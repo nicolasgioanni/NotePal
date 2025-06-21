@@ -88,7 +88,6 @@ NotePal is an AI-powered note-taking application that transforms text, images, a
      ```  
    - **Windows**: Download from [ffmpeg.org](https://ffmpeg.org/) and add to `PATH`.
 
----
 
 ## Usage
 1. **Start the Backend**  
@@ -119,7 +118,6 @@ NotePal is an AI-powered note-taking application that transforms text, images, a
          }'
    ```
 
----
 
 ## Core Functions
 - **Note Generation**  
