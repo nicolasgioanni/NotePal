@@ -1,5 +1,5 @@
 # NotePal
-
+---
 
 ## Description
 NotePal is an AI-powered note-taking application that transforms text, images, audio, and video into concise, structured notes. It’s designed for students, professionals, and lifelong learners who want to save time and retain key information without manual effort.
