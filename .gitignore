@@ -40,3 +40,7 @@ service-account.json
 
 # python environment
 venv/
+
+# Code Formatting
+.vscode/
+settings.json
